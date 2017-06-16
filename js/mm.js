@@ -147,26 +147,22 @@ drawOutline(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
 var leftArrow = {
         down: false,
         up: false,
-        pressed: false,
-        counter: 0
+        pressed: false
     },
     rightArrow = {
         down: false,
         up: false,
-        pressed: false,
-        counter: 0
+        pressed: false
     },
     topArrow = {
         down: false,
         up: false,
-        pressed: false,
-        counter: 0
+        pressed: false
     },
     bottomArrow = {
         down: false,
         up: false,
-        pressed: false,
-        counter: 0
+        pressed: false
     };
 
 window.addEventListener("keydown", function(event) {
@@ -189,19 +185,15 @@ window.addEventListener("keyup", function(event) {
     switch (event.code) {
         case "ArrowLeft":
             leftArrow.up = true;
-            leftArrow.counter++;
             break;
         case "ArrowUp":
             topArrow.up = true;
-            topArrow.counter++;
             break;
         case "ArrowRight":
             rightArrow.up = true;
-            rightArrow.counter++;
             break;
         case "ArrowDown":
             bottomArrow.up = true;
-            bottomArrow.counter++;
     }
 });
 
@@ -231,71 +223,6 @@ var lastX = X_LROOT,
     newX = 0,
     newY = 0;
 function redraw() {
-    // // Main section -> Main section 2
-    // if ((leftArrow.pressed == true) && (lastX == X_LROOT) && (lastY == Y_LROOT)) {
-    //     drawOutline(lastX, lastY, ROOT_WIDTH, ROOT_HEIGHT, border[0]);
-    //     newX = mainSection[0].x;
-    //     newY = mainSection[0].y2;
-    //     drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
-    //     lastX = newX;
-    //     lastY = newY;
-    //     leftArrow.down = false;
-    //     leftArrow.up = false;
-    //     leftArrow.pressed == false;
-    //     console.log('Root -> 2');
-    // }
-    // // Main section 2 -> Main section
-    // if ((rightArrow.pressed == true) && (lastX == mainSection[0].x) && (lastY == mainSection[0].y2)) {
-    //     drawOutline(lastX, lastY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
-    //     newX = X_LROOT;
-    //     newY = Y_LROOT;
-    //     drawOutline(newX, newY, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
-    //     lastX = newX;
-    //     lastY = newY;
-    //     rightArrow.down = false;
-    //     rightArrow.up = false;
-    //     rightArrow.pressed == false;
-    //     console.log('2 -> Root');
-    // }
-    // // Main section 2 -> Main section 1
-    // if ((topArrow.pressed == true) && (lastX == mainSection[0].x) && (lastY == mainSection[0].y2)) {
-    //     drawOutline(lastX, lastY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
-    //     newX = mainSection[0].x;
-    //     newY = mainSection[0].y1;
-    //     drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
-    //     lastX = newX;
-    //     lastY = newY;
-    //     topArrow.down = false;
-    //     topArrow.up = false;
-    //     topArrow.pressed == false;
-    //     console.log('2 -> 1');
-    // }
-    // // Main section 1 -> Main section
-    // if ((rightArrow.pressed == true) && (lastX == mainSection[0].x) && (lastY == mainSection[0].y1)) {
-    //     drawOutline(lastX, lastY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
-    //     newX = X_LROOT;
-    //     newY = Y_LROOT;
-    //     drawOutline(newX, newY, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
-    //     lastX = newX;
-    //     lastY = newY;
-    //     rightArrow.down = false;
-    //     rightArrow.up = false;
-    //     rightArrow.pressed = false;
-    //     console.log('1 -> Root');
-    // }
-    // // Main section 1 -> Main section 2
-    // if ((bottomArrow.pressed == true) && (lastX == mainSection[0].x) && (lastY == mainSection[0].y1)) {
-    //     drawOutline(lastX, lastY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
-    //     newX = mainSection[0].x;
-    //     newY = mainSection[0].y2;
-    //     drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
-    //     lastX = newX;
-    //     lastY = newY;
-    //     bottomArrow.down = false;
-    //     bottomArrow.up = false;
-    //     bottomArrow.pressed = false;
-    //     console.log('1 -> 2');
-    // }
     // Main section -> Main section 4
     if ((rightArrow.pressed == true) && (lastX == X_LROOT) && (lastY == Y_LROOT)) {
         drawOutline(lastX, lastY, ROOT_WIDTH, ROOT_HEIGHT, border[0]);
@@ -400,9 +327,71 @@ function redraw() {
         leftArrow.pressed = false;
         console.log('3 -> Root');
     }
+    // Main section -> Main section 2
+    if ((leftArrow.pressed == true) && (lastX == X_LROOT) && (lastY == Y_LROOT)) {
+        drawOutline(lastX, lastY, ROOT_WIDTH, ROOT_HEIGHT, border[0]);
+        newX = mainSection[0].x;
+        newY = mainSection[0].y2;
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
+        lastX = newX;
+        lastY = newY;
+        leftArrow.down = false;
+        leftArrow.up = false;
+        leftArrow.pressed = false;
+        console.log('Root -> 2');
+    }
+    // Main section 2 -> Main section
+    if ((rightArrow.pressed == true) && (lastX == mainSection[0].x) && (mainSection[0].y2)) {
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
+        newX = X_LROOT;
+        newY = Y_LROOT;
+        drawOutline(newX, newY, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
+        lastX = newX;
+        lastY = newY;
+        rightArrow.down = false;
+        rightArrow.up = false;
+        rightArrow.pressed = false;
+        console.log('2 -> Root');
+    }
+    // Main section 2 -> Main section 1
+    if ((topArrow.pressed == true) && (lastX == mainSection[0].x) && (mainSection[0].y2)) {
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
+        newX = mainSection[0].x;
+        newY = mainSection[0].y1;
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
+        lastX = newX;
+        lastY = newY;
+        topArrow.down = false;
+        topArrow.up = false;
+        topArrow.pressed = false;
+        console.log('2 -> 1');
+    }
+    // Main section 1 -> Main section 2
+    if ((bottomArrow.pressed == true) && (lastX == mainSection[0].x) && (mainSection[0].y1)) {
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
+        newX = mainSection[0].x;
+        newY = mainSection[0].y2;
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[1]);
+        lastX = newX;
+        lastY = newY;
+        bottomArrow.down = false;
+        bottomArrow.up = false;
+        bottomArrow.pressed = false;
+        console.log('1 -> 2');
+    }
+    // Main section 1 -> Main section
+    if ((rightArrow.pressed == true) && (lastX == mainSection[0].x) && (mainSection[0].y1)) {
+        drawOutline(newX, newY, ELEMENT_WIDTH, ELEMENT_HEIGHT, border[0]);
+        newX = X_LROOT;
+        newY = Y_LROOT;
+        drawOutline(newX, newY, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
+        lastX = newX;
+        lastY = newY;
+        rightArrow.down = false;
+        rightArrow.up = false;
+        rightArrow.pressed = false;
+        console.log('1 -> Root');
+    }
 };
 
-
 window.setInterval(redraw, 10);
-
-
