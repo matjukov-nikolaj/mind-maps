@@ -1,102 +1,10 @@
-'use strict';
-var canvas = document.getElementById("canvas"),
-    ctx = canvas.getContext('2d');
-canvas.width = 1875;
-canvas.height = 790;
-
-// Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅРѕРµ РїРѕР»СѓС‡РµРЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚
-function getCoordinates() {
-    canvas.onclick = function (event) {
-        var imgY = this.getBoundingClientRect().top;
-        var imgX = this.getBoundingClientRect().left;
-        var relativeY = event.clientY - imgY;
-        var relativeX = event.clientX - imgX;
-        console.log(relativeX + '  ' + relativeY)
-    }
-}
-getCoordinates();
-
-// Р РёСЃСѓРµРј СЌР»РµРјРµРЅС‚С‹ РІ РІРёРґРµ РїСЂСЏРјРѕСѓРіРѕР»СЊРЅРёРєРѕРІ
-var counterRect = 0;
-function drawElementRect(xLeftCorner, yLeftCorner, width, height, lineSize) {
-    ctx.fillStyle = "#aaf0d1";
-    ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
-    ctx.fillStyle = "#506a85";
-    ctx.font = "bold 18px sans-serif";
-    ctx.textAlign = "center";
-    if (counterRect == 0) {
-        ctx.fillText('Main section', xLeftCorner + (width / 2), yLeftCorner + (height / 1.7));
-    } else {
-        ctx.fillText('Main section ' + counterRect, xLeftCorner + (width / 2), yLeftCorner + (height / 1.7));
-    }
-    ctx.beginPath();
-    ctx.fill();
-    ctx.moveTo(xLeftCorner, yLeftCorner);
-    ctx.lineTo(xLeftCorner + width, yLeftCorner);
-    ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
-    ctx.lineTo(xLeftCorner, yLeftCorner + height);
-    ctx.lineTo(xLeftCorner, yLeftCorner);
-    ctx.strokeStyle = "#00a085";
-    ctx.lineWidth = lineSize;
-    ctx.stroke();
-    counterRect++;
-}
-
-const
-    X_LROOT = 840,
-    Y_LROOT = 360,
-    ROOT_WIDTH = 200,
-    ROOT_HEIGHT = 70,
-    ROOT_LINE_SIZE = 3,
-    ELEMENT_LINE_SIZE = 2,
-    ELEMENT_WIDTH = 150,
-    ELEMENT_HEIGHT_INVISIBLE = 30,
-    ELEMENT_HEIGHT = 50;
-
-var counterLine = 1;
-function drawElementLine(xLeftCorner, yLeftCorner, width, height, lineSize) {
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
-    ctx.fillStyle = "#506a85";
-    ctx.font = "bold 18px sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText('Subsection ' + counterLine, xLeftCorner + (width / 2), yLeftCorner + (height - lineSize));
-    ctx.beginPath();
-    ctx.fill();
-    ctx.moveTo(xLeftCorner, yLeftCorner + height);
-    ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
-    ctx.strokeStyle = "#00a085";
-    ctx.lineWidth = "#00a085";
-    ctx.stroke();
-    counterLine++;
-}
-
-const
-    INDENT = 5;
-function drawOutline(xLeftCorner, yLeftCorner, width, height, borderStyle) {
-    xLeftCorner -= INDENT;
-    yLeftCorner -= INDENT;
-    width += INDENT * 2;
-    height += INDENT * 2;
-    ctx.beginPath();
-    ctx.fill();
-    ctx.moveTo(xLeftCorner, yLeftCorner);
-    ctx.lineTo(xLeftCorner + width, yLeftCorner);
-    ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
-    ctx.lineTo(xLeftCorner, yLeftCorner + height);
-    ctx.lineTo(xLeftCorner, yLeftCorner);
-    ctx.strokeStyle = borderStyle;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
-
-// РљРѕРѕСЂРґРёР°РЅС‚С‹ РЅР°С‡Р°Р»Р°(Р»РµРІС‹Р№ РІРµСЂС…РЅРёР№ СѓРіРѕР») РІСЃРµС… РіР»Р°РІРЅС‹С… СЂР°Р·РґРµР»РѕРІ
+// Коордианты начала(левый верхний угол) всех главных разделов
 var border = ["#ffffff", "#506a85"];
 var mainSection = [
     {x: 600, y1: 310, y2: 430},
     {x: 1130, y1: 220, y2: 310, y3: 430}
 ];
-// РљРѕРѕСЂРґРёР°РЅС‚С‹ РЅР°С‡Р°Р»Р°(Р»РµРІС‹Р№ РІРµСЂС…РЅРёР№ СѓРіРѕР») РІСЃРµС… РїРѕРґСЂР°Р·РґРµР»РѕРІ
+// Коордианты начала(левый верхний угол) всех подразделов
 var subsection = [
     {x: 1300, y1: 160, y2: 230, y3: 300, y4: 350, y5: 420, y6: 470, y7: 530},
     {x: 1470, y1: 300, y2: 350, y3: 470},
@@ -105,45 +13,40 @@ var subsection = [
     {y: 300, x1: 430}
 ];
 
-// var whlis = {
-//     width: ELEMENT_WIDTH,
-//     height: ELEMENT_HEIGHT,
-//     lineSize: ELEMENT_LINE_SIZE
-// };
-// ============================================================================================================
-// РћС‚СЂРёСЃРѕРІРєР° РіР»Р°РІРЅРѕРіРѕ СЌР»РµРјРµРЅС‚Р°
-drawElementRect(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, ROOT_LINE_SIZE);
-// Р Р°Р·РґРµР»С‹ РїРµСЂРІРѕРіРѕ СѓСЂРѕРІРЅСЏ СЃР»РµРІР°
-drawElementRect(mainSection[0].x, mainSection[0].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
-drawElementRect(mainSection[0].x, mainSection[0].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
-// Р Р°Р·РґРµР»С‹ РїРµСЂРІРѕРіРѕ СѓСЂРѕРІРЅСЏ СЃРїСЂР°РІР°
-drawElementRect(mainSection[1].x, mainSection[1].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
-drawElementRect(mainSection[1].x, mainSection[1].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
-drawElementRect(mainSection[1].x, mainSection[1].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
-// РџРѕРґСЂР°Р·РґРµР»С‹ СЃРїСЂР°РІР°
-drawElementLine(subsection[0].x, subsection[0].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y4, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y5, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y6, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[0].x, subsection[0].y7, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[1].x, subsection[1].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[1].x, subsection[1].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[1].x, subsection[1].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[2].x, subsection[2].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// // ============================================================================================================
+// // Отрисовка главного элемента
+// // drawElementRect(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, ROOT_LINE_SIZE);
+// // Разделы первого уровня слева
+// drawElementRect(mainSection[0].x, mainSection[0].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
+// drawElementRect(mainSection[0].x, mainSection[0].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
+// // Разделы первого уровня справа
+// drawElementRect(mainSection[1].x, mainSection[1].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
+// drawElementRect(mainSection[1].x, mainSection[1].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
+// drawElementRect(mainSection[1].x, mainSection[1].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT, ELEMENT_LINE_SIZE);
+// // Подразделы справа
+// drawElementLine(subsection[0].x, subsection[0].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y4, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y5, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y6, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[0].x, subsection[0].y7, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[1].x, subsection[1].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[1].x, subsection[1].y2, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[1].x, subsection[1].y3, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[2].x, subsection[2].y1, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+//
+// // Подразделы слева
+// drawElementLine(subsection[3].x1, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[3].x2, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[3].x3, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// drawElementLine(subsection[4].x1, subsection[4].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
+// // ============================================================================================================
 
-// РџРѕРґСЂР°Р·РґРµР»С‹ СЃР»РµРІР°
-drawElementLine(subsection[3].x1, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[3].x2, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[3].x3, subsection[3].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-drawElementLine(subsection[4].x1, subsection[4].y, ELEMENT_WIDTH, ELEMENT_HEIGHT_INVISIBLE, ELEMENT_LINE_SIZE);
-// ============================================================================================================
-
-// РЎРЅР°С‡Р°Р»Р° РІС‹РґРµР»РµРЅ С†РµРЅС‚СЂР°Р»СЊРЅС‹Р№ СЂР°Р·РґРµР»
+// Сначала выделен центральный раздел
 drawOutline(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, border[1]);
 
-// РћР±СЂР°Р±РѕС‚РєР° РЅР°Р¶Р°С‚РёР№ СЃС‚СЂРµР»РѕРє
+// Обработка нажатий стрелок
 var leftArrow = {
         down: false,
         up: false,
@@ -397,3 +300,108 @@ function redraw() {
 window.setInterval(redraw, 10);
 
 
+// Рисуем элементы в виде прямоугольников
+var counterRect = 0;
+function drawElementRect(xLeftCorner, yLeftCorner, width, height) {
+    this.draw = function () {
+        ctx.fillStyle = "#aaf0d1";
+        ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
+        ctx.fillStyle = "#506a85";
+        ctx.font = "bold 18px sans-serif";
+        ctx.textAlign = "center";
+        if (counterRect == 0) {
+            ctx.fillText('Main section', xLeftCorner + (width / 2), yLeftCorner + (height / 1.7));
+        } else {
+            ctx.fillText('Main section ' + counterRect, xLeftCorner + (width / 2), yLeftCorner + (height / 1.7));
+        }
+        ctx.beginPath();
+        ctx.fill();
+        ctx.moveTo(xLeftCorner, yLeftCorner);
+        ctx.lineTo(xLeftCorner + width, yLeftCorner);
+        ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
+        ctx.lineTo(xLeftCorner, yLeftCorner + height);
+        ctx.lineTo(xLeftCorner, yLeftCorner);
+        ctx.strokeStyle = "#00a085";
+        if (counterRect == 0) {
+            ctx.lineWidth = 3;
+        } else {
+            ctx.lineWidth = 2;
+        }
+        ctx.stroke();
+        counterRect++;
+    }
+}
+
+const
+    X_LROOT = 840,
+    Y_LROOT = 360,
+    ROOT_WIDTH = 200,
+    ROOT_HEIGHT = 70,
+    El_LINE_SIZE = 2,
+    EL_WIDTH = 150,
+    EL_HEIGHT_INVIS = 30,
+    EL_HEIGHT = 50;
+
+var counterLine = 1;
+function drawElementLine(xLeftCorner, yLeftCorner, width, height) {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
+    ctx.fillStyle = "#506a85";
+    ctx.font = "bold 18px sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText('Subsection ' + counterLine, xLeftCorner + (width / 2), yLeftCorner + (height - El_LINE_SIZE));
+    ctx.beginPath();
+    ctx.fill();
+    ctx.moveTo(xLeftCorner, yLeftCorner + height);
+    ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
+    ctx.strokeStyle = "#00a085";
+    ctx.lineWidth = "#00a085";
+    ctx.stroke();
+    counterLine++;
+}
+
+function drawOutline(xLeftCorner, yLeftCorner, width, height, borderStyle) {
+    const
+        INDENT = 5;
+    xLeftCorner -= INDENT;
+    yLeftCorner -= INDENT;
+    width += INDENT * 2;
+    height += INDENT * 2;
+    ctx.beginPath();
+    ctx.fill();
+    ctx.moveTo(xLeftCorner, yLeftCorner);
+    ctx.lineTo(xLeftCorner + width, yLeftCorner);
+    ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
+    ctx.lineTo(xLeftCorner, yLeftCorner + height);
+    ctx.lineTo(xLeftCorner, yLeftCorner);
+    ctx.strokeStyle = borderStyle;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+}
+
+// Рисуем элементы в виде прямоугольников
+function drawElementRect(xLeftCorner, yLeftCorner, width, height, title) {
+    this.draw = function () {
+        ctx.fillStyle = "#aaf0d1";
+        ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
+        ctx.fillStyle = "#506a85";
+        ctx.font = "bold 18px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(title, xLeftCorner + (width / 2), yLeftCorner + (height / 1.7));
+        ctx.beginPath();
+        ctx.fill();
+        ctx.moveTo(xLeftCorner, yLeftCorner);
+        ctx.lineTo(xLeftCorner + width, yLeftCorner);
+        ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
+        ctx.lineTo(xLeftCorner, yLeftCorner + height);
+        ctx.lineTo(xLeftCorner, yLeftCorner);
+        ctx.strokeStyle = "#00a085";
+        if (title == 'Main Section') {
+            ctx.lineWidth = 3;
+        } else {
+            ctx.lineWidth = 2;
+        }
+        ctx.stroke();
+        counterRect++;
+    }
+}
