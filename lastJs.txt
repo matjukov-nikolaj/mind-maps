@@ -1,3 +1,16 @@
+for (var key in allTree) {
+    console.log(allTree[key]);
+    if (key == 'children') {
+        if (allTree.children.length != 0) {
+            for (var i = 0; i < allTree.children.length; i++) {
+                for (var key in allTree.children[i]) {
+                    console.log(allTree.children[i][key]);
+                }
+            }
+        }
+    }
+}
+
 // Коордианты начала(левый верхний угол) всех главных разделов
 var border = ["#ffffff", "#506a85"];
 var mainSection = [

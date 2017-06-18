@@ -8,14 +8,14 @@ const
     EL_HEIGHT_WHITE = 30,
     EL_HEIGHT = 50;
 
-let mainSection = {
+var mainSection = {
     x1: 600,
     x2: 1130,
     y1: 310,
     y2: 430
 };
 
-let allTree = {
+var allTree = {
     title: 'Main Section',
     x: X_LROOT,
     y: Y_LROOT,
@@ -27,14 +27,36 @@ let allTree = {
             x: mainSection.x1,
             y: mainSection.y1,
             width: EL_WIDTH,
-            height: EL_HEIGHT
+            height: EL_HEIGHT,
+            children: [
+            ]
         },
         {
             title: 'Main Section 2',
+            x: mainSection.x1,
+            y: mainSection.y2,
+            width: EL_WIDTH,
+            height: EL_HEIGHT,
+            children: [
+            ]
+        },
+        {
+            title: 'Main Section 3',
             x: mainSection.x2,
             y: mainSection.y1,
             width: EL_WIDTH,
-            height: EL_HEIGHT
+            height: EL_HEIGHT,
+            children: [
+            ]
+        },
+        {
+            title: 'Main Section 4',
+            x: mainSection.x2,
+            y: mainSection.y2,
+            width: EL_WIDTH,
+            height: EL_HEIGHT,
+            children: [
+            ]
         }
     ]
 };
@@ -47,7 +69,12 @@ class Tree {
         this.canvas.height = 790;
     }
 
-    drawElementRect(xLeftCorner, yLeftCorner, width, height, title) {
+    drawElementRect(branch) {
+        var xLeftCorner = branch.x,
+            yLeftCorner = branch.y,
+            width = branch.width,
+            height = branch.height,
+            title = branch.title;
         this.ctx.fillStyle = "#aaf0d1";
         this.ctx.fillRect(xLeftCorner, yLeftCorner, width, height);
         this.ctx.fillStyle = "#506a85";
@@ -70,10 +97,14 @@ class Tree {
         this.ctx.stroke();
     }
 
-    drawRoot() {
-        this.drawElementRect(allTree.x, allTree.y, allTree.width, allTree.height, allTree.title);
+    drawAllTree() {
+        this.drawElementRect(allTree);
+        this.drawElementRect(allTree.children[0]);
+        this.drawElementRect(allTree.children[1]);
+        this.drawElementRect(allTree.children[2]);
+        this.drawElementRect(allTree.children[3]);
     }
 }
 
-let centerRoot = new Tree;
-centerRoot.drawRoot();
+var centerRoot = new Tree;
+centerRoot.drawAllTree();
