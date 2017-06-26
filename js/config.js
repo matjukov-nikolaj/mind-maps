@@ -1,4 +1,4 @@
-export let constans = {
+config = {
     X_LROOT: 240,
     Y_LROOT: 360,
     ROOT_WIDTH: 200,
@@ -9,5 +9,7 @@ export let constans = {
     SUBSECTION_MARGIN: 15,
     SUBSECTION_HEIGHT: 30,
     SUBSECTION_WIDTH: 150,
-    SUBSECTION_DISTANCE: 200
+    SUBSECTION_DISTANCE: 150,
+    COLOUR_LINE_VISIBLE: "#506a85",
+    COLOUR_LINE_INVISIBLE: "#ffffff"
 };

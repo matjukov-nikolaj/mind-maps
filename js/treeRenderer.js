@@ -1,11 +1,10 @@
-export class TreeRenderer {
+class TreeRenderer {
     constructor(tree) {
         this.canvas = document.getElementById('canvas');
         this.ctx = this.canvas.getContext("2d");
         this.canvas.width = 1875;
         this.canvas.height = 790;
         this.tree = tree;
-        this.borderColor = ["#ffffff", "#506a85"];
     }
 
     drawElementRect(xLeftCorner, yLeftCorner, width, height, title) {
@@ -49,7 +48,7 @@ export class TreeRenderer {
         this.ctx.closePath();
     }
 
-    drawOutline(xLeftCorner, yLeftCorner, width, height, borderStyle) {
+    drawOutline(xLeftCorner, yLeftCorner, width, height, borderColor) {
         this.ctx.beginPath();
         const indent = 5;
         xLeftCorner -= indent;
@@ -63,40 +62,36 @@ export class TreeRenderer {
         this.ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
         this.ctx.lineTo(xLeftCorner, yLeftCorner + height);
         this.ctx.lineTo(xLeftCorner, yLeftCorner);
-        this.ctx.strokeStyle = borderStyle;
-        if (borderStyle == this.borderColor[0]) {
-            this.ctx.lineWidth = 4;
-        } else {
-            this.ctx.lineWidth = 2;
-        }
+        this.ctx.strokeStyle = borderColor;
+        this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    drawSelection(x, y, widht, height, selection, node) {
+    drawSelection(x, y, width, height, selection, node) {
         if (node == selection.new) {
-            this.drawOutline(x, y, widht, height, this.borderColor[1]);
+            this.drawOutline(x, y, width, height, config.COLOUR_LINE_VISIBLE);
         }
         else if (node == selection.old) {
-            this.drawOutline(x, y, widht, height, this.borderColor[0]);
+            this.drawOutline(x, y, width, height, config.COLOUR_LINE_INVISIBLE);
         }
     }
 
     drawRoot(selection) {
-        this.drawElementRect(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, this.tree.root.title);
-        this.drawSelection(X_LROOT, Y_LROOT, ROOT_WIDTH, ROOT_HEIGHT, selection, this.tree.root)
+        this.drawElementRect(config.X_LROOT, config.Y_LROOT, config.ROOT_WIDTH, config.ROOT_HEIGHT, this.tree.root.title);
+        this.drawSelection(config.X_LROOT, config.Y_LROOT, config.ROOT_WIDTH, config.ROOT_HEIGHT, selection, this.tree.root)
     }
 
     findElementCoords(target) {
         if (this.tree.root == target) {
             return {
-                x: X_LROOT,
-                y: Y_LROOT
+                x: config.X_LROOT,
+                y: config.Y_LROOT
             };
         }
         const center = {
-            x: X_LROOT + ROOT_WIDTH / 2,
-            y: Y_LROOT + ROOT_HEIGHT / 2
+            x: config.X_LROOT + config.ROOT_WIDTH / 2,
+            y: config.Y_LROOT + config.ROOT_HEIGHT / 2
         };
         for (let i = 0; i < this.tree.children; ++i) {
             const child = this.tree.root.children[i];
@@ -110,21 +105,21 @@ export class TreeRenderer {
     calculateChildPoint(center, index) {
         const angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
         return {
-            x: center.x + Math.cos(angle) * MAIN_RADIUS,
-            y: center.y + Math.sin(angle) * MAIN_RADIUS * 1.5
+            x: center.x + Math.cos(angle) * config.MAIN_RADIUS,
+            y: center.y + Math.sin(angle) * config.MAIN_RADIUS * 1.5
         }
     }
 
     drawChild(selection) {
         const center = {
-            x: X_LROOT + ROOT_WIDTH / 2,
-            y: Y_LROOT + ROOT_HEIGHT / 2
+            x: config.X_LROOT + config.ROOT_WIDTH / 2,
+            y: config.Y_LROOT + config.ROOT_HEIGHT / 2
         };
         for (let i = 0; i < this.tree.root.children.length; i++) {
             const point = this.calculateChildPoint(center, i);
             const child = this.tree.root.children[i];
-            this.drawElementRect(point.x - EL_WIDTH / 2, point.y - EL_HEIGHT / 2, EL_WIDTH, EL_HEIGHT, child.title);
-            this.drawSelection(point.x - EL_WIDTH / 2, point.y - EL_HEIGHT / 2, EL_WIDTH, EL_HEIGHT, selection, child);
+            this.drawElementRect(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, child.title);
+            this.drawSelection(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, selection, child);
             const isLeft = (point.x - center.x) < 0;
             this.drawSubsections(point.x, point.y, child.children, isLeft, selection);
         }
@@ -132,15 +127,15 @@ export class TreeRenderer {
 
     drawSubsections(x, y, subsections, isLeft, selection) {
         if (subsections.length != 0) {
-            const heightWithMargin = SUBSECTION_HEIGHT + SUBSECTION_MARGIN;
-            const totalHeight = heightWithMargin * subsections.length;
+            const heightWithMargin = config.SUBSECTION_HEIGHT + config.SUBSECTION_MARGIN;
+            const totalHeight =  config.SUBSECTION_HEIGHT  * subsections.length + config.SUBSECTION_MARGIN * (subsections.length - 1);
             let side = 0;
             if (isLeft) {
                 side = -1;
             } else
                 side = 1;
             const startPoint = {
-                x: x + (SUBSECTION_DISTANCE * side),
+                x: x + (config.SUBSECTION_DISTANCE * side),
                 y: y - totalHeight / 2
             };
             for (let i = 0; i < subsections.length; i++) {
@@ -150,14 +145,19 @@ export class TreeRenderer {
                     x: startPoint.x,
                     y: startPoint.y + i * heightWithMargin
                 };
-                this.drawElementLine(point.x - SUBSECTION_WIDTH / 2, point.y, SUBSECTION_WIDTH, SUBSECTION_HEIGHT, title);
-                this.drawSelection(point.x - SUBSECTION_WIDTH / 2, point.y, SUBSECTION_WIDTH, SUBSECTION_HEIGHT, selection, subsection);
-                this.drawSubsections(point.x, point.y, subsection.children, isLeft, selection);
+                this.drawElementLine(point.x, point.y, config.SUBSECTION_WIDTH, config.SUBSECTION_HEIGHT, title);
+                this.drawSelection(point.x, point.y, config.SUBSECTION_WIDTH, config.SUBSECTION_HEIGHT, selection, subsection);
+                this.drawSubsections(point.x + config.SUBSECTION_WIDTH / 2, point.y + config.SUBSECTION_HEIGHT / 2, subsection.children, isLeft, selection);
             }
         }
     }
 
+    clearCanvas() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
     drawAllTree(selection) {
+        this.clearCanvas();
         this.drawRoot(selection);
         this.drawChild(selection);
     }

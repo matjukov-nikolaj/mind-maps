@@ -1,4 +1,4 @@
-export class TreeController {
+class TreeController {
     constructor(tree, renderer) {
         this.tree = tree;
         this.renderer = renderer;
@@ -6,6 +6,12 @@ export class TreeController {
             new: this.tree.root,
             old: null
         };
+        this.newChild = null;
+    }
+
+    changeSelection(newSelection) {
+        this.selection.old = this.selection.new;
+        this.selection.new = newSelection;
     }
 
     onPressedLeft() {
@@ -52,6 +58,31 @@ export class TreeController {
         }
     }
 
+    onPressedTab() {
+        const counterChild = this.selection.new.children.length;
+        let nodeName = "";
+        if (this.selection.new == this.tree.root)
+        {
+            nodeName = 'Main Section ' + (counterChild + 1);
+        } else {
+            nodeName = 'Subsection ' + (counterChild + 1)
+        }
+
+        this.changeSelection(this.selection.new.addChild(nodeName));
+        this.renderer.drawAllTree(this.selection);
+    }
+
+    onPressedDel() {
+        if (this.selection.new == this.tree.root)
+        {
+            return;
+        }
+        this.changeSelection(this.selection.new.parent);
+        const index = this.selection.new.children.indexOf(this.selection.old);
+        this.selection.new.children.splice(index, 1);
+        this.renderer.drawAllTree(this.selection);
+    }
+
     // Обработка нажатий стрелок
     pressingArrows() {
         let self = this;
@@ -68,6 +99,13 @@ export class TreeController {
                         break;
                     case "ArrowDown":
                         self.onPressedDown();
+                        break;
+                    case "Tab":
+                        self.onPressedTab();
+                        break;
+                    case "Delete":
+                        self.onPressedDel();
+                        break;
                 }
             }
         );
