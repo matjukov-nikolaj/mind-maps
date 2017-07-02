@@ -1,9 +1,10 @@
 class TreeRenderer {
     constructor(tree) {
         this.canvas = document.getElementById('canvas');
+        this.canvas.focus();
         this.ctx = this.canvas.getContext("2d");
-        this.canvas.width = 1875;
-        this.canvas.height = 790;
+        this.canvas.width = 10000;
+        this.canvas.height = 10000;
         this.tree = tree;
     }
 
@@ -48,7 +49,7 @@ class TreeRenderer {
         this.ctx.closePath();
     }
 
-    drawOutline(xLeftCorner, yLeftCorner, width, height, borderColor) {
+    drawOutline(xLeftCorner, yLeftCorner, width, height) {
         this.ctx.beginPath();
         const indent = 5;
         xLeftCorner -= indent;
@@ -62,24 +63,31 @@ class TreeRenderer {
         this.ctx.lineTo(xLeftCorner + width, yLeftCorner + height);
         this.ctx.lineTo(xLeftCorner, yLeftCorner + height);
         this.ctx.lineTo(xLeftCorner, yLeftCorner);
-        this.ctx.strokeStyle = borderColor;
+        this.ctx.strokeStyle = "#506a85";
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
     drawSelection(x, y, width, height, selection, node) {
-        if (node == selection.new) {
-            this.drawOutline(x, y, width, height, config.COLOUR_LINE_VISIBLE);
-        }
-        else if (node == selection.old) {
-            this.drawOutline(x, y, width, height, config.COLOUR_LINE_INVISIBLE);
+        if (node == selection.curr) {
+            this.drawOutline(x, y, width, height);
         }
     }
 
     drawRoot(selection) {
         this.drawElementRect(config.X_LROOT, config.Y_LROOT, config.ROOT_WIDTH, config.ROOT_HEIGHT, this.tree.root.title);
         this.drawSelection(config.X_LROOT, config.Y_LROOT, config.ROOT_WIDTH, config.ROOT_HEIGHT, selection, this.tree.root)
+    }
+
+    drawConnection(xStart, yStart, xEnd, yEnd) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(xStart, yStart);
+        this.ctx.lineTo(xEnd, yEnd);
+        this.ctx.strokeStyle = "#00a085";
+        this.ctx.lineWidth = 2;
+        this.ctx.stroke();
+        this.ctx.closePath();
     }
 
     findElementCoords(target) {
@@ -118,6 +126,8 @@ class TreeRenderer {
         for (let i = 0; i < this.tree.root.children.length; i++) {
             const point = this.calculateChildPoint(center, i);
             const child = this.tree.root.children[i];
+            this.drawConnection(center.x, center.y, point.x, point.y);
+            this.drawRoot(selection);
             this.drawElementRect(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, child.title);
             this.drawSelection(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, selection, child);
             const isLeft = (point.x - center.x) < 0;

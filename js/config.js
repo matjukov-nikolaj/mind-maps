@@ -1,6 +1,6 @@
-config = {
+let config = {
     X_LROOT: 240,
-    Y_LROOT: 360,
+    Y_LROOT: 5000,
     ROOT_WIDTH: 200,
     ROOT_HEIGHT: 70,
     EL_WIDTH: 150,
@@ -9,7 +9,5 @@ config = {
     SUBSECTION_MARGIN: 15,
     SUBSECTION_HEIGHT: 30,
     SUBSECTION_WIDTH: 150,
-    SUBSECTION_DISTANCE: 150,
-    COLOUR_LINE_VISIBLE: "#506a85",
-    COLOUR_LINE_INVISIBLE: "#ffffff"
+    SUBSECTION_DISTANCE: 150
 };

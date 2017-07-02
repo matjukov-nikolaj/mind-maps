@@ -3,83 +3,83 @@ class TreeController {
         this.tree = tree;
         this.renderer = renderer;
         this.selection = {
-            new: this.tree.root,
-            old: null
+            curr: this.tree.root,
+            prev: null
         };
-        this.newChild = null;
+        this.scrollController = new scrollController();
     }
 
     changeSelection(newSelection) {
-        this.selection.old = this.selection.new;
-        this.selection.new = newSelection;
+        this.selection.prev = this.selection.curr;
+        this.selection.curr = newSelection;
     }
 
     onPressedLeft() {
-        if (this.selection.new.parent) {
-            this.selection.old = this.selection.new;
-            this.selection.new = this.selection.new.parent;
+        if (this.selection.curr.parent) {
+            this.selection.prev = this.selection.curr;
+            this.selection.curr = this.selection.curr.parent;
             this.renderer.drawAllTree(this.selection);
         }
     }
 
     onPressedRight() {
-        if (this.selection.new.children.length != 0) {
-            this.selection.old = this.selection.new;
-            this.selection.new = this.selection.old.children[0];
+        if (this.selection.curr.children.length != 0) {
+            this.selection.prev = this.selection.curr;
+            this.selection.curr = this.selection.prev.children[0];
             this.renderer.drawAllTree(this.selection);
         }
     }
 
     onPressedUp() {
-        if (this.selection.new.parent) {
-            const parent = this.selection.new.parent;
+        if (this.selection.curr.parent) {
+            const parent = this.selection.curr.parent;
             const children = parent.children;
-            const index = children.indexOf(this.selection.new);
+            const index = children.indexOf(this.selection.curr);
             const isFirstChild = 0 == index;
             if (!isFirstChild) {
-                this.selection.old = this.selection.new;
-                this.selection.new = children[index - 1];
+                this.selection.prev = this.selection.curr;
+                this.selection.curr = children[index - 1];
                 this.renderer.drawAllTree(this.selection);
             }
         }
     }
 
     onPressedDown() {
-        if (this.selection.new.parent) {
-            const parent = this.selection.new.parent;
+        if (this.selection.curr.parent) {
+            const parent = this.selection.curr.parent;
             const children = parent.children;
-            const index = children.indexOf(this.selection.new);
+            const index = children.indexOf(this.selection.curr);
             const isLastChild = children.length - 1 == index;
             if (!isLastChild) {
-                this.selection.old = this.selection.new;
-                this.selection.new = children[index + 1];
+                this.selection.prev = this.selection.curr;
+                this.selection.curr = children[index + 1];
                 this.renderer.drawAllTree(this.selection);
             }
         }
     }
 
     onPressedTab() {
-        const counterChild = this.selection.new.children.length;
+        const counterChild = this.selection.curr.children.length;
         let nodeName = "";
-        if (this.selection.new == this.tree.root)
+        if (this.selection.curr == this.tree.root)
         {
             nodeName = 'Main Section ' + (counterChild + 1);
         } else {
             nodeName = 'Subsection ' + (counterChild + 1)
         }
 
-        this.changeSelection(this.selection.new.addChild(nodeName));
+        this.changeSelection(this.selection.curr.addChild(nodeName));
         this.renderer.drawAllTree(this.selection);
     }
 
     onPressedDel() {
-        if (this.selection.new == this.tree.root)
+        if (this.selection.curr == this.tree.root)
         {
             return;
         }
-        this.changeSelection(this.selection.new.parent);
-        const index = this.selection.new.children.indexOf(this.selection.old);
-        this.selection.new.children.splice(index, 1);
+        this.changeSelection(this.selection.curr.parent);
+        const index = this.selection.curr.children.indexOf(this.selection.prev);
+        this.selection.curr.children.splice(index, 1);
         this.renderer.drawAllTree(this.selection);
     }
 
@@ -106,10 +106,13 @@ class TreeController {
                     case "Delete":
                         self.onPressedDel();
                         break;
+                    return false;
                 }
             }
         );
     }
+
+
 
     controlAll() {
         this.pressingArrows();
