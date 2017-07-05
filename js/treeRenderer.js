@@ -85,36 +85,41 @@ class TreeRenderer {
         this.ctx.moveTo(xStart, yStart);
         this.ctx.lineTo(xEnd, yEnd);
         this.ctx.strokeStyle = "#00a085";
-        this.ctx.lineWidth = 2;
+        this.ctx.lineWidth = 1;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    findElementCoords(target) {
-        if (this.tree.root == target) {
-            return {
-                x: config.X_LROOT,
-                y: config.Y_LROOT
-            };
-        }
-        const center = {
-            x: config.X_LROOT + config.ROOT_WIDTH / 2,
-            y: config.Y_LROOT + config.ROOT_HEIGHT / 2
-        };
-        for (let i = 0; i < this.tree.children; ++i) {
-            const child = this.tree.root.children[i];
-            if (child == target) {
-                return this.calculateChildPoint(center, i);
-            }
-        }
-        return null;
-    }
+    // findElementCoords(target) {
+    //     if (this.tree.root == target) {
+    //         return {
+    //             x: config.X_LROOT,
+    //             y: config.Y_LROOT
+    //         };
+    //     }
+    //     const center = {
+    //         x: config.X_LROOT + config.ROOT_WIDTH / 2,
+    //         y: config.Y_LROOT + config.ROOT_HEIGHT / 2
+    //     };
+    //     for (let i = 0; i < this.tree.children; ++i) {
+    //         const child = this.tree.root.children[i];
+    //         if (child == target) {
+    //             return this.calculateChildPoint(center, i);
+    //         }
+    //     }
+    //     return null;
+    // }
 
-    calculateChildPoint(center, index) {
-        const angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
+    calculateChildPoint(center, index, subHeight, child) {
+        let angle;
+        if (child == 0) {
+            angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
+        } else {
+            angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
+        }
         return {
             x: center.x + Math.cos(angle) * config.MAIN_RADIUS,
-            y: center.y + Math.sin(angle) * config.MAIN_RADIUS * 1.5
+            y: center.y + Math.sin(angle) * config.MAIN_RADIUS,
         }
     }
 
@@ -123,43 +128,83 @@ class TreeRenderer {
             x: config.X_LROOT + config.ROOT_WIDTH / 2,
             y: config.Y_LROOT + config.ROOT_HEIGHT / 2
         };
+        let subHeight = 0;
         for (let i = 0; i < this.tree.root.children.length; i++) {
-            const point = this.calculateChildPoint(center, i);
             const child = this.tree.root.children[i];
+            if (child.children != 0) {
+                subHeight = this.getFullHeight(child.children);
+            }
+            const point = this.calculateChildPoint(center, i, subHeight, child.children);
+            const isLeft = (point.x - center.x) < 0;
             this.drawConnection(center.x, center.y, point.x, point.y);
             this.drawRoot(selection);
             this.drawElementRect(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, child.title);
             this.drawSelection(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, selection, child);
-            const isLeft = (point.x - center.x) < 0;
             this.drawSubsections(point.x, point.y, child.children, isLeft, selection);
         }
     }
 
     drawSubsections(x, y, subsections, isLeft, selection) {
         if (subsections.length != 0) {
-            const heightWithMargin = config.SUBSECTION_HEIGHT + config.SUBSECTION_MARGIN;
-            const totalHeight =  config.SUBSECTION_HEIGHT  * subsections.length + config.SUBSECTION_MARGIN * (subsections.length - 1);
+            const connectFrom = {
+                x: x + config.INDENT_FROM_MAIN_SECTION,
+                y: y
+            };
+            this.drawConnection(x + config.EL_WIDTH / 2, y, connectFrom.x, connectFrom.y);
             let side = 0;
             if (isLeft) {
                 side = -1;
-            } else
+            } else {
                 side = 1;
+            }
+            const fullHeight = this.getFullHeight(subsections);
             const startPoint = {
-                x: x + (config.SUBSECTION_DISTANCE * side),
-                y: y - totalHeight / 2
+                x: (config.SUBSECTION_DISTANCE * side) + x,
+                y : y - fullHeight / 2,
             };
+            let prevMargin = 0;
             for (let i = 0; i < subsections.length; i++) {
+                const heightWithMargin = config.SUBSECTION_HEIGHT + config.SUBSECTION_MARGIN;
                 const subsection = subsections[i];
+                const childrenCount = this.getChildrenCount(subsection);
+                const margin = config.SUBSECTION_HEIGHT * Math.floor(childrenCount / 2);
                 const title = subsection.title;
                 const point = {
                     x: startPoint.x,
-                    y: startPoint.y + i * heightWithMargin
+                    y: startPoint.y + prevMargin + margin,
                 };
+                this.drawConnection(connectFrom.x, connectFrom.y, point.x, point.y + config.SUBSECTION_HEIGHT);
                 this.drawElementLine(point.x, point.y, config.SUBSECTION_WIDTH, config.SUBSECTION_HEIGHT, title);
                 this.drawSelection(point.x, point.y, config.SUBSECTION_WIDTH, config.SUBSECTION_HEIGHT, selection, subsection);
                 this.drawSubsections(point.x + config.SUBSECTION_WIDTH / 2, point.y + config.SUBSECTION_HEIGHT / 2, subsection.children, isLeft, selection);
+                prevMargin += 2 * margin + config.SUBSECTION_HEIGHT;
             }
         }
+    }
+
+    getFullHeight(subsections) {
+        let fullHeight = 0;
+        for (let i = 0; i < subsections.length; i++) {
+            const subsection = subsections[i];
+            const childrenCount = this.getChildrenCount(subsection);
+            const margin = config.SUBSECTION_HEIGHT * Math.floor(childrenCount / 2);
+            let multiplier;
+            if ((i != 0) && (i != subsection.length - 1)) {
+                multiplier = 2;
+            } else {
+                multiplier = 1;
+            }
+            fullHeight += margin * multiplier + config.SUBSECTION_HEIGHT;
+        }
+        return fullHeight;
+    }
+
+    getChildrenCount(subsection) {
+        let count = 1;
+        for (let i = 0; i < subsection.children.length; ++i) {
+            count += this.getChildrenCount(subsection.children[i]);
+        }
+        return count;
     }
 
     clearCanvas() {

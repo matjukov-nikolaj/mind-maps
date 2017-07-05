@@ -6,6 +6,10 @@ class Node {
     }
 
     addChild(nodeTitle) {
+        if (this.children.length >= 10)
+        {
+            return;
+        }
         const node = new Node(nodeTitle);
         node.parent = this;
         const pushed = this.children.push(node);

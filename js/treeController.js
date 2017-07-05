@@ -67,9 +67,11 @@ class TreeController {
         } else {
             nodeName = 'Subsection ' + (counterChild + 1)
         }
-
-        this.changeSelection(this.selection.curr.addChild(nodeName));
-        this.renderer.drawAllTree(this.selection);
+        const newNode = this.selection.curr.addChild(nodeName);
+        if (newNode) {
+            this.changeSelection(newNode);
+            this.renderer.drawAllTree(this.selection);
+        }
     }
 
     onPressedDel() {
@@ -106,13 +108,14 @@ class TreeController {
                     case "Delete":
                         self.onPressedDel();
                         break;
+                    case "Enter":
+                        self.onPressedTab();
+                        break;
                     return false;
                 }
             }
         );
     }
-
-
 
     controlAll() {
         this.pressingArrows();
