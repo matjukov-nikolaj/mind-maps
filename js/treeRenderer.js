@@ -110,17 +110,18 @@ class TreeRenderer {
     //     return null;
     // }
 
-    calculateChildPoint(center, index, subHeight, child) {
-        let angle;
-        if (child == 0) {
-            angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
-        } else {
-            angle = index * 0.5 * Math.PI / this.tree.root.children.length - Math.PI / 4;
-        }
+    calculateChildPoint(center, currentAngle, childAngle) {
+        let angle = currentAngle + (childAngle / 2);
         return {
             x: center.x + Math.cos(angle) * config.MAIN_RADIUS,
-            y: center.y + Math.sin(angle) * config.MAIN_RADIUS,
+            y: center.y + Math.sin(angle) * config.MAIN_RADIUS * 1.5,
         }
+    }
+
+    calculateChildAngle(child) {
+        const childrenHeight = this.getFullHeight(child.children);
+        const height = Math.max(childrenHeight, config.EL_HEIGHT);
+        return height / config.MAIN_RADIUS;
     }
 
     drawChild(selection) {
@@ -128,21 +129,21 @@ class TreeRenderer {
             x: config.X_LROOT + config.ROOT_WIDTH / 2,
             y: config.Y_LROOT + config.ROOT_HEIGHT / 2
         };
-        let subHeight = 0;
+        let currentAngle = -Math.PI / 4;
         for (let i = 0; i < this.tree.root.children.length; i++) {
             const child = this.tree.root.children[i];
-            if (child.children != 0) {
-                subHeight = this.getFullHeight(child.children);
-            }
-            const point = this.calculateChildPoint(center, i, subHeight, child.children);
+            const childAngle = this.calculateChildAngle(child);
+            const point = this.calculateChildPoint(center, currentAngle, childAngle);
             const isLeft = (point.x - center.x) < 0;
             this.drawConnection(center.x, center.y, point.x, point.y);
             this.drawRoot(selection);
             this.drawElementRect(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, child.title);
             this.drawSelection(point.x - config.EL_WIDTH / 2, point.y - config.EL_HEIGHT / 2, config.EL_WIDTH, config.EL_HEIGHT, selection, child);
             this.drawSubsections(point.x, point.y, child.children, isLeft, selection);
+            currentAngle += childAngle;
         }
     }
+
 
     drawSubsections(x, y, subsections, isLeft, selection) {
         if (subsections.length != 0) {
@@ -160,7 +161,7 @@ class TreeRenderer {
             const fullHeight = this.getFullHeight(subsections);
             const startPoint = {
                 x: (config.SUBSECTION_DISTANCE * side) + x,
-                y : y - fullHeight / 2,
+                y: y - fullHeight / 2,
             };
             let prevMargin = 0;
             for (let i = 0; i < subsections.length; i++) {
