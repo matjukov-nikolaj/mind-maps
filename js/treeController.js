@@ -6,7 +6,8 @@ class TreeController {
             curr: this.tree.root,
             prev: null
         };
-        this.scrollController = new scrollController();
+        this.scrollController = new ScrollController();
+        this.canvas = document.getElementById('canvas');
     }
 
     changeSelection(newSelection) {
@@ -61,8 +62,7 @@ class TreeController {
     onPressedTab() {
         const counterChild = this.selection.curr.children.length;
         let nodeName = "";
-        if (this.selection.curr == this.tree.root)
-        {
+        if (this.selection.curr == this.tree.root) {
             nodeName = 'Main Section ' + (counterChild + 1);
         } else {
             nodeName = 'Subsection ' + (counterChild + 1)
@@ -75,8 +75,7 @@ class TreeController {
     }
 
     onPressedDel() {
-        if (this.selection.curr == this.tree.root)
-        {
+        if (this.selection.curr == this.tree.root) {
             return;
         }
         this.changeSelection(this.selection.curr.parent);
@@ -85,39 +84,131 @@ class TreeController {
         this.renderer.drawAllTree(this.selection);
     }
 
-    // Обработка нажатий стрелок
-    pressingArrows() {
+    pressingKeys() {
         let self = this;
         window.addEventListener("keydown", function (event) {
                 switch (event.code) {
                     case "ArrowLeft":
                         self.onPressedLeft();
+                        self.closeInput();
                         break;
                     case "ArrowUp":
                         self.onPressedUp();
+                        self.closeInput();
                         break;
                     case "ArrowRight":
                         self.onPressedRight();
+                        self.closeInput();
                         break;
                     case "ArrowDown":
                         self.onPressedDown();
+                        self.closeInput();
                         break;
                     case "Tab":
                         self.onPressedTab();
+                        event.preventDefault();
+                        self.closeInput();
+                        break;
+                    case "Enter":
+                        self.closeInput();
                         break;
                     case "Delete":
                         self.onPressedDel();
+                        self.closeInput();
                         break;
-                    case "Enter":
-                        self.onPressedTab();
-                        break;
-                    return false;
                 }
             }
         );
+        return false;
+    }
+
+    choiceByClickRoot(point) {
+        if (((point.x >= config.X_LROOT) && (point.x <= config.X_LROOT + config.ROOT_WIDTH))
+            && ((point.y >= config.Y_LROOT) && (point.y <= config.Y_LROOT + config.ROOT_HEIGHT))) {
+            this.selection.curr = this.tree.root;
+            this.renderer.drawAllTree(this.selection);
+        }
+    }
+
+    choiceByClickMain(point) {
+        for(let i = 0; i < this.renderer.coordinatesMain.length; i++) {
+            let checkedPoint = this.renderer.coordinatesMain[i];
+            if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.EL_WIDTH))
+                && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.EL_HEIGHT))) {
+                this.selection.curr = this.tree.root.children[i];
+                this.renderer.drawAllTree(this.selection);
+            }
+        }
+    }
+
+    choiceByClickSub(point) {
+        for(let i = 0; i < this.renderer.coordinatesSub.length; i++) {
+            let checkedPoint = this.renderer.coordinatesSub[i];
+            if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.SUBSECTION_WIDTH))
+                && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.SUBSECTION_HEIGHT))) {
+                console.log('попал в Sub');
+            }
+        }
+    }
+
+    mouseClicker() {
+        let self = this;
+        this.canvas.onclick = function (e) {
+            const offset = new Point (this.getBoundingClientRect().left, this.getBoundingClientRect().top);
+            const currentPoint = new Point (e.clientX - offset.x, e.clientY - offset.y);
+            self.choiceByClickRoot(currentPoint);
+            self.choiceByClickMain(currentPoint);
+            self.choiceByClickSub(currentPoint);
+            self.closeInput();
+        }
+    }
+
+    closeInput() {
+        const input = document.querySelector('.input_block');
+        input.style.display = 'none';
+        input.style.left = 0 + 'px';
+        input.style.top = 0 + 'px';
+        input.style.opacity = '0';
+    }
+
+    changeInputStyle(position, width, height) {
+        const input = document.querySelector('.input_block');
+        input.style.display = 'block';
+        input.style.left = position.x + 'px';
+        input.style.top = (position.y + (height - input.offsetHeight) / 2) + 'px';
+        input.style.opacity = '1';
+        input.style.width = width + 'px';
+    }
+
+    showInput(point) {
+        let position;
+        if (((point.x >= config.X_LROOT) && (point.x <= config.X_LROOT + config.ROOT_WIDTH))
+            && ((point.y >= config.Y_LROOT) && (point.y <= config.Y_LROOT + config.ROOT_HEIGHT))) {
+            position = new Point(config.X_LROOT, config.Y_LROOT);
+            this.changeInputStyle(position, config.ROOT_WIDTH, config.ROOT_HEIGHT);
+        } else {
+            for(let i = 0; i < this.renderer.coordinatesMain.length; i++) {
+                let checkedPoint = this.renderer.coordinatesMain[i];
+                if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.EL_WIDTH))
+                    && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.EL_HEIGHT))) {
+                    this.changeInputStyle(checkedPoint, config.EL_WIDTH, config.EL_HEIGHT);
+                }
+            }
+        }
+    }
+
+    emergenceInput() {
+        let self = this;
+        this.canvas.ondblclick = function (e) {
+            const offset = new Point (this.getBoundingClientRect().left, this.getBoundingClientRect().top);
+            const currentPoint = new Point (e.clientX - offset.x, e.clientY - offset.y);
+            self.showInput(currentPoint);
+        }
     }
 
     controlAll() {
-        this.pressingArrows();
+        this.pressingKeys();
+        this.mouseClicker();
+        this.emergenceInput();
     }
 }
