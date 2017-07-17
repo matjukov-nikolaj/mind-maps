@@ -5,6 +5,9 @@ class ScrollController {
         this.scrollTop = config.Y_LROOT - config.ROOT_MARGIN_TOP;
         this.scrollCanvas({x: 0, y: 0});
         this.addDivListeners();
+        this.lastX = 0;
+        this.lastY = 0;
+        this.dragging = false;
     }
 
     scrollCanvas(delta) {
@@ -15,34 +18,31 @@ class ScrollController {
     }
 
     addDivListeners() {
-        let lastX = 0;
-        let lastY = 0;
-        let dragging = false;
-
         this.canvasDiv.addEventListener('mousedown', (e) => {
-            dragging = true;
-            lastY = e.clientY;
-            lastX = e.clientX;
+            this.dragging = true;
+            this.lastY = e.clientY;
+            this.lastX = e.clientX;
             e.preventDefault();
         }, false);
 
         this.canvasDiv.addEventListener('mousemove', (e) => {
-            if (dragging) {
+            if (this.dragging) {
                 let delta =
                     {
-                        x: lastX - e.clientX,
-                        y: lastY - e.clientY,
+                        x: this.lastX - e.clientX,
+                        y: this.lastY - e.clientY,
                     };
-                lastX = e.clientX;
-                lastY = e.clientY;
+                this.lastX = e.clientX;
+                this.lastY = e.clientY;
                 this.scrollCanvas(delta);
+                this.canvasDiv.setAttribute('class', 'mouse_move');
             }
             e.preventDefault();
         }, false);
 
         window.addEventListener('mouseup', () => {
-            dragging = false;
+            this.dragging = false;
+            this.canvasDiv.removeAttribute('class');
         }, false);
     }
-
 }

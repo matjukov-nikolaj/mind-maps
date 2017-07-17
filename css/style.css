@@ -71,7 +71,7 @@
     overflow: scroll;
 }
 
-.input_block {
+#input_block {
     height: 20px;
     width: 200px;
     font: bold 18px "Source Sans Pro", sans-serif;
@@ -84,4 +84,8 @@
     transition: opacity 0.5s ease, visibility 0.5s ease;
     top: 0;
     left: 0;
+}
+
+.mouse_move {
+    cursor: pointer;
 }

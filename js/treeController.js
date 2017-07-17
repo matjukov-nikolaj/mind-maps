@@ -8,6 +8,8 @@ class TreeController {
         };
         this.scrollController = new ScrollController();
         this.canvas = document.getElementById('canvas');
+        this.canvasBlock = document.getElementById('canvasdiv');
+        this.input = null;
     }
 
     changeSelection(newSelection) {
@@ -90,7 +92,6 @@ class TreeController {
                 switch (event.code) {
                     case "ArrowLeft":
                         self.onPressedLeft();
-                        self.closeInput();
                         break;
                     case "ArrowUp":
                         self.onPressedUp();
@@ -98,7 +99,6 @@ class TreeController {
                         break;
                     case "ArrowRight":
                         self.onPressedRight();
-                        self.closeInput();
                         break;
                     case "ArrowDown":
                         self.onPressedDown();
@@ -111,6 +111,7 @@ class TreeController {
                         break;
                     case "Enter":
                         self.closeInput();
+                        event.preventDefault();
                         break;
                     case "Delete":
                         self.onPressedDel();
@@ -119,90 +120,94 @@ class TreeController {
                 }
             }
         );
-        return false;
     }
 
-    choiceByClickRoot(point) {
-        if (((point.x >= config.X_LROOT) && (point.x <= config.X_LROOT + config.ROOT_WIDTH))
-            && ((point.y >= config.Y_LROOT) && (point.y <= config.Y_LROOT + config.ROOT_HEIGHT))) {
-            this.selection.curr = this.tree.root;
+    onClick(point) {
+        const result = this.renderer.findNodeByPoint(point);
+        if (result) {
+            this.selection.curr = result.node;
             this.renderer.drawAllTree(this.selection);
         }
-    }
-
-    choiceByClickMain(point) {
-        for(let i = 0; i < this.renderer.coordinatesMain.length; i++) {
-            let checkedPoint = this.renderer.coordinatesMain[i];
-            if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.EL_WIDTH))
-                && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.EL_HEIGHT))) {
-                this.selection.curr = this.tree.root.children[i];
-                this.renderer.drawAllTree(this.selection);
-            }
-        }
-    }
-
-    choiceByClickSub(point) {
-        for(let i = 0; i < this.renderer.coordinatesSub.length; i++) {
-            let checkedPoint = this.renderer.coordinatesSub[i];
-            if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.SUBSECTION_WIDTH))
-                && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.SUBSECTION_HEIGHT))) {
-                console.log('попал в Sub');
-            }
-        }
+        this.closeInput();
     }
 
     mouseClicker() {
-        let self = this;
-        this.canvas.onclick = function (e) {
-            const offset = new Point (this.getBoundingClientRect().left, this.getBoundingClientRect().top);
-            const currentPoint = new Point (e.clientX - offset.x, e.clientY - offset.y);
-            self.choiceByClickRoot(currentPoint);
-            self.choiceByClickMain(currentPoint);
-            self.choiceByClickSub(currentPoint);
-            self.closeInput();
+        this.canvas.onclick = (e) => {
+            const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
+            const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
+            this.onClick(currentPoint);
         }
     }
 
     closeInput() {
-        const input = document.querySelector('.input_block');
-        input.style.display = 'none';
-        input.style.left = 0 + 'px';
-        input.style.top = 0 + 'px';
-        input.style.opacity = '0';
+        if (this.input) {
+            this.selection.curr.title = this.input.value;
+            this.renderer.drawAllTree(this.selection);
+            this.canvasBlock.removeChild(this.input);
+            this.input = null;
+        }
     }
 
     changeInputStyle(position, width, height) {
-        const input = document.querySelector('.input_block');
-        input.style.display = 'block';
-        input.style.left = position.x + 'px';
-        input.style.top = (position.y + (height - input.offsetHeight) / 2) + 'px';
-        input.style.opacity = '1';
-        input.style.width = width + 'px';
+        this.input.style.display = 'block';
+        this.input.style.left = position.x + 'px';
+        this.input.style.top = (position.y + (height - this.input.offsetHeight) / 2) + 'px';
+        this.input.style.opacity = '1';
+        this.input.style.width = width + 'px';
     }
 
     showInput(point) {
-        let position;
-        if (((point.x >= config.X_LROOT) && (point.x <= config.X_LROOT + config.ROOT_WIDTH))
-            && ((point.y >= config.Y_LROOT) && (point.y <= config.Y_LROOT + config.ROOT_HEIGHT))) {
-            position = new Point(config.X_LROOT, config.Y_LROOT);
-            this.changeInputStyle(position, config.ROOT_WIDTH, config.ROOT_HEIGHT);
+        this.createInput();
+        const result = this.renderer.findNodeByPoint(point);
+        if (result) {
+            const rect = result.rect;
+            this.selection.curr = result.node;
+            this.input.value = this.selection.curr.title;
+            this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
+        }
+    }
+
+    createInput() {
+        this.closeInput();
+        this.input = document.createElement('input');
+        this.input.setAttribute("id", "input_block");
+        this.input.setAttribute('autofocus', '');
+        this.canvasBlock.appendChild(this.input);
+        this.input.focus();
+        this.input.onfocus = () => {
+            console.log("focus");
+        };
+    }
+
+    getFocus(e) {
+        let focused;
+        if (!e) {
+            let e = window.event;
+        }
+        if (e.target) {
+            focused = e.target;
         } else {
-            for(let i = 0; i < this.renderer.coordinatesMain.length; i++) {
-                let checkedPoint = this.renderer.coordinatesMain[i];
-                if (((point.x >= checkedPoint.x) && (point.x <= checkedPoint.x + config.EL_WIDTH))
-                    && ((point.y >= checkedPoint.y) && (point.y <= checkedPoint.y + config.EL_HEIGHT))) {
-                    this.changeInputStyle(checkedPoint, config.EL_WIDTH, config.EL_HEIGHT);
-                }
+            if (e.srcElement) {
+                focused = e.srcElement;
             }
+        }
+        if (focused.nodeType == 3) {
+            focused = focused.parentNode;
+        }
+        if (document.querySelector) {
+            return focused.id;
+        } else if (!focused || focused == document.documentElement) {
+            return focused;
         }
     }
 
     emergenceInput() {
         let self = this;
         this.canvas.ondblclick = function (e) {
-            const offset = new Point (this.getBoundingClientRect().left, this.getBoundingClientRect().top);
-            const currentPoint = new Point (e.clientX - offset.x, e.clientY - offset.y);
+            const offset = new Point(this.getBoundingClientRect().left, this.getBoundingClientRect().top);
+            const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
             self.showInput(currentPoint);
+            console.log(self.getFocus(e));
         }
     }
 
