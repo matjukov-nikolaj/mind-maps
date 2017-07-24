@@ -8,6 +8,10 @@ class ScrollController {
         this.lastX = 0;
         this.lastY = 0;
         this.dragging = false;
+        this.scale = 1.0;
+        this.origin = 0;
+        this.canvas = document.getElementById("canvas");
+        this.ctx = this.canvas.getContext("2d");
     }
 
     scrollCanvas(delta) {
@@ -22,7 +26,6 @@ class ScrollController {
             this.dragging = true;
             this.lastY = e.clientY;
             this.lastX = e.clientX;
-            e.preventDefault();
         }, false);
 
         this.canvasDiv.addEventListener('mousemove', (e) => {
@@ -37,7 +40,6 @@ class ScrollController {
                 this.scrollCanvas(delta);
                 this.canvasDiv.setAttribute('class', 'mouse_move');
             }
-            e.preventDefault();
         }, false);
 
         window.addEventListener('mouseup', () => {

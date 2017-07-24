@@ -18,6 +18,9 @@ class TreeController {
     }
 
     onPressedLeft() {
+        if (this.input) {
+            return;
+        }
         if (this.selection.curr.parent) {
             this.selection.prev = this.selection.curr;
             this.selection.curr = this.selection.curr.parent;
@@ -26,6 +29,9 @@ class TreeController {
     }
 
     onPressedRight() {
+        if (this.input) {
+            return;
+        }
         if (this.selection.curr.children.length != 0) {
             this.selection.prev = this.selection.curr;
             this.selection.curr = this.selection.prev.children[0];
@@ -77,6 +83,10 @@ class TreeController {
     }
 
     onPressedDel() {
+        if (this.input) {
+            this.selection.curr.title = this.input.value;
+            return;
+        }
         if (this.selection.curr == this.tree.root) {
             return;
         }
@@ -94,20 +104,20 @@ class TreeController {
                         self.onPressedLeft();
                         break;
                     case "ArrowUp":
-                        self.onPressedUp();
                         self.closeInput();
+                        self.onPressedUp();
                         break;
                     case "ArrowRight":
                         self.onPressedRight();
                         break;
                     case "ArrowDown":
-                        self.onPressedDown();
                         self.closeInput();
+                        self.onPressedDown();
                         break;
                     case "Tab":
+                        self.closeInput();
                         self.onPressedTab();
                         event.preventDefault();
-                        self.closeInput();
                         break;
                     case "Enter":
                         self.closeInput();
@@ -115,7 +125,6 @@ class TreeController {
                         break;
                     case "Delete":
                         self.onPressedDel();
-                        self.closeInput();
                         break;
                 }
             }
@@ -135,6 +144,7 @@ class TreeController {
         this.canvas.onclick = (e) => {
             const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
+            console.log('Точка: ', currentPoint);
             this.onClick(currentPoint);
         }
     }
@@ -160,6 +170,7 @@ class TreeController {
         this.createInput();
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
+            this.input.focus();
             const rect = result.rect;
             this.selection.curr = result.node;
             this.input.value = this.selection.curr.title;
@@ -171,34 +182,7 @@ class TreeController {
         this.closeInput();
         this.input = document.createElement('input');
         this.input.setAttribute("id", "input_block");
-        this.input.setAttribute('autofocus', '');
         this.canvasBlock.appendChild(this.input);
-        this.input.focus();
-        this.input.onfocus = () => {
-            console.log("focus");
-        };
-    }
-
-    getFocus(e) {
-        let focused;
-        if (!e) {
-            let e = window.event;
-        }
-        if (e.target) {
-            focused = e.target;
-        } else {
-            if (e.srcElement) {
-                focused = e.srcElement;
-            }
-        }
-        if (focused.nodeType == 3) {
-            focused = focused.parentNode;
-        }
-        if (document.querySelector) {
-            return focused.id;
-        } else if (!focused || focused == document.documentElement) {
-            return focused;
-        }
     }
 
     emergenceInput() {
@@ -207,7 +191,6 @@ class TreeController {
             const offset = new Point(this.getBoundingClientRect().left, this.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
             self.showInput(currentPoint);
-            console.log(self.getFocus(e));
         }
     }
 
