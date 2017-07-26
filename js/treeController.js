@@ -170,11 +170,11 @@ class TreeController {
         this.createInput();
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
-            this.input.focus();
             const rect = result.rect;
             this.selection.curr = result.node;
             this.input.value = this.selection.curr.title;
             this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
+            this.input.focus();
         }
     }
 

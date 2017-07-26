@@ -22,7 +22,7 @@
           <button class="style_button" title="download">download</button>
         </div>
         <div class="option_button">
-          <button class="style_button" title="download">select theme</button>
+          <button id="modalOpen" class="style_button" title="select theme">select theme</button>
         </div>
       </div>
     </header>
@@ -30,6 +30,23 @@
       <input id = "input_block" autofocus type="text" id="text" name="text"/>
       <canvas id='canvas'></canvas>
     </div>
+    <div id="my_modal" class="modal">
+      <div class="modal_dialog">
+        <div id="modal_contents" class="modal_content">
+          <button id="close" class="modal_close"></button>
+          <h1 class="modal_title">Select theme</h1>
+          <div class="theme_box">
+            <img class="theme_images" src="images/logic_chart_right.png" alt="Logic Chart Left">
+            <h2 class="theme_name">Logic Chart(Right)</h2>
+          </div>
+          <div class="theme_box">
+            <img class="theme_images" src="images/logic_chart_left.png" alt="Logic Chart Left">
+            <h2 class="theme_name">Logic Chart(Left)</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/modal.js"></script>
     <script src="js/config.js"></script>
     <script src="js/point.js"></script>
     <script src="js/rect.js"></script>
