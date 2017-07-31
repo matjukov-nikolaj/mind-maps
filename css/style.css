@@ -59,6 +59,7 @@
     border-right: none;
     border-top: none;
     border-bottom: 2px solid #00a085;
+    cursor: pointer;
 }
 
 #canvasdiv
@@ -71,13 +72,13 @@
     overflow: scroll;
 }
 
-#input_block {
+#input_block
+{
     height: 20px;
     width: 200px;
     font: bold 18px "Source Sans Pro", sans-serif;
     border: 1px solid #cecece;
     background: #f5f7fa;
-    border-radius: 3px;
     position: absolute;
     display: none;
     opacity: 0;
@@ -86,7 +87,8 @@
     left: 0;
 }
 
-.mouse_move {
+.mouse_move
+{
     cursor: pointer;
 }
 
@@ -161,17 +163,38 @@
     }
 }
 
-.modal_title {
+.modal_title
+{
     opacity: 1;
     padding-top: 32px;
     text-align: center;
     font-size: 44px;
     color: #506a85;
     font-family: "Lato", sans-serif;
+    width: 88%;
+    margin: 0 auto;
     font-weight: bold;
 }
 
-.theme_box {
+.input_save
+{
+    width: 100%;
+}
+
+.input_save_block
+{
+    width: 50%;
+    margin: 30px auto;
+}
+
+.button_modal_save,
+.button_modal_load
+{
+    margin: 20px auto;
+    width: 65px;
+}
+.theme_box
+{
     width: 50%;
     margin: 20px auto;
 }
@@ -183,8 +206,17 @@
     color: #506a85;
 }
 
-.theme_images {
+.theme_images
+{
     width: 100%;
     padding: 10px;
 }
+
+.choose_file
+{
+    width: 240px;
+    margin: 50px auto;
+}
+
+input:focus{outline:none;}
 

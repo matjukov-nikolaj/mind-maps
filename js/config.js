@@ -17,4 +17,9 @@ let config = {
     INDENT_FROM_SUB: 30,
     INDENT_FROM_MAIN_SECTION: 30,
     INDENT_FROM_ROOT: 30,
+    MARGIN_FOR_TEXT: 10,
+
+    ROOT_KEY: "root",
+    CHILDREN_KEY: "children",
+    TITLE_KEY: "title",
 };

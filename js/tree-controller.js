@@ -132,12 +132,12 @@ class TreeController {
     }
 
     onClick(point) {
+        this.closeInput();
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
             this.selection.curr = result.node;
             this.renderer.drawAllTree(this.selection);
         }
-        this.closeInput();
     }
 
     mouseClicker() {
@@ -173,6 +173,7 @@ class TreeController {
             const rect = result.rect;
             this.selection.curr = result.node;
             this.input.value = this.selection.curr.title;
+            this.input.select();
             this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
             this.input.focus();
         }

@@ -8,10 +8,6 @@ class ScrollController {
         this.lastX = 0;
         this.lastY = 0;
         this.dragging = false;
-        this.scale = 1.0;
-        this.origin = 0;
-        this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d");
     }
 
     scrollCanvas(delta) {

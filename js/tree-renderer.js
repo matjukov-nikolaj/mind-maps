@@ -50,7 +50,7 @@ class TreeRenderer {
     getTextWidth(text, min, max) {
         this.ctx.font = "bold 18px sans-serif";
         this.ctx.textAlign = "center";
-        return Math.min(Math.max(this.ctx.measureText(text).width, min), max);
+        return Math.min(Math.max(this.ctx.measureText(text).width + config.MARGIN_FOR_TEXT * 2, min), max);
     }
 
     drawElementRect(leftTop, width, height, title) {

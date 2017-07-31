@@ -16,24 +16,24 @@
           <h1 class="title_name">mind-maps</h1>
         </div>
         <div class="button_block">
-          <button class="style_button" title="load">load</button>
+          <button id="open_load" class="style_button" title="load">load</button>
         </div>
         <div class="button_block">
-          <button class="style_button" title="download">download</button>
+          <button id="open_download" class="style_button" title="download">download</button>
         </div>
         <div class="option_button">
-          <button id="modalOpen" class="style_button" title="select theme">select theme</button>
+          <button id="open_select_theme" class="style_button" title="select theme">select theme</button>
         </div>
       </div>
     </header>
     <div id="canvasdiv">
-      <input id = "input_block" autofocus type="text" id="text" name="text"/>
+      <input id="input_block" autofocus type="text" id="text" name="text"/>
       <canvas id='canvas'></canvas>
     </div>
-    <div id="my_modal" class="modal">
+    <div id="modal_theme" class="modal">
       <div class="modal_dialog">
         <div id="modal_contents" class="modal_content">
-          <button id="close" class="modal_close"></button>
+          <button id="close_theme" class="modal_close"></button>
           <h1 class="modal_title">Select theme</h1>
           <div class="theme_box">
             <img class="theme_images" src="images/logic_chart_right.png" alt="Logic Chart Left">
@@ -46,14 +46,45 @@
         </div>
       </div>
     </div>
-    <script src="js/modal.js"></script>
+    <div id="modal_save" class="modal">
+      <div class="modal_dialog">
+        <div id="modal_input" class="modal_content">
+          <button id="close_save" class="modal_close"></button>
+          <h1 class="modal_title">Download</h1>
+          <div class="input_save_block">
+            <input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">
+          </div>
+          <div class="button_modal_save">
+            <button id="save_button" class="style_button" title="download">save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal_load" class="modal">
+      <div class="modal_dialog">
+        <div id="modal_load_file" class="modal_content">
+          <button id="close_load" class="modal_close"></button>
+          <h1 class="modal_title">Load the file</h1>
+          <div class="choose_file">
+            <input type="file" id="files" name="files[]" accept=".json"/>
+            <output id="list"></output>
+          </div>
+          <div class="button_modal_load">
+            <button id="load_button" class="style_button" title="download">load</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="js/modal-manager.js"></script>
     <script src="js/config.js"></script>
     <script src="js/point.js"></script>
     <script src="js/rect.js"></script>
-    <script src="js/treeRenderer.js"></script>
-    <script src="js/scrollController.js"></script>
-    <script src="js/treeController.js"></script>
+    <script src="js/tree-controller.js"></script>
+    <script src="js/tree-saver.js"></script>
+    <script src="js/tree-renderer.js"></script>
+    <script src="js/scroll-controller.js"></script>
     <script src="js/node.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/file-saver.js"></script>
   </body>
 </html>
