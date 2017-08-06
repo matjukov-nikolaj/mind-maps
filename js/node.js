@@ -6,7 +6,7 @@ class Node {
     }
 
     addChild(nodeTitle) {
-        if (this.children.length >= 10)
+        if (this.children.length >= 50)
         {
             return;
         }
@@ -15,10 +15,9 @@ class Node {
         const pushed = this.children.push(node);
         return this.children[pushed - 1];
     }
-}
 
-class Tree {
-    constructor(rootTitle){
-        this.root = new Node(rootTitle);
+    appendChild(node) {
+        this.children.push(node);
+        node.parent = this;
     }
 }

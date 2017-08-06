@@ -1,8 +1,8 @@
 class ScrollController {
     constructor() {
-        this.canvasDiv = document.querySelector('#canvasdiv');
+        this.canvasDiv = document.querySelector('#canvasDiv');
         this.scrollLeft = 0;
-        this.scrollTop = config.Y_LROOT - config.ROOT_MARGIN_TOP;
+        this.scrollTop = configRightMap.Y_LROOT - configRightMap.ROOT_MARGIN_TOP;
         this.scrollCanvas({x: 0, y: 0});
         this.addDivListeners();
         this.lastX = 0;

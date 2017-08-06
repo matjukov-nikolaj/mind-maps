@@ -62,7 +62,7 @@
     cursor: pointer;
 }
 
-#canvasdiv
+#canvasDiv
 {
     position: relative;
     margin: 10px;
@@ -89,7 +89,7 @@
 
 .mouse_move
 {
-    cursor: pointer;
+    cursor: move;
 }
 
 .modal

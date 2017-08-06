@@ -1,14 +1,12 @@
-let config = {
+const configRightMap = {
     X_LROOT: 240,
     Y_LROOT: 5000,
     ROOT_MIN_WIDTH: 200,
-    ROOT_MAX_WIDTH: 400,
     ROOT_HEIGHT: 70,
     ROOT_MARGIN_TOP: 400,
     EL_MIN_WIDTH: 150,
     EL_HEIGHT: 50,
-    MAIN_MARGIN: 5,
-    MAIN_RADIUS: 350,
+    MAIN_MARGIN: 10,
     SUBSECTION_HEIGHT: 30,
     SUBSECTION_MIN_WIDTH: 150,
     SUBSECTION_DISTANCE: 50,
@@ -17,9 +15,26 @@ let config = {
     INDENT_FROM_SUB: 30,
     INDENT_FROM_MAIN_SECTION: 30,
     INDENT_FROM_ROOT: 30,
-    MARGIN_FOR_TEXT: 10,
+    MAIN_BACKGROUND_COLOR: "#aaf0d1",
+    SELECT_ELEMENT: "#506a85",
+    FRAME_COLOR: "#00a085",
+    SUB_BACKGROUND_COLOR: "#ffffff",
+};
 
-    ROOT_KEY: "root",
-    CHILDREN_KEY: "children",
-    TITLE_KEY: "title",
+const mainConfig = {
+    HEIGHT: 50,
+    MIN_WIDTH: 150,
+    MARGIN: 10,
+    DISTANCE: 200,
+    INDENT: 30,
+    BACKGROUND_COLOR: "#aaf0d1",
+};
+
+const subsectionConfig = {
+    HEIGHT: 30,
+    MIN_WIDTH: 150,
+    DISTANCE: 50,
+    MARGIN: 5,
+    INDENT: 30,
+    BACKGROUND_COLOR: "#ffffff",
 };

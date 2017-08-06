@@ -8,8 +8,19 @@ class TreeController {
         };
         this.scrollController = new ScrollController();
         this.canvas = document.getElementById('canvas');
-        this.canvasBlock = document.getElementById('canvasdiv');
+        this.canvasBlock = document.getElementById('canvasDiv');
         this.input = null;
+        this.addEventHandlers();
+    }
+
+    setTree(tree) {
+        this.tree = tree;
+        this.selection = {
+            curr: this.tree.root,
+            prev: null
+        };
+        this.renderer.setTree(this.tree);
+        this.renderer.drawAllTree(this.selection);
     }
 
     changeSelection(newSelection) {
@@ -17,14 +28,18 @@ class TreeController {
         this.selection.curr = newSelection;
     }
 
+    redrawingTree() {
+        this.renderer.drawAllTree(this.selection);
+    }
+
     onPressedLeft() {
         if (this.input) {
             return;
         }
         if (this.selection.curr.parent) {
-            this.selection.prev = this.selection.curr;
-            this.selection.curr = this.selection.curr.parent;
-            this.renderer.drawAllTree(this.selection);
+            this.changeSelection(this.selection.curr.parent);
+            console.log(this.selection);
+            this.redrawingTree();
         }
     }
 
@@ -33,9 +48,10 @@ class TreeController {
             return;
         }
         if (this.selection.curr.children.length != 0) {
-            this.selection.prev = this.selection.curr;
-            this.selection.curr = this.selection.prev.children[0];
-            this.renderer.drawAllTree(this.selection);
+            this.changeSelection(this.selection.curr.children[0]);
+            console.log(this.selection);
+
+            this.redrawingTree();
         }
     }
 
@@ -46,9 +62,8 @@ class TreeController {
             const index = children.indexOf(this.selection.curr);
             const isFirstChild = 0 == index;
             if (!isFirstChild) {
-                this.selection.prev = this.selection.curr;
-                this.selection.curr = children[index - 1];
-                this.renderer.drawAllTree(this.selection);
+                this.changeSelection(children[index - 1]);
+                this.redrawingTree();
             }
         }
     }
@@ -60,25 +75,33 @@ class TreeController {
             const index = children.indexOf(this.selection.curr);
             const isLastChild = children.length - 1 == index;
             if (!isLastChild) {
-                this.selection.prev = this.selection.curr;
-                this.selection.curr = children[index + 1];
-                this.renderer.drawAllTree(this.selection);
+                this.changeSelection(children[index + 1]);
+                this.redrawingTree();
             }
         }
     }
 
     onPressedTab() {
-        const counterChild = this.selection.curr.children.length;
+        let parent = this.selection.curr.parent;
+        let level= 0;
+        while (parent) {
+            ++level;
+            parent = parent.parent;
+        }
+        if (level >= 15){
+            return;
+        }
+        const childCounter = this.selection.curr.children.length;
         let nodeName = "";
         if (this.selection.curr == this.tree.root) {
-            nodeName = 'Main Section ' + (counterChild + 1);
+            nodeName = globalConfig.MAIN_NAME + (childCounter + 1);
         } else {
-            nodeName = 'Subsection ' + (counterChild + 1)
+            nodeName = globalConfig.SUB_NAME + (childCounter + 1)
         }
         const newNode = this.selection.curr.addChild(nodeName);
         if (newNode) {
             this.changeSelection(newNode);
-            this.renderer.drawAllTree(this.selection);
+            this.redrawingTree();
         }
     }
 
@@ -93,10 +116,19 @@ class TreeController {
         this.changeSelection(this.selection.curr.parent);
         const index = this.selection.curr.children.indexOf(this.selection.prev);
         this.selection.curr.children.splice(index, 1);
-        this.renderer.drawAllTree(this.selection);
+        this.redrawingTree();
     }
 
-    pressingKeys() {
+    onPressedF2() {
+        this.createInput();
+        const rect = this.renderer.getNodeRect(this.selection.curr);
+        this.input.value = this.selection.curr.title;
+        this.input.select();
+        this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
+        this.input.focus();
+    }
+
+    addKeyDownHandler() {
         let self = this;
         window.addEventListener("keydown", function (event) {
                 switch (event.code) {
@@ -126,6 +158,9 @@ class TreeController {
                     case "Delete":
                         self.onPressedDel();
                         break;
+                    case "F2":
+                        self.onPressedF2();
+                        break;
                 }
             }
         );
@@ -136,15 +171,14 @@ class TreeController {
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
             this.selection.curr = result.node;
-            this.renderer.drawAllTree(this.selection);
+            this.redrawingTree();
         }
     }
 
-    mouseClicker() {
+    addMouseClickHandler() {
         this.canvas.onclick = (e) => {
             const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
-            console.log('Точка: ', currentPoint);
             this.onClick(currentPoint);
         }
     }
@@ -152,7 +186,7 @@ class TreeController {
     closeInput() {
         if (this.input) {
             this.selection.curr.title = this.input.value;
-            this.renderer.drawAllTree(this.selection);
+            this.redrawingTree();
             this.canvasBlock.removeChild(this.input);
             this.input = null;
         }
@@ -186,7 +220,7 @@ class TreeController {
         this.canvasBlock.appendChild(this.input);
     }
 
-    emergenceInput() {
+    addCanvasDoubleClickHandler() {
         let self = this;
         this.canvas.ondblclick = function (e) {
             const offset = new Point(this.getBoundingClientRect().left, this.getBoundingClientRect().top);
@@ -195,9 +229,9 @@ class TreeController {
         }
     }
 
-    controlAll() {
-        this.pressingKeys();
-        this.mouseClicker();
-        this.emergenceInput();
+    addEventHandlers() {
+        this.addKeyDownHandler();
+        this.addMouseClickHandler();
+        this.addCanvasDoubleClickHandler();
     }
 }

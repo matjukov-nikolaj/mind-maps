@@ -1,7 +1,10 @@
 'use strict';
-const allTree = new Tree("Main Section");
+let allTree = new Tree(globalConfig.MAIN_NAME);
 const modalManager = new ModalManager(allTree);
-const drawAll = new TreeRenderer(allTree);
-const arrowPress = new TreeController(allTree, drawAll);
-arrowPress.controlAll();
-drawAll.drawAllTree(arrowPress.selection);
+const treeRenderer = new TreeRenderer(allTree);
+const treeController = new TreeController(allTree, treeRenderer);
+modalManager.onLoadTree = (tree) => {
+  treeController.setTree(tree);
+  allTree = tree;
+};
+treeRenderer.drawAllTree(treeController.selection);

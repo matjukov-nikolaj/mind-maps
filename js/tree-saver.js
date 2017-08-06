@@ -1,19 +1,20 @@
 class TreeSaver {
     save(tree) {
         const json = {};
-        json[config.ROOT_KEY] = this.saveNode(tree.root);
+        json[globalConfig.ROOT_KEY] = this.saveNode(tree.root);
         return json;
     }
 
     saveNode(node) {
         const json = {};
-        json[config.TITLE_KEY] = node.title;
+        json[globalConfig.TITLE_KEY] = node.title;
 
         const children = [];
         for (const child of node.children) {
             children.push(this.saveNode(child));
         }
-        json[config.CHILDREN_KEY] = children;
+        json[globalConfig.CHILDREN_KEY] = children;
+        console.log(json);
         return json;
     }
 }

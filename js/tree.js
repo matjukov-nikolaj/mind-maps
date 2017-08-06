@@ -1,3 +1,5 @@
-/**
- * Created by MarioSlim on 04.08.2017.
- */
+class Tree {
+    constructor(rootTitle){
+        this.root = new Node(rootTitle);
+    }
+}
