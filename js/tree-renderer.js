@@ -8,13 +8,11 @@ class TreeRenderer {
         this.canvas.height = globalConfig.MAX_CANVAS_SIZE;
         this.tree = tree;
         this.treeWithRects = null;
-        this.currentNode = null;
     }
 
     setTree(tree) {
         this.tree = tree;
         this.treeWithRects = null;
-        this.currentNode = null;
     }
 
     getNodeRect(node) {
@@ -60,35 +58,35 @@ class TreeRenderer {
         return result;
     }
 
-    fontSettings() {
+    _fontSettings() {
         this.ctx.font = "bold 18px sans-serif";
         this.ctx.textAlign = "center";
     }
 
-    getTextWidth(text, min, max) {
-        this.fontSettings();
+    _getTextWidth(text, min, max) {
+        this._fontSettings();
         return Math.min(Math.max(this.ctx.measureText(text).width + globalConfig.MARGIN_FOR_TEXT * 2, min), max);
     }
 
-    drawRectFrame(leftTop, width, height) {
+    _drawRectFrame(leftTop, width, height) {
         this.ctx.lineTo(leftTop.x + width, leftTop.y);
         this.ctx.lineTo(leftTop.x + width, leftTop.y + height);
         this.ctx.lineTo(leftTop.x, leftTop.y + height);
         this.ctx.lineTo(leftTop.x, leftTop.y);
     }
 
-    drawElementRect(leftTop, width, height, title) {
+    _drawElementRect(leftTop, width, height, title) {
         this.ctx.beginPath();
-        this.ctx.fillStyle = configRightMap.MAIN_BACKGROUND_COLOR;
+        this.ctx.fillStyle = mainConfig.BACKGROUND_COLOR;
         this.ctx.fillRect(leftTop.x, leftTop.y, width, height);
-        this.ctx.fillStyle = configRightMap.SELECT_ELEMENT;
-        this.fontSettings();
+        this.ctx.fillStyle = colorConfig.SELECT_ELEMENT;
+        this._fontSettings();
         this.ctx.fillText(title, leftTop.x + (width / 2), leftTop.y + (height / 1.7));
         this.ctx.fill();
         this.ctx.moveTo(leftTop.x, leftTop.y);
-        this.drawRectFrame(leftTop, width, height);
-        this.ctx.strokeStyle = configRightMap.FRAME_COLOR;
-        if (leftTop.x == configRightMap.X_LROOT) {
+        this._drawRectFrame(leftTop, width, height);
+        this.ctx.strokeStyle = colorConfig.FRAME_COLOR;
+        if (leftTop.x == rootConfig.leftTop.x) {
             this.ctx.lineWidth = 3;
         } else {
             this.ctx.lineWidth = 2;
@@ -97,23 +95,23 @@ class TreeRenderer {
         this.ctx.closePath();
     }
 
-    drawElementLine(leftTop, width, height, title) {
+    _drawElementLine(leftTop, width, height, title) {
         this.ctx.beginPath();
-        this.ctx.fillStyle = configRightMap.SUB_BACKGROUND_COLOR;
+        this.ctx.fillStyle = subsectionConfig.BACKGROUND_COLOR;
         this.ctx.fillRect(leftTop.x, leftTop.y, width, height);
-        this.ctx.fillStyle = configRightMap.SELECT_ELEMENT;
-        this.fontSettings();
+        this.ctx.fillStyle = colorConfig.SELECT_ELEMENT;
+        this._fontSettings();
         this.ctx.fillText(title, leftTop.x + (width / 2), leftTop.y + (height - 10));
         this.ctx.fill();
         this.ctx.moveTo(leftTop.x, leftTop.y + height);
         this.ctx.lineTo(leftTop.x + width, leftTop.y + height);
-        this.ctx.strokeStyle = configRightMap.FRAME_COLOR;
+        this.ctx.strokeStyle = colorConfig.FRAME_COLOR;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    drawOutline(leftTop, width, height) {
+    _drawOutline(leftTop, width, height) {
         this.ctx.beginPath();
         const indent = 5;
         leftTop.x -= indent;
@@ -123,232 +121,223 @@ class TreeRenderer {
         this.ctx.beginPath();
         this.ctx.fill();
         this.ctx.moveTo(leftTop.x, leftTop.y);
-        this.drawRectFrame(leftTop, width, height);
-        this.ctx.strokeStyle = configRightMap.SELECT_ELEMENT;
+        this._drawRectFrame(leftTop, width, height);
+        this.ctx.strokeStyle = colorConfig.SELECT_ELEMENT;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    drawSelection(rect, selection, node) {
+    _drawSelection(rect, selection, node) {
         if (node == selection.curr) {
-            this.drawOutline(rect.leftTop, rect.width(), rect.height());
+            this._drawOutline(rect.leftTop, rect.width(), rect.height());
         }
     }
 
-    getRootWidth() {
-        const rootWidth = this.getTextWidth(this.tree.root.title, configRightMap.ROOT_MIN_WIDTH, Number.POSITIVE_INFINITY);
+    _getRootWidth() {
+        const rootWidth = this._getTextWidth(this.tree.root.title, rootConfig.MIN_WIDTH, Number.POSITIVE_INFINITY);
         return rootWidth;
     }
 
-    drawRoot(selection) {
-        const leftTop = new Point(configRightMap.X_LROOT, configRightMap.Y_LROOT);
-        const rootWidth = this.getRootWidth();
-        const rightBottom = new Point(configRightMap.X_LROOT + rootWidth, configRightMap.Y_LROOT + configRightMap.ROOT_HEIGHT);
+    _drawRoot(selection) {
+        const leftTop = new Point(rootConfig.leftTop.x, rootConfig.leftTop.y);
+        const rootWidth = this._getRootWidth();
+        const rightBottom = new Point(rootConfig.leftTop.x + rootWidth, rootConfig.leftTop.y + rootConfig.HEIGHT);
         const rootRect=  new Rect(leftTop, rightBottom);
         this.treeWithRects = {
             node: this.tree.root,
             rect: rootRect,
             children: [],
         };
-        this.currentNode = this.treeWithRects;
-        const leftTopRoot = new Point(configRightMap.X_LROOT, configRightMap.Y_LROOT);
-        this.drawElementRect(leftTopRoot, rootWidth, configRightMap.ROOT_HEIGHT, this.tree.root.title);
-        this.drawSelection(rootRect, selection, this.tree.root)
+        const leftTopRoot = new Point(rootConfig.leftTop.x, rootConfig.leftTop.y);
+        this._drawElementRect(leftTopRoot, rootWidth, rootConfig.HEIGHT, this.tree.root.title);
+        this._drawSelection(rootRect, selection, this.tree.root)
     }
 
-    drawConnection(start, end) {
+    _drawConnection(start, end) {
         this.ctx.beginPath();
         this.ctx.moveTo(start.x, start.y);
         this.ctx.lineTo(end.x, end.y);
-        this.ctx.strokeStyle = configRightMap.FRAME_COLOR;
+        this.ctx.strokeStyle = colorConfig.FRAME_COLOR;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    drawMainChild(selection) {
-        const rightRootCenter = new Point(configRightMap.X_LROOT + this.getRootWidth(), configRightMap.Y_LROOT + configRightMap.ROOT_HEIGHT / 2);
+    _drawMainChild(selection) {
+        const rightRootCenter = new Point(rootConfig.leftTop.x + this._getRootWidth(), rootConfig.leftTop.y + rootConfig.HEIGHT / 2);
         const children = this.tree.root.children;
         let connectFrom = 0;
         if (children.length > 0) {
-            connectFrom = new Point(rightRootCenter.x + configRightMap.INDENT_FROM_ROOT, rightRootCenter.y);
+            connectFrom = new Point(rightRootCenter.x + rootConfig.INDENT, rightRootCenter.y);
             const startConnectFromRoot = new Point(rightRootCenter.x, rightRootCenter.y);
-            this.drawConnection(startConnectFromRoot, connectFrom);
+            this._drawConnection(startConnectFromRoot, connectFrom);
         }
-        const fullHeight = this.getMainSectionsHeight(children);
+        const fullHeight = this._getMainSectionsHeight(children);
         const startPoint = new Point(
-            configRightMap.MAIN_SECTION_DISTANCE + rightRootCenter.x - configRightMap.EL_MIN_WIDTH / 2,
+            mainConfig.DISTANCE + rightRootCenter.x - mainConfig.MIN_WIDTH / 2,
             rightRootCenter.y - fullHeight / 2);
-        let topOffset = 0;
-        for (let i = 0; i < children.length; i++) {
-            const child = children[i];
-            const mainWidth = this.getTextWidth(child.title, configRightMap.EL_MIN_WIDTH, Number.POSITIVE_INFINITY);
-            if (i != 0) {
-                topOffset += this.getMainMarginTop(child.children);
-            }
-            const point = new Point(startPoint.x, startPoint.y + topOffset);
-            const rightBottom = new Point(point.x + mainWidth, point.y + configRightMap.EL_HEIGHT);
-            const endConnectMain = new Point(point.x, point.y + configRightMap.EL_HEIGHT/ 2);
-            this.drawConnection(connectFrom, endConnectMain);
-            const mainRect = new Rect(point, rightBottom);
-            const newNode = {
-                node: child,
-                rect: mainRect,
-                children: [],
-            };
-            this.currentNode.children.push(newNode);
-            const tmpCurrent = this.currentNode;
-            this.currentNode = newNode;
-            const connectionPoint = new Point(mainRect.rightBottom.x + configRightMap.INDENT_FROM_MAIN_SECTION, point.y  + configRightMap.EL_HEIGHT/ 2);
-            if (child.children.length > 0) {
-                const startConnectFromMain = new Point(mainRect.rightBottom.x, point.y  + configRightMap.EL_HEIGHT/ 2);
-                this.drawConnection(startConnectFromMain, connectionPoint);
-            }
-            this.drawElementRect(point, mainWidth, configRightMap.EL_HEIGHT, child.title);
-            this.drawSelection(mainRect, selection, child);
-            this.drawSubsections(connectionPoint, child.children, selection, connectionPoint);
-            this.currentNode = tmpCurrent;
-            const mainBottom = this.getMainMarginBottom(child.children);
-            topOffset += mainBottom + this.getMainSectionSize();
-        }
+
+        this._drawTreeElement({
+            elements: children,
+            selection,
+            startPoint,
+            currentNode: this.treeWithRects,
+            config: mainConfig,
+            connectionPoint: connectFrom,
+            drawElementFn: (point, elementWidth, height, title) => this._drawElementRect(point, elementWidth, height, title),
+            getMarginTopFn: (children) => this._getMainMarginTop(children),
+            getMarginBottomFn: (children) => this._getMainMarginBottom(children),
+            calculateConnectionYFn: (pointY) => pointY + mainConfig.HEIGHT / 2 ,
+        });
     };
 
-    drawSubsections(bottomPoint, subsections, selection, connectionPoint) {
+    _drawSubsections(bottomPoint, subsections, selection, connectionPoint, currentNode) {
         if (subsections.length != 0) {
-            const fullHeight = this.getSubsectionsHeight(subsections);
-            const x = bottomPoint.x + configRightMap.SUBSECTION_DISTANCE;
-            const y = bottomPoint.y - configRightMap.SUBSECTION_HEIGHT / 2;
+            const fullHeight = this._getSubsectionsHeight(subsections);
+            const x = bottomPoint.x + subsectionConfig.DISTANCE;
+            const y = bottomPoint.y - subsectionConfig.HEIGHT / 2;
             const startPoint = new Point(x, y - fullHeight / 2);
-            let topOffset = 0;
-            for (let i = 0; i < subsections.length; i++) {
-                const subsection = subsections[i];
-                const subWidth = this.getTextWidth(subsection.title, configRightMap.SUBSECTION_MIN_WIDTH, Number.POSITIVE_INFINITY);
-                if (i != 0) {
-                    topOffset += this.getSubsectionMarginTop(subsection.children);
-                }
-                const title = subsection.title;
-                const point = new Point(startPoint.x, startPoint.y + topOffset);
-                const rightBottom = new Point(point.x + subWidth, point.y + configRightMap.SUBSECTION_HEIGHT);
-                const subsectionRect = new Rect(point, rightBottom);
-                const newNode = {
-                    node: subsection,
-                    rect: subsectionRect,
-                    children: [],
-                };
-                this.currentNode.children.push(newNode);
-                const tmpCurrent = this.currentNode;
-                this.currentNode = newNode;
-                const subConnectEnd = new Point(point.x, point.y + configRightMap.SUBSECTION_HEIGHT);
-                this.drawConnection(connectionPoint, subConnectEnd);
-                const subsectionConnection = new Point (point.x + subWidth + configRightMap.INDENT_FROM_SUB, point.y + configRightMap.SUBSECTION_HEIGHT);
-                if (subsection.children.length > 0) {
-                    const subConnectStart = new Point(point.x, point.y + configRightMap.SUBSECTION_HEIGHT);
-                    this.drawConnection(subConnectStart, subsectionConnection);
-                }
-                this.drawElementLine(point, subWidth, configRightMap.SUBSECTION_HEIGHT, title);
-                this.drawSelection(subsectionRect, selection, subsection);
-                this.drawSubsections(subsectionConnection, subsection.children, selection, subsectionConnection);
-                //Сбился Sub нужно его восставновитть
-                this.currentNode = tmpCurrent;
-                const subBottom = this.getSubsectionMarginBottom(subsection.children);
-                topOffset +=  subBottom + this.getSubsectionSize();
-            }
+            this._drawTreeElement({
+                elements: subsections,
+                selection,
+                startPoint,
+                currentNode,
+                config: subsectionConfig,
+                connectionPoint,
+                drawElementFn: (point, elementWidth, height, title) => this._drawElementLine(point, elementWidth, height, title),
+                getMarginTopFn: (children) => this._getSubsectionMarginTop(children),
+                getMarginBottomFn: (children) => this._getSubsectionMarginBottom(children),
+                calculateConnectionYFn: (pointY) => pointY + subsectionConfig.HEIGHT,
+            });
         }
     }
 
-    clearCanvas() {
+    _drawTreeElement({elements, selection, startPoint, config, currentNode, connectionPoint, drawElementFn, getMarginTopFn, getMarginBottomFn, calculateConnectionYFn}) {
+        let topOffset = 0;
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            const elementWidth = this._getTextWidth(element.title, config.MIN_WIDTH, Number.POSITIVE_INFINITY);
+            if (i != 0) {
+                topOffset += getMarginTopFn(element.children);
+            }
+            const title = element.title;
+            const point = new Point(startPoint.x, startPoint.y + topOffset);
+            const rightBottom = new Point(point.x + elementWidth, point.y + config.HEIGHT);
+            const elementRect = new Rect(point, rightBottom);
+            const newNode = {
+                node: element,
+                rect: elementRect,
+                children: [],
+            };
+            currentNode.children.push(newNode);
+            const connectionEndPoint = new Point(point.x, calculateConnectionYFn(point.y));
+            this._drawConnection(connectionPoint, connectionEndPoint);
+            const elementConnection = new Point (point.x + elementWidth + config.INDENT, calculateConnectionYFn(point.y));
+            if (element.children.length > 0) {
+                const connectionStartPoint = new Point(point.x, calculateConnectionYFn(point.y));
+                this._drawConnection(connectionStartPoint, elementConnection);
+            }
+            drawElementFn(point, elementWidth, config.HEIGHT, title);
+            this._drawSelection(elementRect, selection, element);
+            this._drawSubsections(elementConnection, element.children, selection, elementConnection, newNode);
+            const subBottom = getMarginBottomFn(element.children);
+            topOffset += subBottom + config.HEIGHT + config.MARGIN * 2;
+        }
+    }
+
+    _clearCanvas() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     drawAllTree(selection) {
-        this.clearCanvas();
-        this.drawRoot(selection);
-        this.drawMainChild(selection);
+        this._clearCanvas();
+        this._drawRoot(selection);
+        this._drawMainChild(selection);
     }
 
-    getSubsectionMarginTop(subsections) {
+    _getSubsectionMarginTop(subsections) {
         let marginTop = 0;
         if (subsections.length > 0) {
-            marginTop += Math.max(0, this.calculateMargin(subsections, configRightMap.SUBSECTION_HEIGHT));
-            marginTop += this.getSubsectionMarginTop(subsections[0].children);
+            marginTop += Math.max(0, this._calculateMargin(subsections, subsectionConfig.HEIGHT));
+            marginTop += this._getSubsectionMarginTop(subsections[0].children);
         }
         return marginTop;
     }
 
-    getSubsectionMarginBottom(subsections) {
+    _getSubsectionMarginBottom(subsections) {
         let marginBottom = 0;
         if (subsections.length > 0) {
-            marginBottom += Math.max(0, this.calculateMargin(subsections, configRightMap.SUBSECTION_HEIGHT));
-            marginBottom += this.getSubsectionMarginBottom(subsections[subsections.length - 1].children);
+            marginBottom += Math.max(0, this._calculateMargin(subsections, subsectionConfig.HEIGHT));
+            marginBottom += this._getSubsectionMarginBottom(subsections[subsections.length - 1].children);
         }
         return marginBottom;
     }
 
-    getSubsectionsHeight(subsections) {
+    _getSubsectionsHeight(subsections) {
         let height = 0;
         for (let i = 0; i < subsections.length; ++i) {
             const subsection = subsections[i];
-            height += configRightMap.SUBSECTION_HEIGHT;
+            height += subsectionConfig.HEIGHT;
             if (i != 0) {
-                height += this.getSubsectionMarginTop(subsection.children);
-                height += configRightMap.SUBSECTION_MARGIN;
+                height += this._getSubsectionMarginTop(subsection.children);
+                height += subsectionConfig.MARGIN;
             }
             if (i != subsections.length - 1) {
-                const bottom = this.getSubsectionMarginBottom(subsection.children);
+                const bottom = this._getSubsectionMarginBottom(subsection.children);
                 height += bottom;
-                height += configRightMap.SUBSECTION_MARGIN;
+                height += subsectionConfig.MARGIN;
             }
         }
         return height;
     }
 
-    calculateMargin(subsections, elementHeight) {
-        return (this.getSubsectionsHeight(subsections) - elementHeight) / 2
+    _calculateMargin(subsections, elementHeight) {
+        return (this._getSubsectionsHeight(subsections) - elementHeight) / 2
     }
 
-    getMainMarginTop(subsections) {
+    _getMainMarginTop(subsections) {
         let marginTop = 0;
         if (subsections.length > 0) {
-            marginTop += Math.max(0, this.calculateMargin(subsections, this.getMainSectionSize()));
-            marginTop += this.getSubsectionMarginTop(subsections[0].children);
-            marginTop += configRightMap.MAIN_MARGIN;
+            marginTop += Math.max(0, this._calculateMargin(subsections, this._getMainSectionSize()));
+            marginTop += this._getSubsectionMarginTop(subsections[0].children);
+            marginTop += mainConfig.MARGIN;
         }
         return marginTop;
     }
 
-    getMainMarginBottom(subsections) {
+    _getMainMarginBottom(subsections) {
         let marginBottom = 0;
         if (subsections.length > 0) {
-            marginBottom += Math.max(0, this.calculateMargin(subsections, this.getMainSectionSize()));
-            marginBottom += this.getSubsectionMarginBottom(subsections[subsections.length - 1].children);
-            marginBottom += configRightMap.MAIN_MARGIN;
+            marginBottom += Math.max(0, this._calculateMargin(subsections, this._getMainSectionSize()));
+            marginBottom += this._getSubsectionMarginBottom(subsections[subsections.length - 1].children);
+            marginBottom += mainConfig.MARGIN;
         }
         return marginBottom;
     }
 
-    getMainSectionsHeight(mainSections) {
+    _getMainSectionsHeight(mainSections) {
         let height = 0;
         for (let i = 0; i < mainSections.length; ++i) {
             const mainSection = mainSections[i];
-            height += configRightMap.EL_HEIGHT;
+            height += mainConfig.HEIGHT;
             if (i != 0) {
-                height += this.getMainMarginTop(mainSection.children);
-                height += configRightMap.MAIN_MARGIN;
+                height += this._getMainMarginTop(mainSection.children);
+                height += mainConfig.MARGIN;
             }
             if (i != mainSections.length - 1) {
-                height += this.getMainMarginBottom(mainSection.children);
-                height += configRightMap.MAIN_MARGIN;
+                height += this._getMainMarginBottom(mainSection.children);
+                height += mainConfig.MARGIN;
             }
         }
         return height;
     }
 
-    getSubsectionSize() {
-        return configRightMap.SUBSECTION_HEIGHT + configRightMap.SUBSECTION_MARGIN * 2;
+    _getSubsectionSize() {
+        return subsectionConfig.HEIGHT + subsectionConfig.MARGIN * 2;
     }
 
-    getMainSectionSize() {
-        return configRightMap.EL_HEIGHT + configRightMap.MAIN_MARGIN * 2;
+    _getMainSectionSize() {
+        return mainConfig.HEIGHT + mainConfig.MARGIN * 2;
     }
 }

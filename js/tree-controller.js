@@ -10,7 +10,7 @@ class TreeController {
         this.canvas = document.getElementById('canvas');
         this.canvasBlock = document.getElementById('canvasDiv');
         this.input = null;
-        this.addEventHandlers();
+        this._addEventHandlers();
     }
 
     setTree(tree) {
@@ -23,65 +23,65 @@ class TreeController {
         this.renderer.drawAllTree(this.selection);
     }
 
-    changeSelection(newSelection) {
+    _changeSelection(newSelection) {
         this.selection.prev = this.selection.curr;
         this.selection.curr = newSelection;
     }
 
-    redrawingTree() {
+    _redrawingTree() {
         this.renderer.drawAllTree(this.selection);
     }
 
-    onPressedLeft() {
+    _onPressedLeft() {
         if (this.input) {
             return;
         }
         if (this.selection.curr.parent) {
-            this.changeSelection(this.selection.curr.parent);
+            this._changeSelection(this.selection.curr.parent);
             console.log(this.selection);
-            this.redrawingTree();
+            this._redrawingTree();
         }
     }
 
-    onPressedRight() {
+    _onPressedRight() {
         if (this.input) {
             return;
         }
         if (this.selection.curr.children.length != 0) {
-            this.changeSelection(this.selection.curr.children[0]);
+            this._changeSelection(this.selection.curr.children[0]);
             console.log(this.selection);
 
-            this.redrawingTree();
+            this._redrawingTree();
         }
     }
 
-    onPressedUp() {
+    _onPressedUp() {
         if (this.selection.curr.parent) {
             const parent = this.selection.curr.parent;
             const children = parent.children;
             const index = children.indexOf(this.selection.curr);
             const isFirstChild = 0 == index;
             if (!isFirstChild) {
-                this.changeSelection(children[index - 1]);
-                this.redrawingTree();
+                this._changeSelection(children[index - 1]);
+                this._redrawingTree();
             }
         }
     }
 
-    onPressedDown() {
+    _onPressedDown() {
         if (this.selection.curr.parent) {
             const parent = this.selection.curr.parent;
             const children = parent.children;
             const index = children.indexOf(this.selection.curr);
             const isLastChild = children.length - 1 == index;
             if (!isLastChild) {
-                this.changeSelection(children[index + 1]);
-                this.redrawingTree();
+                this._changeSelection(children[index + 1]);
+                this._redrawingTree();
             }
         }
     }
 
-    onPressedTab() {
+    _onPressedTab() {
         let parent = this.selection.curr.parent;
         let level= 0;
         while (parent) {
@@ -100,12 +100,12 @@ class TreeController {
         }
         const newNode = this.selection.curr.addChild(nodeName);
         if (newNode) {
-            this.changeSelection(newNode);
-            this.redrawingTree();
+            this._changeSelection(newNode);
+            this._redrawingTree();
         }
     }
 
-    onPressedDel() {
+    _onPressedDel() {
         if (this.input) {
             this.selection.curr.title = this.input.value;
             return;
@@ -113,86 +113,86 @@ class TreeController {
         if (this.selection.curr == this.tree.root) {
             return;
         }
-        this.changeSelection(this.selection.curr.parent);
+        this._changeSelection(this.selection.curr.parent);
         const index = this.selection.curr.children.indexOf(this.selection.prev);
         this.selection.curr.children.splice(index, 1);
-        this.redrawingTree();
+        this._redrawingTree();
     }
 
-    onPressedF2() {
-        this.createInput();
+    _onPressedF2() {
+        this._createInput();
         const rect = this.renderer.getNodeRect(this.selection.curr);
         this.input.value = this.selection.curr.title;
         this.input.select();
-        this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
+        this._changeInputStyle(rect.leftTop, rect.width(), rect.height());
         this.input.focus();
     }
 
-    addKeyDownHandler() {
+    _addKeyDownHandler() {
         let self = this;
         window.addEventListener("keydown", function (event) {
                 switch (event.code) {
                     case "ArrowLeft":
-                        self.onPressedLeft();
+                        self._onPressedLeft();
                         break;
                     case "ArrowUp":
-                        self.closeInput();
-                        self.onPressedUp();
+                        self._closeInput();
+                        self._onPressedUp();
                         break;
                     case "ArrowRight":
-                        self.onPressedRight();
+                        self._onPressedRight();
                         break;
                     case "ArrowDown":
-                        self.closeInput();
-                        self.onPressedDown();
+                        self._closeInput();
+                        self._onPressedDown();
                         break;
                     case "Tab":
-                        self.closeInput();
-                        self.onPressedTab();
+                        self._closeInput();
+                        self._onPressedTab();
                         event.preventDefault();
                         break;
                     case "Enter":
-                        self.closeInput();
+                        self._closeInput();
                         event.preventDefault();
                         break;
                     case "Delete":
-                        self.onPressedDel();
+                        self._onPressedDel();
                         break;
                     case "F2":
-                        self.onPressedF2();
+                        self._onPressedF2();
                         break;
                 }
             }
         );
     }
 
-    onClick(point) {
-        this.closeInput();
+    _onClick(point) {
+        this._closeInput();
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
             this.selection.curr = result.node;
-            this.redrawingTree();
+            this._redrawingTree();
         }
     }
 
-    addMouseClickHandler() {
+    _addMouseClickHandler() {
         this.canvas.onclick = (e) => {
             const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
-            this.onClick(currentPoint);
+            this._onClick(currentPoint);
         }
     }
 
-    closeInput() {
+    _closeInput() {
         if (this.input) {
             this.selection.curr.title = this.input.value;
-            this.redrawingTree();
+            this._redrawingTree();
             this.canvasBlock.removeChild(this.input);
             this.input = null;
         }
     }
 
-    changeInputStyle(position, width, height) {
+    _changeInputStyle(position, width, height) {
         this.input.style.display = 'block';
         this.input.style.left = position.x + 'px';
         this.input.style.top = (position.y + (height - this.input.offsetHeight) / 2) + 'px';
@@ -200,38 +200,38 @@ class TreeController {
         this.input.style.width = width + 'px';
     }
 
-    showInput(point) {
-        this.createInput();
+    _showInput(point) {
+        this._createInput();
         const result = this.renderer.findNodeByPoint(point);
         if (result) {
             const rect = result.rect;
             this.selection.curr = result.node;
             this.input.value = this.selection.curr.title;
             this.input.select();
-            this.changeInputStyle(rect.leftTop, rect.width(), rect.height());
+            this._changeInputStyle(rect.leftTop, rect.width(), rect.height());
             this.input.focus();
         }
     }
 
-    createInput() {
-        this.closeInput();
+    _createInput() {
+        this._closeInput();
         this.input = document.createElement('input');
         this.input.setAttribute("id", "input_block");
         this.canvasBlock.appendChild(this.input);
     }
 
-    addCanvasDoubleClickHandler() {
+    _addCanvasDoubleClickHandler() {
         let self = this;
         this.canvas.ondblclick = function (e) {
             const offset = new Point(this.getBoundingClientRect().left, this.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
-            self.showInput(currentPoint);
+            self._showInput(currentPoint);
         }
     }
 
-    addEventHandlers() {
-        this.addKeyDownHandler();
-        this.addMouseClickHandler();
-        this.addCanvasDoubleClickHandler();
+    _addEventHandlers() {
+        this._addKeyDownHandler();
+        this._addMouseClickHandler();
+        this._addCanvasDoubleClickHandler();
     }
 }

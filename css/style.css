@@ -179,6 +179,9 @@
 .input_save
 {
     width: 100%;
+    font: bold 18px "Source Sans Pro", sans-serif;
+    border: 1px solid #cecece;
+    background: #f5f7fa;
 }
 
 .input_save_block

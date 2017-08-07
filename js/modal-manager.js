@@ -3,31 +3,38 @@ class ModalManager {
         this.tree = tree;
         this._saveButton = document.querySelector("#openDownload");
         this._saveButton.onclick = () => {
-            this.showSave();
+            this._showSave();
         };
         this._themeButton = document.querySelector("#openSelectTheme");
         this._themeButton.onclick = () => {
-            this.showSelectTheme();
+            this._showSelectTheme();
         };
         this._loadButton = document.querySelector("#openLoad");
         this._loadButton.onclick = () => {
-            this.showLoadWindow();
+            this._showLoadWindow();
         };
 
         this.onLoadTree = () => {};
     }
 
-    showSave() {
+    _addClass(modalGeneral, modalPrivate) {
+        modalGeneral.classList.add("js_open");
+        modalPrivate.classList.add("js_modal_content");
+    }
+
+    _removeClass(modalGeneral, modalPrivate) {
+        modalGeneral.classList.remove("js_open");
+        modalPrivate.classList.remove("js_modal_content");
+    }
+
+    _showSave() {
         const modalSave = document.getElementById("modalSave");
         modalSave.focus();
         const modalInput = document.getElementById('modalInput');
-        modalSave.classList.add("js_open");
-        modalInput.classList.add("js_modal_content");
+        this._addClass(modalSave, modalInput);
         const modalClose = document.getElementById('closeSave');
-        modalClose.onclick = function () {
-            modalSave.classList.remove("js_open");
-            modalInput.classList.remove("js_modal_content");
-
+        modalClose.onclick = () => {
+            this._removeClass(modalSave, modalInput);
         };
         const saveButton = document.getElementById("saveButton");
         saveButton.onclick = () => {
@@ -45,29 +52,25 @@ class ModalManager {
         }
     }
 
-    showSelectTheme() {
+    _showSelectTheme() {
         const modalTheme = document.getElementById("modalTheme");
         modalTheme.focus();
         const modalContent = document.getElementById('modalContents');
-        modalTheme.classList.add("js_open");
-        modalContent.classList.add("js_modal_content");
+        this._addClass(modalTheme, modalContent);
         const modalClose = document.getElementById('closeTheme');
-        modalClose.onclick = function () {
-            modalTheme.classList.remove("js_open");
-            modalContent.classList.remove("js_modal_content");
+        modalClose.onclick = () =>  {
+            this._removeClass(modalTheme, modalContent);
         };
     };
 
-    showLoadWindow() {
+    _showLoadWindow() {
         const modalLoad = document.getElementById("modalLoad");
         modalLoad.focus();
         const modalLoadFile = document.getElementById('modalLoadFile');
-        modalLoad.classList.add("js_open");
-        modalLoadFile.classList.add("js_modal_content");
+        this._addClass(modalLoad, modalLoadFile);
         const modalClose = document.getElementById('closeLoad');
-        modalClose.onclick = function () {
-            modalLoad.classList.remove("js_open");
-            modalLoadFile.classList.remove("js_modal_content");
+        modalClose.onclick = () =>  {
+            this._removeClass(modalLoad, modalLoadFile);
         };
         const loadButton = document.getElementById('loadButton');
         loadButton.onclick = () => {
@@ -81,8 +84,7 @@ class ModalManager {
                 const tree = loader.load(json);
                 this.tree = tree;
                 this.onLoadTree(tree);
-                modalLoad.classList.remove("js_open");
-                modalLoadFile.classList.remove("js_modal_content");
+                this._removeClass(modalLoad, modalLoadFile);
             };
         }
     };

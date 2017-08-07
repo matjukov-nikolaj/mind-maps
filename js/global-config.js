@@ -7,3 +7,8 @@ const globalConfig = {
     MAIN_NAME: "Main Section ",
     SUB_NAME: "Subsection "
 };
+
+const colorConfig = {
+    SELECT_ELEMENT: "#506a85",
+    FRAME_COLOR: "#00a085",
+};
