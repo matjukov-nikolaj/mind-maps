@@ -4,6 +4,16 @@
     padding: 0;
 }
 
+body
+{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .clear
 {
     clear: both;
@@ -142,13 +152,13 @@
     transition: all 0.2s;
 }
 
-.js_modal_content
+.open_modal_content
 {
     opacity: 1;
     transform: scale(1);
 }
 
-.js_open
+.open_modal_window
 {
     display: block;
     visibility: visible;
@@ -196,6 +206,7 @@
     margin: 20px auto;
     width: 65px;
 }
+
 .theme_box
 {
     width: 50%;
@@ -221,5 +232,8 @@
     margin: 50px auto;
 }
 
-input:focus{outline:none;}
+input:focus
+{
+    outline: none;
+}
 

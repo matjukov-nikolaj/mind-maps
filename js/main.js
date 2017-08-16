@@ -1,9 +1,11 @@
 'use strict';
 let allTree = new Tree(globalConfig.MAIN_NAME);
-const modalManager = new ModalManager(allTree);
+const saveModalWindow = new SaveModal(allTree);
+const loadModalWindow = new loadModal(allTree);
+const selectThemeWindow = new SelectThemeModal();
 const treeRenderer = new TreeRenderer(allTree);
 const treeController = new TreeController(allTree, treeRenderer);
-modalManager.onLoadTree = (tree) => {
+loadModalWindow.onLoadTree = (tree) => {
   treeController.setTree(tree);
   allTree = tree;
 };

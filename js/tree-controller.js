@@ -6,7 +6,7 @@ class TreeController {
             curr: this.tree.root,
             prev: null
         };
-        this.scrollController = new ScrollController();
+        this.scrollController = new ScrollController(renderer);
         this.canvas = document.getElementById('canvas');
         this.canvasBlock = document.getElementById('canvasDiv');
         this.input = null;
@@ -38,7 +38,6 @@ class TreeController {
         }
         if (this.selection.curr.parent) {
             this._changeSelection(this.selection.curr.parent);
-            console.log(this.selection);
             this._redrawingTree();
         }
     }
@@ -88,7 +87,7 @@ class TreeController {
             ++level;
             parent = parent.parent;
         }
-        if (level >= 15){
+        if (level >= globalConfig.MAX_DEPTH){
             return;
         }
         const childCounter = this.selection.curr.children.length;
@@ -183,6 +182,39 @@ class TreeController {
         }
     }
 
+    _addMouseDown() {
+        this.canvasBlock.addEventListener('mousedown', (e) => {
+            const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
+            const checkPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
+            const nodeWidthRect = this.renderer.findNodeByPoint(checkPoint);
+            if (nodeWidthRect && nodeWidthRect.node != this.tree.root)
+            {
+                this.renderer.startDrag(nodeWidthRect);
+            }
+        }, false);
+    }
+
+    _addMouseMove() {
+        this.canvasBlock.addEventListener('mousemove', (e) => {
+            if (this.renderer.dragInfo) {
+                const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
+                const point = new Point(e.clientX - offset.x, e.clientY - offset.y);
+                this.renderer.onDrag(point);
+                this._redrawingTree();
+            }
+        }, false);
+    }
+
+    _addMouseUp() {
+        this.canvasBlock.addEventListener('mouseup', (e) => {
+            if (this.renderer.dragInfo)
+            {
+                this.renderer.onDragEnd();
+                this._redrawingTree();
+            }
+        }, false);
+    }
+
     _closeInput() {
         if (this.input) {
             this.selection.curr.title = this.input.value;
@@ -202,15 +234,12 @@ class TreeController {
 
     _showInput(point) {
         this._createInput();
-        const result = this.renderer.findNodeByPoint(point);
-        if (result) {
-            const rect = result.rect;
-            this.selection.curr = result.node;
-            this.input.value = this.selection.curr.title;
-            this.input.select();
-            this._changeInputStyle(rect.leftTop, rect.width(), rect.height());
-            this.input.focus();
-        }
+        const rect = point.rect;
+        this.selection.curr = point.node;
+        this.input.value = this.selection.curr.title;
+        this.input.select();
+        this._changeInputStyle(rect.leftTop, rect.width(), rect.height());
+        this.input.focus();
     }
 
     _createInput() {
@@ -225,7 +254,10 @@ class TreeController {
         this.canvas.ondblclick = function (e) {
             const offset = new Point(this.getBoundingClientRect().left, this.getBoundingClientRect().top);
             const currentPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
-            self._showInput(currentPoint);
+            const checkPoint = self.renderer.findNodeByPoint(currentPoint);
+            if (checkPoint) {
+                self._showInput(checkPoint);
+            }
         }
     }
 
@@ -233,5 +265,8 @@ class TreeController {
         this._addKeyDownHandler();
         this._addMouseClickHandler();
         this._addCanvasDoubleClickHandler();
+        this._addMouseDown();
+        this._addMouseMove();
+        this._addMouseUp();
     }
 }

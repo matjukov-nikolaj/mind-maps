@@ -6,7 +6,7 @@ class Node {
     }
 
     addChild(nodeTitle) {
-        if (this.children.length >= 50)
+        if (this.children.length >= globalConfig.MAX_CHILDREN_SIZE)
         {
             return;
         }
