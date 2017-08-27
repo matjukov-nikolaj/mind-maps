@@ -20,7 +20,7 @@ class TreeController {
             prev: null
         };
         this.renderer.setTree(this.tree);
-        this.renderer.drawAllTree(this.selection);
+        this._redrawingTree();
     }
 
     _changeSelection(newSelection) {
@@ -29,7 +29,20 @@ class TreeController {
     }
 
     _redrawingTree() {
+        const oldSize = {
+            width: this.renderer.canvasSize.width,
+            height: this.renderer.canvasSize.height,
+        };
         this.renderer.drawAllTree(this.selection);
+        if (oldSize.width != this.renderer.canvasSize.width || oldSize.height != this.renderer.canvasSize.height) {
+            this.canvas.width = this.renderer.canvasSize.width;
+            this.canvas.height = this.renderer.canvasSize.height;
+            this.scrollController.scrollCanvas({
+                x: 0,
+                y: this.renderer.canvasSize.height - oldSize.height
+            });
+            this.renderer.drawAllTree(this.selection);
+        }
     }
 
     _onPressedLeft() {
@@ -182,7 +195,7 @@ class TreeController {
         }
     }
 
-    _addMouseDown() {
+    _onMouseDown() {
         this.canvasBlock.addEventListener('mousedown', (e) => {
             const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
             const checkPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
@@ -194,7 +207,7 @@ class TreeController {
         }, false);
     }
 
-    _addMouseMove() {
+    _onMouseMove() {
         this.canvasBlock.addEventListener('mousemove', (e) => {
             if (this.renderer.dragInfo) {
                 const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
@@ -205,7 +218,7 @@ class TreeController {
         }, false);
     }
 
-    _addMouseUp() {
+    _onMouseUp() {
         this.canvasBlock.addEventListener('mouseup', (e) => {
             if (this.renderer.dragInfo)
             {
@@ -265,8 +278,8 @@ class TreeController {
         this._addKeyDownHandler();
         this._addMouseClickHandler();
         this._addCanvasDoubleClickHandler();
-        this._addMouseDown();
-        this._addMouseMove();
-        this._addMouseUp();
+        this._onMouseDown();
+        this._onMouseMove();
+        this._onMouseUp();
     }
 }

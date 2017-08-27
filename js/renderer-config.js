@@ -1,7 +1,7 @@
-const rendererRootCfg = {
+const rendererRootConfig = {
     leftTop: {
         x: 240,
-        y: 5000
+        y: 300
     },
     MIN_WIDTH: 200,
     HEIGHT: 70,
@@ -10,7 +10,7 @@ const rendererRootCfg = {
     LINE_WIDTH: 3,
 };
 
-const rendererMainCfg = {
+const rendererMainConfig = {
     HEIGHT: 50,
     MIN_WIDTH: 150,
     MARGIN: 10,
@@ -21,7 +21,7 @@ const rendererMainCfg = {
     LINE_WIDTH: 2,
 };
 
-const rendererSubCfg = {
+const rendererSubConfig = {
     HEIGHT: 30,
     MIN_WIDTH: 150,
     DISTANCE: 50,

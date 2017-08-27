@@ -26,24 +26,24 @@ class Rect {
         this.rightBottom.y = y + height;
     }
 
-    intersectionArea(rect) {
-        let x1 = rect.leftTop.x;
-        let y1 = rect.leftTop.y;
-        let x2 = x1+ rect.width();
-        let y2 = y1 + rect.height();
-        if (this.leftTop.x > x1) {
-            x1 = this.leftTop.x;
+    getIntersectionArea(rect) {
+        let RectLeftTopX = rect.leftTop.x;
+        let RectLeftTopY = rect.leftTop.y;
+        let RectRightBottomX = RectLeftTopX + rect.width();
+        let RectRightBottomY = RectLeftTopY + rect.height();
+        if (this.leftTop.x > RectLeftTopX) {
+            RectLeftTopX = this.leftTop.x;
         }
-        if (this.leftTop.y > y1) {
-            y1 = this.leftTop.y;
+        if (this.leftTop.y > RectLeftTopY) {
+            RectLeftTopY = this.leftTop.y;
         }
-        if (this.rightBottom.x < x2) {
-            x2 = this.rightBottom.x;
+        if (this.rightBottom.x < RectRightBottomX) {
+            RectRightBottomX = this.rightBottom.x;
         }
-        if (this.rightBottom.y < y2) {
-            y2 = this.rightBottom.y;
+        if (this.rightBottom.y < RectRightBottomY) {
+            RectRightBottomY = this.rightBottom.y;
         }
-        return (x2 <= x1 || y2 <= y1) ? 0 : ((x2-x1) * (y2-y1));
+        return (RectRightBottomX <= RectLeftTopX || RectRightBottomY <= RectLeftTopY) ? 0 : ((RectRightBottomX - RectLeftTopX) * (RectRightBottomY - RectLeftTopY));
     }
 
 }

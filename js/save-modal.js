@@ -6,11 +6,11 @@ class SaveModal {
         this.modalInput = document.getElementById("modalInput");
         this.closeSave = document.getElementById("closeSave");
         this.openSave = document.getElementById("openDownload");
-        this.openSaveWindow = new Modal(this.modalSave, this.modalInput, this.openSave, this.closeSave);
-        this._saveTree();
+        this.openSaveModal = new Modal(this.modalSave, this.modalInput, this.openSave, this.closeSave);
+        this._addSaveButtonClickHandler();
     }
 
-    _saveTree() {
+    _addSaveButtonClickHandler() {
         const saveButton = document.getElementById("saveButton");
         saveButton.onclick = () => {
             const inputSaver = document.getElementById("input_save");
@@ -24,7 +24,7 @@ class SaveModal {
             } else {
                 saveAs(blob, "mind-map.json");
             }
-            this.openSaveWindow.hideModal(this.modalSave, this.modalInput);
+            this.openSaveModal.hideModal(this.modalSave, this.modalInput);
         }
     }
 }

@@ -2,16 +2,16 @@ class ScrollController {
     constructor(renderer) {
         this.canvasDiv = document.querySelector('#canvasDiv');
         this.scrollLeft = 0;
-        this.scrollTop = rendererRootCfg.leftTop.y - rendererRootCfg.MARGIN_TOP;
-        this._scrollCanvas({x: 0, y: 0});
+        this.renderer = renderer;
+        this.scrollTop = this.renderer.canvasSize.height / 2 - rendererRootConfig.MARGIN_TOP;
+        this.scrollCanvas({x: 0, y: 0});
         this._addDivListeners();
         this.lastX = 0;
         this.lastY = 0;
         this.dragging = false;
-        this.renderer = renderer;
     }
 
-    _scrollCanvas(delta) {
+    scrollCanvas(delta) {
         this.scrollLeft = Math.max(0, this.scrollLeft + delta.x);
         this.scrollTop = Math.max(0, this.scrollTop + delta.y);
         this.canvasDiv.scrollLeft = this.scrollLeft;
@@ -30,7 +30,6 @@ class ScrollController {
             this.dragging = true;
             this.lastY = e.clientY;
             this.lastX = e.clientX;
-
         }, false);
 
         this.canvasDiv.addEventListener('mousemove', (e) => {
@@ -42,7 +41,7 @@ class ScrollController {
                     };
                 this.lastX = e.clientX;
                 this.lastY = e.clientY;
-                this._scrollCanvas(delta);
+                this.scrollCanvas(delta);
                 this.canvasDiv.setAttribute('class', 'mouse_move');
             }
         }, false);
@@ -51,5 +50,9 @@ class ScrollController {
             this.dragging = false;
             this.canvasDiv.removeAttribute('class');
         }, false);
+        this.canvasDiv.onscroll = () => {
+            this.scrollLeft = this.canvasDiv.scrollLeft;
+            this.scrollTop = this.canvasDiv.scrollTop;
+        }
     }
 }

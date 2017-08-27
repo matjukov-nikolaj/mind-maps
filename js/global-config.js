@@ -1,6 +1,7 @@
 const globalConfig = {
     MARGIN_FOR_TEXT: 10,
-    MAX_CANVAS_SIZE: 10000,
+    MIN_CANVAS_WIDTH: 2000,
+    MIN_CANVAS_HEIGHT: 5000,
     ROOT_KEY: "root",
     CHILDREN_KEY: "children",
     TITLE_KEY: "title",
@@ -11,8 +12,8 @@ const globalConfig = {
     FONT_SETTINGS: "bold 18px sans-serif",
     FONT_SIZE: 18,
     FONT_TEXT_ALIGN: "center",
-    INDENT_LINE_CHOSEN_EL: 5,
-    INDENT_LINE_DRAG_EL: 5
+    INDENT_FROM_FRAME: 5,
+    CANVAS_INDENT: 200
 };
 
 const colorConfig = {

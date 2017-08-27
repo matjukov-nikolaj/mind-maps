@@ -1,14 +1,17 @@
 class TreeRenderer {
-
     constructor(tree) {
         this.canvas = document.getElementById('canvas');
         this.canvas.focus();
         this.ctx = this.canvas.getContext("2d");
-        this.canvas.width = globalConfig.MAX_CANVAS_SIZE;
-        this.canvas.height = globalConfig.MAX_CANVAS_SIZE;
+        this.canvas.width = globalConfig.MIN_CANVAS_WIDTH;
+        this.canvas.height = globalConfig.MIN_CANVAS_HEIGHT;
         this.tree = tree;
         this.treeWithRects = null;
         this.dragInfo = null;
+        this.canvasSize = {
+            width: this.canvas.width,
+            height: this.canvas.height,
+        };
     }
 
     setTree(tree) {
@@ -16,19 +19,19 @@ class TreeRenderer {
         this.treeWithRects = null;
     }
 
-    startDrag(nodeWidthRect) {
+    startDrag(nodeWithRect) {
         let isSubsection = true;
         for (const child of this.tree.root.children) {
-            if (child == nodeWidthRect.node) {
+            if (child == nodeWithRect.node) {
                 isSubsection = false;
                 break;
             }
         }
         this.dragInfo = {
-            node: nodeWidthRect.node,
+            node: nodeWithRect.node,
             position: null,
             isSubsection: isSubsection,
-            rect: nodeWidthRect.rect,
+            rect: nodeWithRect.rect,
             intersectedNode: null,
         }
     }
@@ -57,7 +60,7 @@ class TreeRenderer {
         if (!this.allowIntersection(nodeWithRect.node)) {
             return 0;
         }
-        let area = nodeWithRect.rect.intersectionArea(this.dragInfo.rect);
+        let area = nodeWithRect.rect.getIntersectionArea(this.dragInfo.rect);
         if (area > bestArea && nodeWithRect) {
             this.dragInfo.intersectedNode = nodeWithRect.node;
             bestArea = area;
@@ -157,7 +160,7 @@ class TreeRenderer {
 
     _drawElementRect(leftTop, width, height, title, isTransparent) {
         this.ctx.beginPath();
-        this.ctx.fillStyle = isTransparent ? rendererMainCfg.BACKGROUND_COLOR_OPACITY : rendererMainCfg.BACKGROUND_COLOR;
+        this.ctx.fillStyle = isTransparent ? rendererMainConfig.BACKGROUND_COLOR_OPACITY : rendererMainConfig.BACKGROUND_COLOR;
         this.ctx.fillRect(leftTop.x, leftTop.y, width, height);
         this.ctx.fillStyle = colorConfig.SELECT_ELEMENT;
         this._getFontSettings();
@@ -166,10 +169,10 @@ class TreeRenderer {
         this.ctx.moveTo(leftTop.x, leftTop.y);
         this._drawRectFrame(leftTop, width, height);
         this.ctx.strokeStyle = isTransparent ? colorConfig.FRAME_COLOR_OPACITY : colorConfig.FRAME_COLOR;
-        if (leftTop.x == rendererRootCfg.leftTop.x) {
-            this.ctx.lineWidth = rendererRootCfg.LINE_WIDTH;
+        if (leftTop.x == rendererRootConfig.leftTop.x) {
+            this.ctx.lineWidth = rendererRootConfig.LINE_WIDTH;
         } else {
-            this.ctx.lineWidth = rendererMainCfg.LINE_WIDTH;
+            this.ctx.lineWidth = rendererMainConfig.LINE_WIDTH;
         }
         this.ctx.stroke();
         this.ctx.closePath();
@@ -177,7 +180,7 @@ class TreeRenderer {
 
     _drawElementLine(leftTop, width, height, title, isTransparent) {
         this.ctx.beginPath();
-        this.ctx.fillStyle = isTransparent ? rendererSubCfg.BACKGROUND_COLOR_OPACITY : rendererSubCfg.BACKGROUND_COLOR;
+        this.ctx.fillStyle = isTransparent ? rendererSubConfig.BACKGROUND_COLOR_OPACITY : rendererSubConfig.BACKGROUND_COLOR;
         this.ctx.fillRect(leftTop.x, leftTop.y, width, height);
         this.ctx.fillStyle = colorConfig.SELECT_ELEMENT;
         this._getFontSettings();
@@ -186,40 +189,34 @@ class TreeRenderer {
         this.ctx.moveTo(leftTop.x, leftTop.y + height);
         this.ctx.lineTo(leftTop.x + width, leftTop.y + height);
         this.ctx.strokeStyle = isTransparent ? colorConfig.FRAME_COLOR_OPACITY : colorConfig.FRAME_COLOR;
-        this.ctx.lineWidth = rendererSubCfg.LINE_WIDTH;
+        this.ctx.lineWidth = rendererSubConfig.LINE_WIDTH;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
-    _drawOutline(leftTop, width, height, intersectedFrame) {
+    _drawOutline(leftTop, width, height, draggingFrame) {
         this.ctx.beginPath();
         let outlineInfo = null;
-        if (intersectedFrame) {
-            outlineInfo = this._getOutlineInfo(leftTop, width, height, globalConfig.INDENT_LINE_CHOSEN_EL);
-        } else {
-            outlineInfo = this._getOutlineInfo(leftTop, width, height, globalConfig.INDENT_LINE_CHOSEN_EL);
-        }
+        outlineInfo = this._getOutlineInfo(leftTop, width, height, globalConfig.INDENT_FROM_FRAME);
         this.ctx.beginPath();
         this.ctx.fill();
         this.ctx.moveTo(outlineInfo.leftTop.x, outlineInfo.leftTop.y);
         this._drawRectFrame(outlineInfo.leftTop, outlineInfo.width, outlineInfo.height);
-        if (intersectedFrame) {
-            this.ctx.strokeStyle = colorConfig.INSERT_NODE;
-        } else {
-            this.ctx.strokeStyle = colorConfig.SELECT_ELEMENT;
-        }
+        this.ctx.strokeStyle = draggingFrame ? colorConfig.INSERT_NODE : colorConfig.SELECT_ELEMENT;
         this.ctx.lineWidth = 2;
         this.ctx.stroke();
         this.ctx.closePath();
     }
 
     _getOutlineInfo(leftTop, width, height, indent) {
-        leftTop.x -= indent;
-        leftTop.y -= indent;
+        const newPoint = new Point(
+            leftTop.x - indent,
+            leftTop.y - indent
+        );
         width += indent * 2;
         height += indent * 2;
         return {
-            leftTop: leftTop,
+            leftTop: newPoint,
             width: width,
             height: height,
         }
@@ -233,25 +230,24 @@ class TreeRenderer {
     }
 
     _getRootWidth() {
-        const rootWidth = this._getTextWidth(this.tree.root.title, rendererRootCfg.MIN_WIDTH, Number.POSITIVE_INFINITY);
+        const rootWidth = this._getTextWidth(this.tree.root.title, rendererRootConfig.MIN_WIDTH, Number.POSITIVE_INFINITY);
         return rootWidth;
     }
 
     _drawRoot(selection) {
-        const leftTop = new Point(rendererRootCfg.leftTop.x, rendererRootCfg.leftTop.y);
+        const leftTop = new Point(rendererRootConfig.leftTop.x, (this.canvasSize.height - rendererRootConfig.HEIGHT) / 2);
         const rootWidth = this._getRootWidth();
-        const rightBottom = new Point(rendererRootCfg.leftTop.x + rootWidth, rendererRootCfg.leftTop.y + rendererRootCfg.HEIGHT);
+        const rightBottom = new Point(leftTop.x + rootWidth, leftTop.y + rendererRootConfig.HEIGHT);
         const rootRect = new Rect(leftTop, rightBottom);
         this.treeWithRects = {
             node: this.tree.root,
             rect: rootRect,
             children: [],
         };
-        const leftTopRoot = new Point(rendererRootCfg.leftTop.x, rendererRootCfg.leftTop.y);
-        this._drawElementRect(leftTopRoot, rootWidth, rendererRootCfg.HEIGHT, this.tree.root.title);
+        this._drawElementRect(leftTop, rootWidth, rendererRootConfig.HEIGHT, this.tree.root.title);
         this._drawSelection(rootRect, selection, this.tree.root);
         if (this.dragInfo && this.dragInfo.intersectedNode == this.tree.root) {
-            this._drawOutline(leftTopRoot, rootWidth, rendererRootCfg.HEIGHT, true);
+            this._drawOutline(leftTop, rootWidth, rendererRootConfig.HEIGHT, true);
         }
     }
 
@@ -266,29 +262,30 @@ class TreeRenderer {
     }
 
     _drawMainChild(selection) {
-        const rightRootCenter = new Point(rendererRootCfg.leftTop.x + this._getRootWidth(), rendererRootCfg.leftTop.y + rendererRootCfg.HEIGHT / 2);
+        const rootRect = this.treeWithRects.rect;
+        const rightRootCenter = new Point(rootRect.leftTop.x + this._getRootWidth(), rootRect.leftTop.y + rendererRootConfig.HEIGHT / 2);
         const children = this.tree.root.children;
         let connectFrom = null;
         if (children.length > 0) {
-            connectFrom = new Point(rightRootCenter.x + rendererRootCfg.INDENT, rightRootCenter.y);
+            connectFrom = new Point(rightRootCenter.x + rendererRootConfig.INDENT, rightRootCenter.y);
             const startConnectFromRoot = new Point(rightRootCenter.x, rightRootCenter.y);
             this._drawConnection(startConnectFromRoot, connectFrom);
         }
         const fullHeight = this._getMainSectionsHeight(children);
         const startPoint = new Point(
-            rendererMainCfg.DISTANCE + rightRootCenter.x - rendererMainCfg.MIN_WIDTH / 2,
+            rendererMainConfig.DISTANCE + rightRootCenter.x - rendererMainConfig.MIN_WIDTH / 2,
             rightRootCenter.y - fullHeight / 2);
         const elementSettings = {
             elements: children,
             selection: selection,
             startPoint: startPoint,
             currentNode: this.treeWithRects,
-            config: rendererMainCfg,
+            config: rendererMainConfig,
             connectionPoint: connectFrom,
             drawElementFn: (point, elementWidth, height, title) => this._drawElementRect(point, elementWidth, height, title),
             getMarginTopFn: (children) => this._getMainMarginTop(children),
             getMarginBottomFn: (children) => this._getMainMarginBottom(children),
-            calculateConnectionYFn: (pointY) => pointY + rendererMainCfg.HEIGHT / 2,
+            calculateConnectionYFn: (pointY) => pointY + rendererMainConfig.HEIGHT / 2,
         };
         this._drawTreeElement(elementSettings);
     };
@@ -296,20 +293,20 @@ class TreeRenderer {
     _drawSubsections(bottomPoint, subsections, selection, connectionPoint, currentNode) {
         if (subsections.length != 0) {
             const fullHeight = this._getSubsectionsHeight(subsections);
-            const x = bottomPoint.x + rendererSubCfg.DISTANCE;
-            const y = bottomPoint.y - rendererSubCfg.HEIGHT / 2;
+            const x = bottomPoint.x + rendererSubConfig.DISTANCE;
+            const y = bottomPoint.y - rendererSubConfig.HEIGHT / 2;
             const startPoint = new Point(x, y - fullHeight / 2);
             const elementSettings = {
                 elements: subsections,
                 selection: selection,
                 startPoint: startPoint,
                 currentNode: currentNode,
-                config: rendererSubCfg,
+                config: rendererSubConfig,
                 connectionPoint: connectionPoint,
                 drawElementFn: (point, elementWidth, height, title) => this._drawElementLine(point, elementWidth, height, title),
                 getMarginTopFn: (children) => this._getSubsectionMarginTop(children),
                 getMarginBottomFn: (children) => this._getSubsectionMarginBottom(children),
-                calculateConnectionYFn: (pointY) => pointY + rendererSubCfg.HEIGHT,
+                calculateConnectionYFn: (pointY) => pointY + rendererSubConfig.HEIGHT,
             };
             this._drawTreeElement(elementSettings);
         }
@@ -336,6 +333,15 @@ class TreeRenderer {
             const title = element.title;
             const point = new Point(startPoint.x, startPoint.y + topOffset);
             const rightBottom = new Point(point.x + elementWidth, point.y + config.HEIGHT);
+            if (rightBottom.x > this.canvasSize.width) {
+                this.canvasSize.width = rightBottom.x + globalConfig.CANVAS_INDENT;
+            }
+            if (point.y < 0) {
+                this.canvasSize.height -= point.y + globalConfig.CANVAS_INDENT;
+            }
+            if (point.y + config.HEIGHT > this.canvasSize.height) {
+                this.canvasSize.height = point.y + config.HEIGHT + globalConfig.CANVAS_INDENT;
+            }
             const elementRect = new Rect(point, rightBottom);
             const newNode = {
                 node: element,
@@ -368,7 +374,7 @@ class TreeRenderer {
     _getSubsectionMarginTop(subsections) {
         let marginTop = 0;
         if (subsections.length > 0) {
-            marginTop += Math.max(0, this._calculateMargin(subsections, rendererSubCfg.HEIGHT));
+            marginTop += Math.max(0, this._calculateMargin(subsections, rendererSubConfig.HEIGHT));
             marginTop += this._getSubsectionMarginTop(subsections[0].children);
         }
         return marginTop;
@@ -377,7 +383,7 @@ class TreeRenderer {
     _getSubsectionMarginBottom(subsections) {
         let marginBottom = 0;
         if (subsections.length > 0) {
-            marginBottom += Math.max(0, this._calculateMargin(subsections, rendererSubCfg.HEIGHT));
+            marginBottom += Math.max(0, this._calculateMargin(subsections, rendererSubConfig.HEIGHT));
             marginBottom += this._getSubsectionMarginBottom(subsections[subsections.length - 1].children);
         }
         return marginBottom;
@@ -387,15 +393,15 @@ class TreeRenderer {
         let height = 0;
         for (let i = 0; i < subsections.length; ++i) {
             const subsection = subsections[i];
-            height += rendererSubCfg.HEIGHT;
+            height += rendererSubConfig.HEIGHT;
             if (i != 0) {
                 height += this._getSubsectionMarginTop(subsection.children);
-                height += rendererSubCfg.MARGIN;
+                height += rendererSubConfig.MARGIN;
             }
             if (i != subsections.length - 1) {
                 const bottom = this._getSubsectionMarginBottom(subsection.children);
                 height += bottom;
-                height += rendererSubCfg.MARGIN;
+                height += rendererSubConfig.MARGIN;
             }
         }
         return height;
@@ -410,7 +416,7 @@ class TreeRenderer {
         if (subsections.length > 0) {
             marginTop += Math.max(0, this._calculateMargin(subsections, this._getMainSectionSize()));
             marginTop += this._getSubsectionMarginTop(subsections[0].children);
-            marginTop += rendererMainCfg.MARGIN;
+            marginTop += rendererMainConfig.MARGIN;
         }
         return marginTop;
     }
@@ -420,7 +426,7 @@ class TreeRenderer {
         if (subsections.length > 0) {
             marginBottom += Math.max(0, this._calculateMargin(subsections, this._getMainSectionSize()));
             marginBottom += this._getSubsectionMarginBottom(subsections[subsections.length - 1].children);
-            marginBottom += rendererMainCfg.MARGIN;
+            marginBottom += rendererMainConfig.MARGIN;
         }
         return marginBottom;
     }
@@ -429,24 +435,24 @@ class TreeRenderer {
         let height = 0;
         for (let i = 0; i < mainSections.length; ++i) {
             const mainSection = mainSections[i];
-            height += rendererMainCfg.HEIGHT;
+            height += rendererMainConfig.HEIGHT;
             if (i != 0) {
                 height += this._getMainMarginTop(mainSection.children);
-                height += rendererMainCfg.MARGIN;
+                height += rendererMainConfig.MARGIN;
             }
             if (i != mainSections.length - 1) {
                 height += this._getMainMarginBottom(mainSection.children);
-                height += rendererMainCfg.MARGIN;
+                height += rendererMainConfig.MARGIN;
             }
         }
         return height;
     }
 
     _getSubsectionSize() {
-        return rendererSubCfg.HEIGHT + rendererSubCfg.MARGIN * 2;
+        return rendererSubConfig.HEIGHT + rendererSubConfig.MARGIN * 2;
     }
 
     _getMainSectionSize() {
-        return rendererMainCfg.HEIGHT + rendererMainCfg.MARGIN * 2;
+        return rendererMainConfig.HEIGHT + rendererMainConfig.MARGIN * 2;
     }
 }

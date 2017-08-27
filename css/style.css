@@ -75,7 +75,7 @@ body
 #canvasDiv
 {
     position: relative;
-    margin: 10px;
+    margin: 10px auto;
     border: 2px solid #00a085;
     width: 98%;
     height: 790px;
@@ -165,11 +165,45 @@ body
     transform: translateY(0);
 }
 
+.information_box
+{
+    width: 80%;
+    margin: 20px auto;
+}
+
+li
+{
+    list-style-type: none;
+    color: #506a85;
+    font-size: 24px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
 @media screen and (min-width: 480px)
 {
     .modal_dialog
     {
         top: 50px;
+    }
+}
+
+@media screen and (max-width: 600px)
+{
+    .header_background
+    {
+        height: 230px;
+    }
+
+    .option_button, .button_block
+    {
+        float: none;
+    }
+
+    .title_name
+    {
+        font: 900 40px "Lato", sans-serif;
     }
 }
 
