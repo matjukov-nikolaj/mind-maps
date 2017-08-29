@@ -195,7 +195,7 @@ class TreeController {
         }
     }
 
-    _onMouseDown() {
+    _addMouseDownHandler() {
         this.canvasBlock.addEventListener('mousedown', (e) => {
             const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
             const checkPoint = new Point(e.clientX - offset.x, e.clientY - offset.y);
@@ -207,7 +207,7 @@ class TreeController {
         }, false);
     }
 
-    _onMouseMove() {
+    _addMouseMoveHandler() {
         this.canvasBlock.addEventListener('mousemove', (e) => {
             if (this.renderer.dragInfo) {
                 const offset = new Point(this.canvas.getBoundingClientRect().left, this.canvas.getBoundingClientRect().top);
@@ -218,7 +218,7 @@ class TreeController {
         }, false);
     }
 
-    _onMouseUp() {
+    _addMouseUpHandler() {
         this.canvasBlock.addEventListener('mouseup', (e) => {
             if (this.renderer.dragInfo)
             {
@@ -278,8 +278,8 @@ class TreeController {
         this._addKeyDownHandler();
         this._addMouseClickHandler();
         this._addCanvasDoubleClickHandler();
-        this._onMouseDown();
-        this._onMouseMove();
-        this._onMouseUp();
+        this._addMouseDownHandler();
+        this._addMouseMoveHandler();
+        this._addMouseUpHandler();
     }
 }

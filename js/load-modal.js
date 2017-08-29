@@ -2,12 +2,11 @@ class LoadModal {
     constructor(tree) {
         this.tree = tree;
         this.modalLoad = document.getElementById("modalLoad");
-        this.modalLoad.focus();
         this.modalLoadFile = document.getElementById("modalLoadFile");
         this.openButton = document.getElementById("openLoad");
         this.closeButton = document.getElementById("closeLoad");
         this.onLoadTree = () => {};
-        this.openLoadWindow = new Modal(this.modalLoad, this.modalLoadFile, this.openButton, this.closeButton);
+        this.modal = new Modal(this.modalLoad, this.modalLoadFile, this.openButton, this.closeButton);
         this._addLoadButtonClickHandler();
     }
 
@@ -30,9 +29,9 @@ class LoadModal {
                 const tree = loader.load(json);
                 this.tree = tree;
                 this.onLoadTree(tree);
-                this.openLoadWindow.hideModal(this.modalLoad, this.modalLoadFile);
+                this.modal.hideModal(this.modalLoad, this.modalLoadFile);
             } catch (e) {
-                alert(e);
+                alert("Invalid json");
             }
         };
     }

@@ -1,24 +1,24 @@
 class Modal {
-    constructor(modalGeneral, modalPrivate, openButton, closeButton) {
-        this.modalGeneral = modalGeneral;
-        this.modalPrivate = modalPrivate;
+    constructor(overlay, content, openButton, closeButton) {
+        this.overlay = overlay;
+        this.content = content;
         this.openButton = openButton;
         this.openButton.onclick = () => {
-            this._showModal(this.modalGeneral, this.modalPrivate);
+            this._showModal(this.overlay, this.content);
         };
         this.closeButton = closeButton;
     }
 
-    _showModal(modalGeneral, modalPrivate) {
-        modalGeneral.classList.add("open_modal_window");
-        modalPrivate.classList.add("open_modal_content");
-        this.closeButton.onclick = () => {
-            this.hideModal(this.modalGeneral, this.modalPrivate);
-        }
+    hideModal(overlay, content) {
+        overlay.classList.remove("open_modal_window");
+        content.classList.remove("open_modal_content");
     }
 
-    hideModal(modalGeneral, modalPrivate) {
-        modalGeneral.classList.remove("open_modal_window");
-        modalPrivate.classList.remove("open_modal_content");
+    _showModal(overlay, content) {
+        overlay.classList.add("open_modal_window");
+        content.classList.add("open_modal_content");
+        this.closeButton.onclick = () => {
+            this.hideModal(this.overlay, this.content);
+        }
     }
 }

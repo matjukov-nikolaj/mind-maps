@@ -8,7 +8,6 @@ class TreeSaver {
     saveNode(node) {
         const json = {};
         json[globalConfig.TITLE_KEY] = node.title;
-
         const children = [];
         for (const child of node.children) {
             children.push(this.saveNode(child));

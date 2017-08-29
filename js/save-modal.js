@@ -2,11 +2,10 @@ class SaveModal {
     constructor(tree) {
         this.tree = tree;
         this.modalSave = document.getElementById("modalSave");
-        this.modalSave.focus();
         this.modalInput = document.getElementById("modalInput");
         this.closeSave = document.getElementById("closeSave");
         this.openSave = document.getElementById("openDownload");
-        this.openSaveModal = new Modal(this.modalSave, this.modalInput, this.openSave, this.closeSave);
+        this.modal = new Modal(this.modalSave, this.modalInput, this.openSave, this.closeSave);
         this._addSaveButtonClickHandler();
     }
 
@@ -24,7 +23,7 @@ class SaveModal {
             } else {
                 saveAs(blob, "mind-map.json");
             }
-            this.openSaveModal.hideModal(this.modalSave, this.modalInput);
+            this.modal.hideModal(this.modalSave, this.modalInput);
         }
     }
 }
