@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+{% block title %}Mind-maps sign up{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="css/sign_in.css">
+{% endblock %}
+{% block content %}
+    <div class="authorization">
+        <div class="auth_form">
+            <div class="auth_form_header">
+                <h1>Join MIND-MAPS</h1>
+                <p>Create your personal account.</p>
+            </div>
+            <div class="input_form">
+                <h3>Username</h3>
+                <input type="text" name="username" class="textinput" placeholder="">
+            </div>
+            <div class="input_form">
+                <h3>Email address</h3>
+                <input type="text" name="login" class="textinput" placeholder="">
+            </div>
+            <div class="input_form">
+                <h3>Password</h3>
+                <input type="password" name="password" class="textinput" placeholder="">
+            </div>
+            <div class="button_block">
+                <input type="button" name="submit-login" class="style_button" value="Sign up">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}
