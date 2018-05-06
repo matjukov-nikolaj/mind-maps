@@ -1,0 +1,17 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+        http://symfony.com/schema/dic/services/services-1.0.xsd
+        http://symfony.com/schema/dic/doctrine
+        http://symfony.com/schema/dic/doctrine/doctrine-1.0.xsd">
+
+    <doctrine:config>
+        <doctrine:dbal
+                driver="pdo_mysql"
+                host="localhost"
+                dbname="mind_maps"
+                user="root"
+                password="u95xpttm" />
+    </doctrine:config>
+</container>

@@ -10,8 +10,10 @@ class SignInController extends Controller
     /**
      * @Route("/sign_in")
      */
-    public function number()
+    public function signInAction()
     {
+        //die();
+        //phpinfo();
         return $this->render('sign_in.html.twig');
     }
 }

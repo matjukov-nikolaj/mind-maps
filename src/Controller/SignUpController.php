@@ -10,7 +10,7 @@ class SignUpController extends Controller
     /**
      * @Route("/sign_up")
      */
-    public function number()
+    public function signUpAction()
     {
         return $this->render('sign_up.html.twig');
     }
