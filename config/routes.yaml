@@ -1,3 +1,2 @@
-sign_in:
-    path: /
-    controller: App\Controller\SignInController::signInAction
+logout:
+    path: /logout

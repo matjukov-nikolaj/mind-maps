@@ -5,15 +5,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 
-class SignInController extends Controller
+class MindMapsController extends Controller
 {
     /**
-     * @Route("/sign_in")
+     * @Route("/mind_maps")
      */
-    public function signInAction()
+    public function MindMapsAction()
     {
-        //die();
-        //phpinfo();
-        return $this->render('sign_in.html.twig');
+        return $this->render('mind_maps_creator.html.twig');
     }
 }

@@ -9,18 +9,21 @@
     <div class="authorization">
         <div class="sign_in">
             <div class="auth_form">
+			    {% if error %}
+					<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+				{% endif %}
                 <form accept-charset="UTF-8" method="post">
                     <div class="auth_form_header">
                         <h1>Have an account? Sign in.</h1>
                     </div>
                     <div class="input_form">
-                        <input type="text" name="login" class="textinput" placeholder="Username or email">
+						<input type="text" id="username" class="textinput" name="_username" placeholder="Username" value="{{ last_username }}" />
                     </div>
                     <div class="input_form">
-                        <input type="password" name="password" class="textinput" placeholder="Password">
+					    <input type="password" class="textinput" placeholder="Password" id="password" name="_password" />
                     </div>
                     <div class="button_block">
-                        <input type="button" name="submit-login" class="style_button" value="Sign in">
+						<button type="submit" class="style_button" value="/personal">Sign In</button>
                     </div>
                 </form>
             </div>

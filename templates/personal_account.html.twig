@@ -1,0 +1,47 @@
+{% extends "base.html.twig" %}
+{#{% block title %}Mind-maps profile{% endblock %}#}
+{% block title %}Mind-maps profile{% endblock %}
+{% block head %}
+    {#{{ parent }}#}
+    <link rel="stylesheet" href="css/personal_account.css">
+{% endblock %}
+{% block content %}
+	<div class="personal_account_field">
+		<div class="user_information">
+			<div class="user_photo_block">
+				<img class="user_photo" src="images/noavatar.png">
+			</div>
+			<div class="logout_button">
+				<a class="style_button" href="{{ logout_path('main') }}">Logout</a>
+			</div>
+		</div>
+		<div class="mind_maps_info">
+			<div class="create_new_mind_map">
+				<div class="create_button">
+					<a class="style_button" href="/mind_maps">Create a new mind maps</a>
+				</div>
+				<div class="load_button">
+					<button id="openLoad" class="style_button" title="load">load</button>
+				</div>
+			</div>
+			<div class="existing_mind_maps">
+			</div>
+		</div>
+	</div>
+	<div id="modalLoad" class="modal">
+		<div class="modal_dialog">
+			<div id="modalLoadFile" class="modal_content">
+				<button id="closeLoad" class="modal_close"></button>
+				<h1 class="modal_title">Load the file</h1>
+				<div class="choose_file">
+					<input type="file" id="files" name="files[]" accept=".json"/>
+					<output id="list"></output>
+				</div>
+				<div class="button_modal_load">
+					<button id="loadButton" class="style_button" title="download">load</button>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block footer %}{% endblock %}

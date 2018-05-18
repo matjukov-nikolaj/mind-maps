@@ -19,4 +19,12 @@ security:
             pattern:    ^/
             http_basic: ~
             provider: our_db_provider
+
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: /sign_up
+                always_use_default_target_path: true
+
     # ...

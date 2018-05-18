@@ -15,8 +15,6 @@ class RegistrationController extends Controller
      */
     public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
-//        phpinfo();
-//        die();
         // 1) build the form
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -39,6 +37,11 @@ class RegistrationController extends Controller
             // maybe set a "flash" success message for the user
 
             return $this->redirectToRoute('sign_in');
+			// return $this->render(
+				// 'sign_in.html.twig', array(
+				// 'last_username' => "",
+				// 'error'         => false,
+			// ));
         }
 
         return $this->render(

@@ -118,7 +118,7 @@ body {
     background-position: right;
     background-repeat: no-repeat;
     background-color: #ffffff;
-    background-image: url(../../../dev/projects/local/mm/mind-maps/images/button_close.png);
+    background-image: url(../images/button_close.png);
     border: 0;
     margin-top: 32px;
     margin-right: 29px;
@@ -234,4 +234,8 @@ li {
 
 input:focus {
     outline: none;
+}
+
+a {
+    text-decoration: none;
 }

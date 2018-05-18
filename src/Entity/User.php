@@ -30,6 +30,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
+	 
      * @Assert\NotBlank()
      */
     private $username;
@@ -99,12 +100,35 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        // TODO: Implement getRoles() method.
+        return array('ROLE_USER');
     }
 
     public function eraseCredentials()
     {
         // TODO: Implement eraseCredentials() method.
     }
-    // other methods, including security methods like getRoles()
+
+    /** @see \Serializable::serialize() */
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
+    }
+
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
+    {
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, ['allowed_classes' => false]);
+    }
 }
