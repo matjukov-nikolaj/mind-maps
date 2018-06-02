@@ -36,7 +36,6 @@ body {
 .button_block {
     margin: 10px;
     float: left;
-    width: 130px;
 }
 
 .option_button {
@@ -50,7 +49,6 @@ body {
     letter-spacing: 2px;
     color: #ffffff;
     display: inline-block;
-    width: 100%;
     text-transform: uppercase;
     font: bold 18px "Source Sans Pro", sans-serif;
     background: #00bc9c;

@@ -51,6 +51,11 @@ class User implements UserInterface
 
     // other properties and methods
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getEmail()
     {
         return $this->email;
@@ -131,4 +136,5 @@ class User implements UserInterface
             // $this->salt
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
+
 }

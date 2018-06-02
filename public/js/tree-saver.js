@@ -13,7 +13,7 @@ class TreeSaver {
             children.push(this.saveNode(child));
         }
         json[globalConfig.CHILDREN_KEY] = children;
-        console.log(json);
+        //console.log(json);
         return json;
     }
 }
