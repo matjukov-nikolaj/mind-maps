@@ -1,0 +1,154 @@
+.personal_account_field {
+    height: 89vh;
+    padding: 50px;
+    background-color: rgba(242, 245, 247, 0.9);
+}
+
+.user_information {
+    height: 70px;
+    padding: 0 15px;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #d8dee2;
+}
+
+.header_title {
+    width: 33.3%;
+    float:left;
+
+}
+
+.title_name {
+    font: 900 50px "Lato", sans-serif;
+    text-align: center;
+    color: #506a85;
+    text-transform: uppercase;
+}
+
+.right {
+    float:right;
+    margin: 19px 0px;
+}
+
+.mind_maps_info {
+}
+
+.create_new_mind_map {
+    height: 70px;
+}
+
+.existing_mind_maps {
+    overflow-y: scroll;
+    width: 100%;
+    max-height: 715px;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #d8dee2;
+}
+
+.username_block {
+    float: left;
+    width: 33.3%;
+    padding: -11px;
+}
+
+.username
+{
+    font: 700 38px "Lato", sans-serif;
+    color: #00bc9c;
+    margin: 11px;
+}
+
+.mind_map_file_container {
+    width: 20%;
+    padding: -15px;
+    float: left;
+}
+
+.mind_map_file
+{
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+    margin: 15px;
+    min-height: 300px;
+}
+
+.mind_map_icon_block
+{
+    position: relative;
+    width: 100%;
+}
+
+.mind_map_icon
+{
+    width: 100%;
+}
+
+.mind_map_name {
+    text-align: center;
+    color: #506a85;
+    font-size: 30px;
+    margin: 0 auto;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    word-wrap: break-word;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.mind_map_info {
+    width: 100%;
+}
+.mind_map_name_block {
+    width: 70%;
+    max-height: 35px;
+    overflow: hidden;
+    float: left;
+    margin: 10px;
+}
+
+.mind_map_download_icon {
+    width: 15%;
+    float: left;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.download_icon {
+    width: 100%;
+}
+
+@media screen and (max-width: 1125px) {
+    .title_name {
+        font: 900 40px "Lato", sans-serif;
+    }
+
+    .mind_map_file_container {
+        width: 33.3%;
+    }
+}
+
+.error_name_block {
+    text-align: center;
+    display: none;
+    color: #00a085;
+    font-size: 20px;
+    margin: 0 auto;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+}
+
+.delete_file {
+    position: absolute;
+    top: -25px;
+    right: -25px;
+}
+
+.message {
+    text-align: center;
+    color: #506a85;
+    font-size: 28px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: 20px auto;
+}

@@ -1,0 +1,110 @@
+.modal_title {
+    opacity: 1;
+    padding-top: 32px;
+    text-align: center;
+    font-size: 44px;
+    color: #506a85;
+    font-family: "Lato", sans-serif;
+    width: 88%;
+    margin: 0 auto;
+    font-weight: bold;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1005;
+    background-color: rgba(242, 245, 247, 0.9);
+    visibility: hidden;
+    transition: all 0.2s;
+}
+
+.modal_dialog {
+    position: relative;
+    top: 50px;
+    max-width: 970px;
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+}
+
+.modal_close {
+    width: 25px;
+    height: 26px;
+    float: right;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    background-image: url(../images/button_close.png);
+    border: 0;
+    margin-top: 32px;
+    margin-right: 29px;
+    cursor: pointer;
+}
+
+.modal_content {
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 9px 13px 57px 6px rgba(0, 0, 0, 0.1);
+    transform: scale(0.6);
+    opacity: 0;
+    transform-origin: top;
+    transition: all 0.2s;
+}
+
+.open_modal_content {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.open_modal_window {
+    display: block;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+@media screen and (min-width: 480px) {
+    .modal_dialog {
+        top: 50px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .header_background {
+        height: 230px;
+    }
+
+    .option_button, .button_block {
+        float: none;
+    }
+
+    .title_name {
+        font: 900 40px "Lato", sans-serif;
+    }
+}
+
+.choose_file {
+    width: 240px;
+    margin: 50px auto;
+}
+
+.button_modal_load {
+    margin: 20px auto;
+    width: 65px;
+}
+
+.input_save_block {
+    width: 50%;
+    margin: 30px auto;
+}
+
+.input_save {
+    width: 100%;
+    font: bold 18px "Source Sans Pro", sans-serif;
+    border: 1px solid #cecece;
+    background: #f5f7fa;
+}

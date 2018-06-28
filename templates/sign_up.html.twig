@@ -2,7 +2,8 @@
 {% form_theme form 'fields.html.twig' %}
 {% block title %}Mind-maps sign up{% endblock %}
 {% block head %}
-    <link rel="stylesheet" href="css/sign_in.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/button.css">
 {% endblock %}
 {% block content %}
     <div class="authorization">
@@ -28,7 +29,7 @@
                 <h3>Repeat Password</h3>
 				{{ form_row(form.plainPassword.second) }}
             </div>
-            <div class="button_block">
+            <div class="sign_button button_sign_up">
 				<button type="submit" class="style_button" >Sign up</button>
             </div>
 			{{ form_end(form) }}

@@ -31,11 +31,6 @@ class MindMap
      */
     private $value;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $date;
-
     public function getId()
     {
         return $this->id;
@@ -73,18 +68,6 @@ class MindMap
     public function setValue(string $value): self
     {
         $this->value = $value;
-
-        return $this;
-    }
-
-    public function getDate(): ?\DateTimeInterface
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
 
         return $this;
     }

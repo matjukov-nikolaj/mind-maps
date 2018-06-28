@@ -61,11 +61,6 @@ p
     margin: 20px auto;
 }
 
-.button_block {
-    width: 130px;
-    margin: 20px auto;
-}
-
 .create_account_block {
     margin: 20px auto;
     border: 1px solid #d8dee2;
@@ -80,24 +75,6 @@ p
     text-align: center;
 }
 
-.style_button {
-    padding: 10px;
-    letter-spacing: 2px;
-    color: #ffffff;
-    display: inline-block;
-    width: 100%;
-    text-transform: uppercase;
-    font: bold 18px "Source Sans Pro", sans-serif;
-    background: #00bc9c;
-    text-align: center;
-    border-radius: 3px;
-    border-left: none;
-    border-right: none;
-    border-top: none;
-    border-bottom: 2px solid #00a085;
-    cursor: pointer;
-}
-
 input:focus {
     outline-color: #00bc9c;
 }
@@ -105,4 +82,26 @@ input:focus {
 a {
     color: #0366d6;
     text-decoration: none;
+}
+
+.message {
+    text-align: center;
+    color: #506a85;
+    font-size: 28px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: 20px auto;
+}
+
+li {
+    list-style-type: none;
+    color: #00bc9c;
+    font-size: 14px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: 5px;
+}
+
+.button_sign_up {
+    margin: 0 auto;
 }

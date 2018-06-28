@@ -3,31 +3,56 @@
 {% block title %}Mind-maps profile{% endblock %}
 {% block head %}
     {#{{ parent }}#}
-    <link rel="stylesheet" href="css/personal_account.css">
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/personal.css">
+    <link rel="stylesheet" href="css/modal.css">
 {% endblock %}
 {% block content %}
     <div class="personal_account_field">
         <div class="user_information">
-            <div class="user_photo_block">
-                <img class="user_photo" src="images/noavatar.png">
+            <div class="username_block">
+                <h1 class="username">{{ username }}</h1>
             </div>
-            <h1>{{ username }}</h1>
+            <div class="header_title">
+                <h1 class="title_name">mind-maps</h1>
+            </div>
             <div class="logout_button">
-                <a class="style_button" href="{{ logout_path('main') }}">Logout</a>
+                <a class="style_button right" href="{{ logout_path('main') }}">Logout</a>
             </div>
         </div>
         <div class="mind_maps_info">
             <div class="create_new_mind_map">
                 <div class="create_button">
-                    <a class="style_button" href="/mind_maps">Create a new mind maps</a>
+                    <a class="style_button" href="/create_mind_map">Create a new mind map</a>
                 </div>
                 <div class="load_button">
                     <button id="openLoad" class="style_button" title="load">load</button>
                 </div>
             </div>
             <div class="existing_mind_maps">
-                {#{% for name in mindMapsNames %}#}
-                {#{% endfor %}#}
+                {% if mindMapsNames|length == 0 %}
+                    <p class="message">You don't have mind maps, create it now.</p>
+                {% endif %}
+                {% for name in mindMapsNames %}
+                    <div class="mind_map_file_container">
+                        <div class="mind_map_file">
+                            <div class="mind_map_icon_block">
+                                <img class="mind_map_icon" src="images/mind_map_icon.png">
+                                <button class="modal_close delete_file"></button>
+                            </div>
+
+                            <div class="mind_map_info">
+                                <div class="mind_map_name_block">
+                                    <a class="mind_map_name" href={{ "/mind_map/" ~ name }}>{{ name|e }}</a>
+                                </div>
+                                <div class="mind_map_download_icon">
+                                    <img class="mind_map_icon" src="images/download_arrow.png">
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -40,11 +65,29 @@
                     <input type="file" id="files" name="files[]" accept=".json"/>
                     <output id="list"></output>
                 </div>
+                <p id="nameExist" class="error_name_block">Name has already existed.</p>
+                <p id="emptyInput" class="error_name_block">Please, enter a name.</p>
+                <div class="input_save_block">
+                    <input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">
+                </div>
                 <div class="button_modal_load">
                     <button id="loadButton" class="style_button" title="download">load</button>
                 </div>
             </div>
         </div>
     </div>
+    <script src="/js/vendor/jQuery.js"></script>
+    <script src="/js/vendor/file-saver.js"></script>
+    <script src="/js/tree.js"></script>
+    <script src="/js/node.js"></script>
+    <script src="/js/global-config.js"></script>
+    <script src="/js/tree-saver.js"></script>
+    <script src="/js/tree-loader.js"></script>
+    <script src="/js/modal.js"></script>
+    <script src="/js/load-modal.js"></script>
+    <script src="/js/download-controller.js"></script>
+    <script src="/js/api-config.js"></script>
+    <script src="/js/mind-map-api.js"></script>
+    <script src="/js/delete-mind-map-controller.js"></script>
 {% endblock %}
 {% block footer %}{% endblock %}

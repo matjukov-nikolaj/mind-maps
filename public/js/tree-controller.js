@@ -230,7 +230,10 @@ class TreeController {
 
     _closeInput() {
         if (this.input) {
-            this.selection.curr.title = this.input.value;
+            const inputValue = this.input.value;
+            if (inputValue) {
+                this.selection.curr.title = this.input.value;
+            }
             this._redrawingTree();
             this.canvasBlock.removeChild(this.input);
             this.input = null;

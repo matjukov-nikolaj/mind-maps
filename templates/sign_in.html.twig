@@ -3,14 +3,15 @@
 {% block title %}Mind-maps sign in{% endblock %}
 {% block head %}
     {#{{ parent }}#}
-    <link rel="stylesheet" href="css/sign_in.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/button.css">
 {% endblock %}
 {% block content %}
     <div class="authorization">
         <div class="sign_in">
             <div class="auth_form">
 			    {% if error %}
-					<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+					<div class="message">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 				{% endif %}
                 <form accept-charset="UTF-8" method="post">
                     <div class="auth_form_header">
@@ -22,7 +23,7 @@
                     <div class="input_form">
 					    <input type="password" class="textinput" placeholder="Password" id="password" name="_password" />
                     </div>
-                    <div class="button_block">
+                    <div class="sign_button">
 						<button type="submit" class="style_button" value="/personal">Sign In</button>
                     </div>
                 </form>
