@@ -24,5 +24,3 @@ class DownloadController {
         saveAs(blob, thisPtr.name + ".json");
     }
 }
-
-const downloadController = new DownloadController();

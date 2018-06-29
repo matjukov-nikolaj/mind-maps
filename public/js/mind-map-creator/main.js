@@ -8,7 +8,7 @@ const treeRenderer = new TreeRenderer(allTree);
 const treeController = new TreeController(allTree, treeRenderer);
 
 const saveModalWindow = new SaveAsModal(allTree);
-const mindMapLoader = new MindMapLoader();
+const mindMapLoader = new MindMapLoaderController(allTree);
 const saveChanges = new SaveChangesController(allTree);
 
 mindMapLoader.onLoadTree = (tree) => {

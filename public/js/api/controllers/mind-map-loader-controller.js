@@ -1,4 +1,4 @@
-class MindMapLoader {
+class MindMapLoaderController {
     constructor(tree) {
         this.tree = tree;
         this._mindMapLoaderHandler();

@@ -19,10 +19,10 @@ services:
         exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
     # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
+    # as action arguments even if you don't extend any base mind-map-api class
     App\Controller\:
         resource: '../src/Controller'
-        tags: ['controller.service_arguments']
+        tags: ['mind-map-api.service_arguments']
 
 
     # add more service definitions when explicit configuration is needed

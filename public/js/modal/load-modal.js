@@ -82,5 +82,3 @@ class LoadModal {
         };
     }
 }
-
-const loadmodal = new LoadModal();

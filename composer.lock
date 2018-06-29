@@ -1800,16 +1800,16 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v4.0.8",
+            "version": "v4.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "db6063ab6e71c0d4910328a4d10eba197e1d6b40"
+                "reference": "73358508628c10832e87c3ff18db527d48387afc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/db6063ab6e71c0d4910328a4d10eba197e1d6b40",
-                "reference": "db6063ab6e71c0d4910328a4d10eba197e1d6b40",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/73358508628c10832e87c3ff18db527d48387afc",
+                "reference": "73358508628c10832e87c3ff18db527d48387afc",
                 "shasum": ""
             },
             "require": {
@@ -1825,7 +1825,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -1852,7 +1852,7 @@
             ],
             "description": "Symfony Asset Component",
             "homepage": "https://symfony.com",
-            "time": "2018-01-03T07:38:00+00:00"
+            "time": "2018-05-30T07:26:09+00:00"
         },
         {
             "name": "symfony/cache",
@@ -3286,6 +3286,61 @@
             "time": "2017-12-12T01:47:50+00:00"
         },
         {
+            "name": "symfony/polyfill-ctype",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-ctype.git",
+                "reference": "7cc359f1b7b80fc25ed7796be7d96adc9b354bae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/7cc359f1b7b80fc25ed7796be7d96adc9b354bae",
+                "reference": "7cc359f1b7b80fc25ed7796be7d96adc9b354bae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                },
+                {
+                    "name": "Gert de Pagter",
+                    "email": "BackEndTea@gmail.com"
+                }
+            ],
+            "description": "Symfony polyfill for ctype functions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "ctype",
+                "polyfill",
+                "portable"
+            ],
+            "time": "2018-04-30T19:57:29+00:00"
+        },
+        {
             "name": "symfony/polyfill-intl-icu",
             "version": "v1.7.0",
             "source": {
@@ -4160,16 +4215,16 @@
         },
         {
             "name": "symfony/twig-bundle",
-            "version": "v4.0.8",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bundle.git",
-                "reference": "fdaa069cd5cf3918b03d10a5e5819b064451ee4c"
+                "reference": "158bf522a8df74b0a322421bbde14a1647197007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bundle/zipball/fdaa069cd5cf3918b03d10a5e5819b064451ee4c",
-                "reference": "fdaa069cd5cf3918b03d10a5e5819b064451ee4c",
+                "url": "https://api.github.com/repos/symfony/twig-bundle/zipball/158bf522a8df74b0a322421bbde14a1647197007",
+                "reference": "158bf522a8df74b0a322421bbde14a1647197007",
                 "shasum": ""
             },
             "require": {
@@ -4177,6 +4232,7 @@
                 "symfony/config": "~3.4|~4.0",
                 "symfony/http-foundation": "~3.4|~4.0",
                 "symfony/http-kernel": "~3.4|~4.0",
+                "symfony/polyfill-ctype": "~1.8",
                 "symfony/twig-bridge": "^3.4.3|^4.0.3",
                 "twig/twig": "~1.34|~2.4"
             },
@@ -4202,7 +4258,7 @@
             "type": "symfony-bundle",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -4229,7 +4285,7 @@
             ],
             "description": "Symfony TwigBundle",
             "homepage": "https://symfony.com",
-            "time": "2018-02-14T14:11:10+00:00"
+            "time": "2018-05-16T14:41:07+00:00"
         },
         {
             "name": "symfony/validator",
