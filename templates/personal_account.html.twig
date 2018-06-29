@@ -2,7 +2,7 @@
 {#{% block title %}Mind-maps profile{% endblock %}#}
 {% block title %}Mind-maps profile{% endblock %}
 {% block head %}
-    {#{{ parent }}#}
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="css/button.css">
     <link rel="stylesheet" href="css/personal.css">
     <link rel="stylesheet" href="css/modal.css">
@@ -43,7 +43,7 @@
 
                             <div class="mind_map_info">
                                 <div class="mind_map_name_block">
-                                    <a class="mind_map_name" href={{ "/mind_map/" ~ name }}>{{ name|e }}</a>
+                                    <a class="mind_map_name" title={{ name }} href={{ "/mind_map/" ~ name }}>{{ name|e }}</a>
                                 </div>
                                 <div class="mind_map_download_icon">
                                     <img class="mind_map_icon" src="images/download_arrow.png">
@@ -80,9 +80,9 @@
     <script src="/js/vendor/file-saver.js"></script>
     <script src="/js/mind-map-creator/utilites/tree.js"></script>
     <script src="/js/mind-map-creator/utilites/node.js"></script>
-    <script src="/js/mind-map-creator/global-config.js"></script>
-    <script src="/js/mind-map-creator/tree-saver.js"></script>
-    <script src="/js/mind-map-creator/tree-loader.js"></script>
+    <script src="/js/mind-map-creator/settings/global-config.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree-saver.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree-loader.js"></script>
     <script src="/js/modal/modal.js"></script>
     <script src="/js/modal/load-modal.js"></script>
     <script src="/js/api/controllers/download-controller.js"></script>
