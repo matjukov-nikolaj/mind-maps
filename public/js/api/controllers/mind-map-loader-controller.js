@@ -10,7 +10,7 @@ class MindMapLoaderController {
         if (path.length === 2) {
             return;
         }
-        const mindMapName = path[path.length - 1];
+        const mindMapName = decodeURIComponent(path[path.length - 1]);
         const data = {
             name: mindMapName
         };

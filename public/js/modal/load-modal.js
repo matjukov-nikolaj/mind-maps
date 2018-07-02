@@ -35,7 +35,7 @@ class LoadModal {
         const loadButton = document.getElementById('loadButton');
         loadButton.onclick = () => {
             const input = document.getElementById("input_save");
-            this.name = input.value;
+            this.name = input.value.replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), '');
             const loadFile = document.getElementById('files').files[0];
             const fileData = new FileReader(loadFile);
             const file = fileData.readAsText(loadFile);

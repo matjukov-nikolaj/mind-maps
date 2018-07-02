@@ -30,23 +30,26 @@
                 </div>
             </div>
             <div class="existing_mind_maps">
-                {% if mindMapsNames|length == 0 %}
+                {% if mindMapNames|length == 0 %}
                     <p class="message">You don't have mind maps, create it now.</p>
                 {% endif %}
-                {% for name in mindMapsNames %}
+                {% for name in mindMapNames %}
                     <div class="mind_map_file_container">
                         <div class="mind_map_file">
                             <div class="mind_map_icon_block">
                                 <img class="mind_map_icon" src="images/mind_map_icon.png">
-                                <button class="modal_close delete_file"></button>
-                            </div>
-
-                            <div class="mind_map_info">
-                                <div class="mind_map_name_block">
-                                    <a class="mind_map_name" title={{ name }} href={{ "/mind_map/" ~ name }}>{{ name|e }}</a>
+                                <div class="root_name_block">
+                                    <p class="root_name">{{ mindMapRootNames[loop.index0] }}</p>
                                 </div>
                                 <div class="mind_map_download_icon">
                                     <img class="mind_map_icon" src="images/download_arrow.png">
+                                </div>
+                                <button class="delete_file modal_close"></button>
+                            </div>
+                            <div class="mind_map_info">
+                                <div class="mind_map_name_block">
+                                    <a class="mind_map_name"
+                                       title={{ name }} href={{ "/mind_map/" ~ name }}>{{ name|e }}</a>
                                 </div>
                             </div>
                             <div class="clear"></div>

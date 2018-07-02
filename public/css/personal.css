@@ -1,6 +1,6 @@
 .personal_account_field {
-    height: 89vh;
-    padding: 50px;
+    height: 94vh;
+    padding: 25px 50px;
     background-color: rgba(242, 245, 247, 0.9);
 }
 
@@ -40,7 +40,7 @@
 .existing_mind_maps {
     overflow-y: scroll;
     width: 100%;
-    max-height: 715px;
+    max-height: 760px;
     background: #ffffff;
     border-radius: 5px;
     border: 1px solid #d8dee2;
@@ -60,8 +60,8 @@
 }
 
 .mind_map_file_container {
-    width: 20%;
-    padding: -15px;
+    width: 10%;
+    padding: -10px;
     float: left;
 }
 
@@ -69,8 +69,8 @@
 {
     border: 1px solid #d8dee2;
     border-radius: 5px;
-    margin: 15px;
-    min-height: 300px;
+    margin: 10px;
+    min-height: 200px;
 }
 
 .mind_map_icon_block
@@ -79,15 +79,33 @@
     width: 100%;
 }
 
+.root_name_block {
+    width: 60%;
+    padding: -5px;
+    position: absolute;
+    /*top: 60px;*/
+    /*left: 60px;*/
+    top: 25%;
+    left: 20%;
+    max-height: 55%;
+    overflow: hidden;
+}
+
+.root_name {
+    text-align: center;
+    margin: 7px;
+    font: 700 14px "Lato", sans-serif;
+    color: #00bc9c;
+}
+
 .mind_map_icon
 {
     width: 100%;
 }
 
 .mind_map_name {
-    text-align: center;
     color: #506a85;
-    font-size: 30px;
+    font-size: 18px;
     margin: 0 auto;
     font-family: "Lato", sans-serif;
     font-weight: bold;
@@ -100,22 +118,44 @@
     width: 100%;
 }
 .mind_map_name_block {
-    width: 70%;
-    max-height: 35px;
-    overflow: hidden;
-    float: left;
+    text-align: center;
+    width: 90%;
+    max-height: 20px;
     margin: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .mind_map_download_icon {
+    position: absolute;
     width: 15%;
-    float: left;
-    margin: 5px;
     cursor: pointer;
+    top: 3px;
+    left: 3px;
 }
 
 .download_icon {
     width: 100%;
+}
+
+
+@media screen and (max-width: 1300px) {
+
+    .mind_map_name {
+        font-size: 20px;
+    }
+
+    .existing_mind_maps {
+        max-height: 1100px;
+    }
+
+    .root_name {
+        font-size: 18px;
+    }
+
+    .mind_map_file_container {
+        width: 20%;
+    }
 }
 
 @media screen and (max-width: 1125px) {
@@ -124,7 +164,21 @@
     }
 
     .mind_map_file_container {
-        width: 33.3%;
+        width: 25%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .title_name {
+        font: 900 40px "Lato", sans-serif;
+    }
+
+    .existing_mind_maps {
+        max-height: 1000px;
+    }
+
+    .mind_map_file_container {
+        width: 33.333333333333333%;
     }
 }
 
@@ -141,7 +195,7 @@
 .delete_file {
     position: absolute;
     top: -25px;
-    right: -25px;
+    right: -20px;
 }
 
 .message {

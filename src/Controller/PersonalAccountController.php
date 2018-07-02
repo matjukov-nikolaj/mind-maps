@@ -10,35 +10,74 @@ use App\Entity\User;
 
 class PersonalAccountController extends Controller
 {
-    private function GetUserMindMaps()
+
+    private function getMindMapEntity($userId)
     {
-        $currentUserId = $this->getUser()->getId();
-        $userMindMaps = $this->getDoctrine()
+        $mindMap = $this->getDoctrine()
             ->getRepository(MindMap::class)
             ->findBy(
-                array('user_id' => $currentUserId)
+                array('user_id' => $userId)
             );
 
-        $mindMaps = array();
-        for ($i = 0; $i < COUNT($userMindMaps); ++$i) {
-            /** @var MindMap $currMindMap */
-            $currMindMap = $userMindMaps[$i];
-            array_push($mindMaps, $currMindMap->getName());
-        }
-        return $mindMaps;
+        return $mindMap;
     }
+
+    private function getNameOfRoot($value) {
+        $jsonObj = json_decode($value);
+        $rootObj = $jsonObj->{'root'};
+        $rootName = $rootObj->{'title'};
+        return $rootName;
+    }
+
+    private function getUserMindMapsInfo()
+    {
+        $userId = $this->getUser()->getId();
+        $mindMapEntity = $this->getMindMapEntity($userId);
+
+        $mindMapNames = array();
+        $mindMapRoots = array();
+        for ($i = 0; $i < COUNT($mindMapEntity); ++$i) {
+            /** @var MindMap $currMindMap */
+            $currMindMap = $mindMapEntity[$i];
+            array_push($mindMapNames, $currMindMap->getName());
+            $rootName = $this->getNameOfRoot($currMindMap->getValue());
+            array_push($mindMapRoots, $rootName);
+        }
+        return array(
+            'names' => $mindMapNames,
+            'rootNames' => $mindMapRoots,
+        );
+    }
+
+//    private function getUserMindMaps()
+//    {
+//        $userId = $this->getUser()->getId();
+//        $mindMapEntity = $this->getMindMapEntity($userId);
+//
+//        $mindMapNames = array();
+//        for ($i = 0; $i < COUNT($mindMapEntity); ++$i) {
+//            /** @var MindMap $currMindMap */
+//            $currMindMap = $mindMapEntity[$i];
+//            array_push($mindMapNames, $currMindMap->getName());
+//        }
+//        return $mindMapNames;
+//    }
 
     /**
      * @Route("/personal")
      */
 
-    public function PersonalAccountAction()
+    public function personalAccountAction()
     {
+        $mindMapInfo = $this->getUserMindMapsInfo();
+        $names = $mindMapInfo['names'];
+        $rootNames = $mindMapInfo['rootNames'];
         return $this->render(
             'personal_account.html.twig',
             array(
                 'username' => $this->getUser()->getUsername(),
-                'mindMapsNames' => $this->GetUserMindMaps(),
+                'mindMapNames' => $names,
+                'mindMapRootNames' => $rootNames,
             )
         );
     }

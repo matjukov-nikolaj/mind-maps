@@ -16,7 +16,7 @@ class SaveChangesController {
                 return document.getElementById("openDownload").click();
             }
             const path = this._getMindMapPath();
-            const mindMapName = path[path.length - 1];
+            const mindMapName = decodeURIComponent(path[path.length - 1]);
             const saver = new TreeSaver();
             const json = saver.save(this.tree);
             const jsonStr = JSON.stringify(json);
