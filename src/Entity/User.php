@@ -42,9 +42,6 @@ class User implements UserInterface
     private $plainPassword;
 
     /**
-     * The below length depends on the "algorithm" you use for encoding
-     * the password, but this works well with bcrypt.
-     *
      * @ORM\Column(type="string", length=64)
      */
     private $password;
@@ -96,8 +93,6 @@ class User implements UserInterface
 
     public function getSalt()
     {
-        // The bcrypt and argon2i algorithms don't require a separate salt.
-        // You *may* need a real salt if you choose a different encoder.
         return null;
     }
 
@@ -118,8 +113,6 @@ class User implements UserInterface
             $this->id,
             $this->username,
             $this->password,
-            // see section on salt below
-            // $this->salt,
         ));
     }
 
@@ -130,8 +123,6 @@ class User implements UserInterface
             $this->id,
             $this->username,
             $this->password,
-            // see section on salt below
-            // $this->salt
             ) = unserialize($serialized, ['allowed_classes' => false]);
     }
 

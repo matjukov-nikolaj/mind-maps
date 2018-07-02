@@ -49,20 +49,6 @@ class PersonalAccountController extends Controller
         );
     }
 
-//    private function getUserMindMaps()
-//    {
-//        $userId = $this->getUser()->getId();
-//        $mindMapEntity = $this->getMindMapEntity($userId);
-//
-//        $mindMapNames = array();
-//        for ($i = 0; $i < COUNT($mindMapEntity); ++$i) {
-//            /** @var MindMap $currMindMap */
-//            $currMindMap = $mindMapEntity[$i];
-//            array_push($mindMapNames, $currMindMap->getName());
-//        }
-//        return $mindMapNames;
-//    }
-
     /**
      * @Route("/personal")
      */

@@ -42,7 +42,6 @@ class SaveAsModal {
         saveButton.onclick = () => {
             let inputSaver = document.getElementById("input_save");
             this.name = inputSaver.value.replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), '');
-            console.log(this.name);
             const saver = new TreeSaver();
             const json = saver.save(this.tree);
             this.json = JSON.stringify(json);

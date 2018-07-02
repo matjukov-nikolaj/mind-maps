@@ -87,14 +87,15 @@
     /*left: 60px;*/
     top: 25%;
     left: 20%;
-    max-height: 55%;
+    max-height: 50%;
     overflow: hidden;
 }
 
 .root_name {
+    word-wrap: break-word;
     text-align: center;
     margin: 7px;
-    font: 700 14px "Lato", sans-serif;
+    font: 700 13px "Lato", sans-serif;
     color: #00bc9c;
 }
 
