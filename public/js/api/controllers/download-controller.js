@@ -10,8 +10,7 @@ class DownloadController {
             const downloadButton = downloadButtons[i];
             downloadButton.onclick = () => {
                 const downloadButtonParent = downloadButton.parentNode.parentNode;
-                this.name = downloadButtonParent.children[1].children[1].innerText;
-                console.log(this.name);
+                this.name = downloadButtonParent.children[1].children[0].innerText;
                 const data = {
                     name: this.name
                 };
