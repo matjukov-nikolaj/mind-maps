@@ -1,0 +1,31 @@
+<div id="modalCreateTask" class="modal">
+    <div class="modal_dialog">
+        <div id="modalCreateTaskForm" class="modal_content">
+            <button id="closeCreateTask" class="modal_close"></button>
+            <h1 class="modal_title">Create new task</h1>
+            <div class="create_task_container">
+                {{ form_start(form) }}
+                <div class="input_form">
+                    <h3 class="create_task_title">Task name</h3>
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Description</h3>
+                    {{ form_row(form.description) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Set the task completion time</h3>
+                    {{ form_row(form.end_time) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Set parent</h3>
+                    {{ form_row(form.parent) }}
+                </div>
+                <div class="sign_button button_sign_up">
+                    <button id="createTaskButton" class="style_button" type="submit">Create task</button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>

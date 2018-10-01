@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\MindMap;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\User;
+use App\Entity\Task;
+use App\Form\TaskType;
 
 class PersonalAccountController extends Controller
 {
@@ -22,7 +24,19 @@ class PersonalAccountController extends Controller
         return $mindMap;
     }
 
-    private function getNameOfRoot($value) {
+    private function getTaskEntity($userId)
+    {
+        $task = $this->getDoctrine()
+            ->getRepository(Task::class)
+            ->findBy(
+                array('user_id' => $userId)
+            );
+
+        return $task;
+    }
+
+    private function getNameOfRoot($value)
+    {
         $jsonObj = json_decode($value);
         $rootObj = $jsonObj->{'root'};
         $rootName = $rootObj->{'title'};
@@ -49,21 +63,86 @@ class PersonalAccountController extends Controller
         );
     }
 
+    private function getUserTasksInfo()
+    {
+        $userId = $this->getUser()->getId();
+        $taskEntity = $this->getTaskEntity($userId);
+
+        $taskNames = array();
+        $taskDescriptions = array();
+        $timestamps = array();
+        for ($i = 0; $i < COUNT($taskEntity); ++$i) {
+            /** @var Task $currTask */
+            $currTask = $taskEntity[$i];
+            array_push($taskNames, $currTask->getName());
+            array_push($taskDescriptions, $currTask->getDescription());
+            array_push($timestamps, $currTask->getStartTime());
+        }
+        return array(
+            'names' => $taskNames,
+            'descriptions' => $taskDescriptions,
+            'timestamps' => $timestamps
+        );
+    }
+
+    private function formHandler(Request $request) {
+        $task = new Task();
+        $form = $this->createForm(TaskType::class, $task);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Task $taskEntity */
+            $taskEntity = $form['parent']->getData();
+            if ($taskEntity != null) {
+                $task->setParent($taskEntity->getId());
+            }
+            $this->processSavingTaskEntity($task);
+            unset($entity);
+            unset($form);
+            $task = new Task();
+            $form = $this->createForm(TaskType::class, $task);
+        }
+        return $form;
+    }
+
+    private function processSavingTaskEntity(Task $task)
+    {
+        $currentTime = new \DateTime();
+        $task->setStartTime($currentTime->getTimestamp());
+        $entityManager = $this->getDoctrine()->getManager();
+        $userId = $this->getUser()->getId();
+        $task->setUserId($userId);
+        $entityManager->persist($task);
+        $entityManager->flush();
+    }
+
     /**
      * @Route("/personal")
      */
 
-    public function personalAccountAction()
+    public function personalAccountAction(Request $request)
     {
         $mindMapInfo = $this->getUserMindMapsInfo();
         $names = $mindMapInfo['names'];
         $rootNames = $mindMapInfo['rootNames'];
+
+        $taskInfo = $this->getUserTasksInfo();
+        $taskNames = $taskInfo['names'];
+        $taskDescriptions = $taskInfo['descriptions'];
+        $timestamps = $taskInfo['timestamps'];
+
+        $form = $this->formHandler($request);
+
         return $this->render(
             'personal_account.html.twig',
             array(
                 'username' => $this->getUser()->getUsername(),
                 'mindMapNames' => $names,
                 'mindMapRootNames' => $rootNames,
+                'taskNames' => $taskNames,
+                'taskDescriptions' => $taskDescriptions,
+                'timestamps' => $timestamps,
+                'form' => $form->createView(),
             )
         );
     }

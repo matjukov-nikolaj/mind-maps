@@ -1,0 +1,145 @@
+{% extends "base.html.twig" %}
+{#{% block title %}Mind-maps sign in{% endblock %}#}
+{% block title %}Mind-maps sign in{% endblock %}
+{% block head %}
+    <meta charset='utf-8'/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:700,900" rel="stylesheet">
+    <link rel="stylesheet" href="/css/task-creator.css">
+    <link rel="stylesheet" href="/css/create-task.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/button.css">
+{% endblock %}
+{% block content %}
+    <header>
+        <div class="header_background">
+            <div class="header_title">
+                <h1 class="title_name">Tasks creator</h1>
+            </div>
+            {#<div class="button_block">#}
+                {#<button id="openDownload" class="style_button" title="download">save as</button>#}
+            {#</div>#}
+            <div class="button_block">
+                <a class="style_button profile_button_block" href="/personal">profile</a>
+            </div>
+            <div class="create_task">
+                <button id="openCreateTask" class="style_button" title="createTask">create task</button>
+            </div>
+            {#<div class="option_button">#}
+                {#<button id="openInformation" class="style_button" title="select theme">help</button>#}
+            {#</div>#}
+        </div>
+    </header>
+    <div>
+        <div class="task_creator">
+            <div class="tree_field">
+                {% import _self as macros %}
+                {% macro printTree(node) %}
+                    <li>
+                        <h4>{{ node.title }}</h4>
+                        {% if node.children|length %}
+                            <ul>
+                                {% import _self as macros %}
+                                {% for child in node.children %}
+                                    {{ macros.printTree(child) }}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% endmacro %}
+                {% if tree %}
+                    <div id="tree">
+                        <ul class="ul-treefree">
+                            <p>{{ tree.root.title }}</p>
+                            {% for node in tree.root.children %}
+                                {{ macros.printTree(node) }}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="task_visualizer">
+            <div id="canvasDiv">
+                <canvas id='canvas'></canvas>
+            </div>
+        </div>
+
+    </div>
+    {#<div id="modalHelp" class="modal">#}
+        {#<div class="modal_dialog">#}
+            {#<div id="modalContents" class="modal_content">#}
+                {#<button id="closeInformation" class="modal_close"></button>#}
+                {#<h1 class="modal_title">Help</h1>#}
+                {#<div class="information_box">#}
+                    {#<ul>#}
+                        {#<li>A new element creation - the key TAB</li>#}
+                        {#<li>Element switching - arrow keys</li>#}
+                        {#<li>Element deletion - the key DEL</li>#}
+                        {#<li>Element selection occurs by hovering mouse cursor over the element and left click</li>#}
+                        {#<li>Text editing - the key F2 or double-click on the element</li>#}
+                        {#<li>Drag and drop of an element- press the left mouse button on the element and drag it to a new position.</li>#}
+                    {#</ul>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    {#<div id="modalSave" class="modal">#}
+        {#<div class="modal_dialog">#}
+            {#<div id="modalInput" class="modal_content">#}
+                {#<button id="closeSave" class="modal_close"></button>#}
+                {#<h1 class="modal_title">Save your mind-map</h1>#}
+                {#<p id="nameExist" class="error_name_block">Name has already existed.</p>#}
+                {#<p id="emptyInput" class="error_name_block">Please, enter a name.</p>#}
+                {#<div class="input_save_block">#}
+                    {#<input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">#}
+                {#</div>#}
+                {#<div class="button_modal_save">#}
+                    {#<button id="saveButton" class="style_button" title="download">save</button>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    {#<div id="modalLoad" class="modal">#}
+        {#<div class="modal_dialog">#}
+            {#<div id="modalLoadFile" class="modal_content">#}
+                {#<button id="closeLoad" class="modal_close"></button>#}
+                {#<h1 class="modal_title">Load the file</h1>#}
+                {#<div class="choose_file">#}
+                    {#<input type="file" id="files" name="files[]" accept=".json"/>#}
+                    {#<output id="list"></output>#}
+                {#</div>#}
+                {#<div class="button_modal_load">#}
+                    {#<button id="loadButton" class="style_button" title="download">load</button>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
+    {{ include('modal/create_task_modal.html.twig') }}
+    <input type="hidden" id="responseResult">
+    <script src="/js/vendor/jQuery.js"></script>
+    <script src="/js/vendor/file-saver.js"></script>
+    <script src="/js/mind-map-creator/settings/renderer-config.js"></script>
+    <script src="/js/mind-map-creator/utilites/node.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree-saver.js"></script>
+    <script src="/js/mind-map-creator/settings/global-config.js"></script>
+    <script src="/js/modal/modal.js"></script>
+    <script src="/js/api/controllers/save-changes-controller.js"></script>
+    {#<script src="/js/modal/save-as-modal.js"></script>#}
+    <script src="/js/modal/create-task-modal.js"></script>
+    <script src="/js/mind-map-creator/utilites/point.js"></script>
+    <script src="/js/mind-map-creator/utilites/rect.js"></script>
+    <script src="/js/task-creator/tree-controller.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree-loader.js"></script>
+    <script src="/js/mind-map-creator/utilites/tree-renderer.js"></script>
+    <script src="/js/mind-map-creator/controllers/scroll-controller.js"></script>
+    <script charset="utf-8" src="/js/api/controllers/mind-map-loader-controller.js"></script>
+    <script src="/js/api/mind-map-api.js"></script>
+    <script src="/js/api/settings/api-config.js"></script>
+    <script src="/js/task-creator/main.js"></script>
+{% endblock %}
+{% block footer %}{% endblock %}

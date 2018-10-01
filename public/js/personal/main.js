@@ -2,4 +2,5 @@ const api = new MindMapApi();
 
 const deleter = new DeleteMindMapController();
 const downloadController = new DownloadController();
-const loadmodal = new LoadModal();
+const loadModal = new LoadModal();
+const createTaskModal = new CreateTaskModal();
