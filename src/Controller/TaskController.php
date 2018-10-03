@@ -136,7 +136,23 @@ class TaskController extends Controller
         $treeDom = new TreeForDom($taskEntity);
         $treeDom->root = $this->loadNode($taskEntity, false);
 
-        $form = $this->formHandler($request);
+        $task = new Task();
+        $form = $this->createForm(TaskType::class, $task);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Task $taskEntity */
+            $taskEntity = $form['parent']->getData();
+            if ($taskEntity != null) {
+                $task->setParent($taskEntity->getId());
+            }
+            $this->processSavingTaskEntity($task);
+            unset($entity);
+            unset($form);
+            $task = new Task();
+            $form = $this->createForm(TaskType::class, $task);
+            return $this->redirect($request->getUri());
+        }
 
         return $this->render('task_creator.html.twig',
             array('tree' => $treeDom,

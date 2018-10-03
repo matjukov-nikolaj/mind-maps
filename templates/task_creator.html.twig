@@ -28,6 +28,9 @@
             <div class="create_task">
                 <button id="openCreateTask" class="style_button" title="createTask">create task</button>
             </div>
+            <div class="create_task">
+                <button id="convertTask" class="style_button" title="convertTask">convert task</button>
+            </div>
             {#<div class="option_button">#}
                 {#<button id="openInformation" class="style_button" title="select theme">help</button>#}
             {#</div>#}
@@ -53,7 +56,7 @@
                 {% if tree %}
                     <div id="tree">
                         <ul class="ul-treefree">
-                            <p>{{ tree.root.title }}</p>
+                            <p id="rootName">{{ tree.root.title }}</p>
                             {% for node in tree.root.children %}
                                 {{ macros.printTree(node) }}
                             {% endfor %}
@@ -140,6 +143,7 @@
     <script charset="utf-8" src="/js/api/controllers/mind-map-loader-controller.js"></script>
     <script src="/js/api/mind-map-api.js"></script>
     <script src="/js/api/settings/api-config.js"></script>
+    <script src="/js/task-creator/task-converter.js"></script>
     <script src="/js/task-creator/main.js"></script>
 {% endblock %}
 {% block footer %}{% endblock %}

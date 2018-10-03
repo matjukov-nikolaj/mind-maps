@@ -85,25 +85,26 @@ class PersonalAccountController extends Controller
         );
     }
 
-    private function formHandler(Request $request) {
-        $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Task $taskEntity */
-            $taskEntity = $form['parent']->getData();
-            if ($taskEntity != null) {
-                $task->setParent($taskEntity->getId());
-            }
-            $this->processSavingTaskEntity($task);
-            unset($entity);
-            unset($form);
-            $task = new Task();
-            $form = $this->createForm(TaskType::class, $task);
-        }
-        return $form;
-    }
+//    private function formHandler(Request $request) {
+//        $task = new Task();
+//        $form = $this->createForm(TaskType::class, $task);
+//
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            /** @var Task $taskEntity */
+//            $taskEntity = $form['parent']->getData();
+//            if ($taskEntity != null) {
+//                $task->setParent($taskEntity->getId());
+//            }
+//            $this->processSavingTaskEntity($task);
+//            unset($entity);
+//            unset($form);
+//            $task = new Task();
+//            $form = $this->createForm(TaskType::class, $task);
+//            return $this->redirect($request->getUri());
+//        }
+//        return $form;
+//    }
 
     private function processSavingTaskEntity(Task $task)
     {
@@ -131,7 +132,23 @@ class PersonalAccountController extends Controller
         $taskDescriptions = $taskInfo['descriptions'];
         $timestamps = $taskInfo['timestamps'];
 
-        $form = $this->formHandler($request);
+        $task = new Task();
+        $form = $this->createForm(TaskType::class, $task);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Task $taskEntity */
+            $taskEntity = $form['parent']->getData();
+            if ($taskEntity != null) {
+                $task->setParent($taskEntity->getId());
+            }
+            $this->processSavingTaskEntity($task);
+            unset($entity);
+            unset($form);
+            $task = new Task();
+            $form = $this->createForm(TaskType::class, $task);
+            return $this->redirect($request->getUri());
+        }
 
         return $this->render(
             'personal_account.html.twig',
