@@ -13,21 +13,25 @@ use App\Entity\Task;
 
 class NodeForDom
 {
+    public $id;
     public $title;
     public $description;
     public $startTime;
     public $endTime;
+    public $parent;
     public $completionTime;
     public $children;
 
     public function __construct($taskEntity)
     {
         /** @var Task $taskEntity */
+        $this->id = $taskEntity->getId();
         $this->title = $taskEntity->getName();
         $this->description = $taskEntity->getDescription();
         $this->startTime = $taskEntity->getStartTime();
         $this->endTime = $taskEntity->getEndTime();
         $this->completionTime = $taskEntity->getCompletionTime();
+        $this->parent = $taskEntity->getParent();
         $this->children = [];
     }
 

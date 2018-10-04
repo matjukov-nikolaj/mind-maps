@@ -5,4 +5,5 @@ const url = {
     DELETE: '/delete_mind_map',
     DEFAULT: 'http://localhost:80',
     TASK_MIND_MAP: '/get_task_mind_map_value',
+    UPDATE_TASK: '/update_task',
 };

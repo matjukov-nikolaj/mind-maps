@@ -9,6 +9,7 @@ const createTaskModal = new CreateTaskModal();
 // const saveModalWindow = new SaveAsModal(allTree);
 const mindMapLoader = new MindMapLoaderController(allTree);
 const taskConverter = new TaskConverter(allTree);
+const taskModal = new TaskModal();
 // const saveChanges = new SaveChangesController(allTree);
 
 mindMapLoader.onLoadTree = (tree) => {

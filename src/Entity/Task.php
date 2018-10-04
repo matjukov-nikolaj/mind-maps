@@ -118,7 +118,7 @@ class Task
 
     public function getParent()
     {
-        return $this->completion_time;
+        return $this->parent;
     }
 
     public function setParent($parentId)
@@ -139,4 +139,5 @@ class Task
 
         return $this;
     }
+
 }

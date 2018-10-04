@@ -42,7 +42,7 @@
                 {% import _self as macros %}
                 {% macro printTree(node) %}
                     <li>
-                        <h4>{{ node.title }}</h4>
+                        <h4 data-id="{{ node.id }}">{{ node.title }}</h4>
                         {% if node.children|length %}
                             <ul>
                                 {% import _self as macros %}
@@ -56,7 +56,7 @@
                 {% if tree %}
                     <div id="tree">
                         <ul class="ul-treefree">
-                            <p id="rootName">{{ tree.root.title }}</p>
+                            <p id="rootName" data-id="{{ tree.root.id }}">{{ tree.root.title }}</p>
                             {% for node in tree.root.children %}
                                 {{ macros.printTree(node) }}
                             {% endfor %}
@@ -122,6 +122,7 @@
         {#</div>#}
     {#</div>#}
     {{ include('modal/create_task_modal.html.twig') }}
+    {{ include('modal/update_task_modal.html.twig') }}
     <input type="hidden" id="responseResult">
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
@@ -144,6 +145,7 @@
     <script src="/js/api/mind-map-api.js"></script>
     <script src="/js/api/settings/api-config.js"></script>
     <script src="/js/task-creator/task-converter.js"></script>
+    <script src="/js/task-creator/task-modal.js"></script>
     <script src="/js/task-creator/main.js"></script>
 {% endblock %}
 {% block footer %}{% endblock %}

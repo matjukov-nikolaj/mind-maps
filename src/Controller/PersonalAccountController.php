@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Task;
-use App\Form\TaskType;
+use App\Form\CreateTaskType;
 
 class PersonalAccountController extends Controller
 {
@@ -85,27 +85,6 @@ class PersonalAccountController extends Controller
         );
     }
 
-//    private function formHandler(Request $request) {
-//        $task = new Task();
-//        $form = $this->createForm(TaskType::class, $task);
-//
-//        $form->handleRequest($request);
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            /** @var Task $taskEntity */
-//            $taskEntity = $form['parent']->getData();
-//            if ($taskEntity != null) {
-//                $task->setParent($taskEntity->getId());
-//            }
-//            $this->processSavingTaskEntity($task);
-//            unset($entity);
-//            unset($form);
-//            $task = new Task();
-//            $form = $this->createForm(TaskType::class, $task);
-//            return $this->redirect($request->getUri());
-//        }
-//        return $form;
-//    }
-
     private function processSavingTaskEntity(Task $task)
     {
         $currentTime = new \DateTime();
@@ -133,7 +112,7 @@ class PersonalAccountController extends Controller
         $timestamps = $taskInfo['timestamps'];
 
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(CreateTaskType::class, $task);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -146,7 +125,7 @@ class PersonalAccountController extends Controller
             unset($entity);
             unset($form);
             $task = new Task();
-            $form = $this->createForm(TaskType::class, $task);
+            $form = $this->createForm(CreateTaskType::class, $task);
             return $this->redirect($request->getUri());
         }
 
@@ -159,7 +138,7 @@ class PersonalAccountController extends Controller
                 'taskNames' => $taskNames,
                 'taskDescriptions' => $taskDescriptions,
                 'timestamps' => $timestamps,
-                'form' => $form->createView(),
+                'formCreateTask' => $form->createView(),
             )
         );
     }

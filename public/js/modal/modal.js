@@ -4,7 +4,7 @@ class Modal {
         this.content = content;
         this.openButton = openButton;
         this.openButton.onclick = () => {
-            this._showModal(this.overlay, this.content);
+               this._showModal(this.overlay, this.content);
         };
         this.closeButton = closeButton;
     }
