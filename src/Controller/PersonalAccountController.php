@@ -3,12 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\MindMap;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use App\Entity\UserInfo;
+use DateTime;
+use Doctrine\DBAL\Types\DateTimeType;
+use function MongoDB\BSON\toJSON;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Form\UserInfoType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Task;
 use App\Form\CreateTaskType;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class PersonalAccountController extends Controller
 {
@@ -33,6 +44,19 @@ class PersonalAccountController extends Controller
             );
 
         return $task;
+    }
+
+    private function getUserInfoEntity($userId)
+    {
+        $allUserInfo = $this->getDoctrine()
+            ->getRepository(UserInfo::class)
+            ->findBy(
+                array('id_user' => $userId), array('date' => 'ASC')
+            );
+        if (COUNT($allUserInfo) != 0) {
+            return $allUserInfo[0];
+        }
+        return null;
     }
 
     private function getNameOfRoot($value)
@@ -96,6 +120,62 @@ class PersonalAccountController extends Controller
         $entityManager->flush();
     }
 
+    private function generateUniqueFileName()
+    {
+        $userId = $this->getUser()->getId();
+        $time = new \DateTime();
+        return $userId . "_" . $time->format('U');
+    }
+
+    private function processSavingUserInfo(UserInfo $userInfo)
+    {
+        /** @var UploadedFile $file */
+        $file = $userInfo->getPhoto();
+        $fileName = "";
+        if ($file == null) {
+            $fileName = "base";
+        } else {
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+        }
+
+        try {
+            $file->move(
+                $this->getParameter("photos_directory"),
+                $fileName
+            );
+        } catch (FileException $e) {
+            echo $e->getMessage();
+        }
+
+        $userInfo->setPhoto($fileName);
+        $userInfo->setDate(new DateTime());
+        $userId = $this->getUser()->getId();
+        $userInfo->setIdUser($userId);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($userInfo);
+        $entityManager->flush();
+    }
+
+    /**
+     * @Route("/get_personal_information")
+     */
+
+    public function getPersonalInformation(Request $request)
+    {
+        $userId = $this->getUser()->getId();
+        $userInfo = $this->getUserInfoEntity($userId);
+        if ($userInfo != null) {
+            $encoders = array(new XmlEncoder(), new JsonEncoder());
+            $normalizers = array(new ObjectNormalizer());
+
+            $serializer = new Serializer($normalizers, $encoders);
+            $jsonContent = $serializer->serialize($userInfo, "json");
+            return new Response($jsonContent);
+        }
+        return new Response();
+    }
+
+
     /**
      * @Route("/personal")
      */
@@ -112,22 +192,40 @@ class PersonalAccountController extends Controller
         $timestamps = $taskInfo['timestamps'];
 
         $task = new Task();
-        $form = $this->createForm(CreateTaskType::class, $task);
+        $formTask = $this->createForm(CreateTaskType::class, $task);
+        $existingUserInfo = $this->getUserInfoEntity($this->getUser()->getId());
 
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Task $taskEntity */
-            $taskEntity = $form['parent']->getData();
-            if ($taskEntity != null) {
-                $task->setParent($taskEntity->getId());
+        $userInfo = new UserInfo();
+        $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+        $formTask->handleRequest($request);
+        $formInfo->handleRequest($request);
+        if ($request->isMethod('POST')) {
+
+            if ($formTask->isSubmitted() && $formTask->isValid()) {
+                /** @var Task $taskEntity */
+                $taskEntity = $formTask['parent']->getData();
+                if ($taskEntity != null) {
+                    $task->setParent($taskEntity->getId());
+                }
+                $this->processSavingTaskEntity($task);
+                unset($entity);
+                unset($formTask);
+                $task = new Task();
+                $formTask = $this->createForm(CreateTaskType::class, $task);
+                return $this->redirect($request->getUri());
+            } else
+                if ($formInfo->isSubmitted() && $formInfo->isValid()) {
+                var_dump($userInfo);
+                $this->processSavingUserInfo($userInfo);
+                unset($entity);
+                unset($formInfo);
+                $userInfo = new UserInfo();
+                $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+                return $this->redirect($request->getUri());
             }
-            $this->processSavingTaskEntity($task);
-            unset($entity);
-            unset($form);
-            $task = new Task();
-            $form = $this->createForm(CreateTaskType::class, $task);
-            return $this->redirect($request->getUri());
+
         }
+
 
         return $this->render(
             'personal_account.html.twig',
@@ -138,7 +236,9 @@ class PersonalAccountController extends Controller
                 'taskNames' => $taskNames,
                 'taskDescriptions' => $taskDescriptions,
                 'timestamps' => $timestamps,
-                'formCreateTask' => $form->createView(),
+                'formCreateTask' => $formTask->createView(),
+                'userInfo' => $formInfo->createView(),
+                'existingUserInfo' => $existingUserInfo,
             )
         );
     }

@@ -4,3 +4,4 @@ const deleter = new DeleteMindMapController();
 const downloadController = new DownloadController();
 const loadModal = new LoadModal();
 const createTaskModal = new CreateTaskModal();
+const personalModal = new PersonalInfo(api);

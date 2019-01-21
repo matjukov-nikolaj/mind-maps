@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+
 use App\Entity\Task;
 use App\Form\CreateTaskType;
 use App\Form\UpdateTaskType;
@@ -50,7 +51,8 @@ class TaskController extends Controller
         return $task;
     }
 
-    private function getChildrenTask($taskEntity) {
+    private function getChildrenTask($taskEntity)
+    {
         /** @var Task $taskEntity */
         $children = $this->getDoctrine()
             ->getRepository(Task::class)
@@ -63,15 +65,17 @@ class TaskController extends Controller
         return $children;
     }
 
-    private function getTaskNameWithEndDate($taskEntity) {
+    private function getTaskNameWithEndDate($taskEntity)
+    {
         /** @var Task $taskEntity */
         return $taskEntity->getName() . $taskEntity->getEndTime()->format(' Y:m:d H:i:s');
     }
 
 
-    private function loadNode($taskEntity, $isJson) {
+    private function loadNode($taskEntity, $isJson)
+    {
         /** @var Task $taskEntity */
-        $node = $isJson ? new NodeForJson($taskEntity->getName()) : new NodeForDom($taskEntity) ;
+        $node = $isJson ? new NodeForJson($taskEntity->getName()) : new NodeForDom($taskEntity);
         $children = $this->getChildrenTask($taskEntity);
         /** @var Task $child */
         for ($i = 0; $i < COUNT($children); ++$i) {
@@ -82,16 +86,18 @@ class TaskController extends Controller
         return $node;
     }
 
-    private function setJsonTree($treeJson) {
+    private function setJsonTree($treeJson)
+    {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent =  $serializer->serialize($treeJson, "json");
+        $jsonContent = $serializer->serialize($treeJson, "json");
         $this->jsonTree = $jsonContent;
     }
 
-    private function formHandler(Request $request) {
+    private function formHandler(Request $request)
+    {
         $task = new Task();
         $form = $this->createForm(CreateTaskType::class, $task);
 
@@ -152,14 +158,15 @@ class TaskController extends Controller
         $normalizers = array(new ObjectNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent =  $serializer->serialize($treeJson, "json");
+        $jsonContent = $serializer->serialize($treeJson, "json");
         return new Response($jsonContent);
     }
 
     /**
      * @Route("/update_task")
      */
-    public function updateCurrentClickedTask(Request $request) {
+    public function updateCurrentClickedTask(Request $request)
+    {
         $id = $request->request->get('id');
         $userId = $this->getUser()->getId();
         /** @var Task $task */
@@ -168,7 +175,7 @@ class TaskController extends Controller
         $normalizers = array(new ObjectNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent =  $serializer->serialize($task, "json");
+        $jsonContent = $serializer->serialize($task, "json");
         return new Response($jsonContent);
     }
 
@@ -186,44 +193,50 @@ class TaskController extends Controller
         $task = new Task();
         $formCreateTask = $this->createForm(CreateTaskType::class, $task);
 
-        $formCreateTask->handleRequest($request);
-        if ($formCreateTask->isSubmitted() && $formCreateTask->isValid()) {
-            /** @var Task $taskEntity */
-            $taskEntity = $formCreateTask['parent']->getData();
-            if ($taskEntity != null) {
-                $task->setParent($taskEntity->getId());
+        if ($request->request->has('formCreateTask')) {
+            $formCreateTask->handleRequest($request);
+            if ($formCreateTask->isSubmitted() && $formCreateTask->isValid()) {
+                /** @var Task $taskEntity */
+                $taskEntity = $formCreateTask['parent']->getData();
+                if ($taskEntity != null) {
+                    $task->setParent($taskEntity->getId());
+                }
+                $this->processSavingTaskEntity($task);
+                unset($entity);
+                unset($formCreateTask);
+                $task = new Task();
+                $formCreateTask = $this->createForm(CreateTaskType::class, $task);
+                return $this->redirect($request->getUri());
             }
-            $this->processSavingTaskEntity($task);
-            unset($entity);
-            unset($formCreateTask);
-            $task = new Task();
-            $formCreateTask = $this->createForm(CreateTaskType::class, $task);
-            return $this->redirect($request->getUri());
         }
 
         $taskUpdate = new Task();
         $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
 
-        $formUpdateTask->handleRequest($request);
-        if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
-            /** @var Task $taskUpdateEntity */
-            $taskUpdateEntity = $formUpdateTask['parent']->getData();
-            if ($taskUpdateEntity != null) {
-                $taskUpdate->setParent($taskUpdateEntity->getId());
+        if ($request->request->has('formUpdateTask')) {
+            $formUpdateTask->handleRequest($request);
+            if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
+                /** @var Task $taskUpdateEntity */
+                $taskUpdateEntity = $formUpdateTask['parent']->getData();
+                if ($taskUpdateEntity != null) {
+                    $taskUpdate->setParent($taskUpdateEntity->getId());
+                }
+
+                $this->processUpdatingTaskEntity($taskUpdate);
+                unset($taskUpdate);
+                unset($formUpdateTask);
+                $taskUpdate = new Task();
+                $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
+                return $this->redirect($request->getUri());
             }
-//            $this->processUpdatingTaskEntity($taskUpdate);
-            unset($taskUpdate);
-            unset($formUpdateTask);
-            $taskUpdate = new Task();
-            $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
-            return $this->redirect($request->getUri());
         }
 
         return $this->render('task_creator.html.twig',
-            array('tree' => $treeDom,
+            array(
+                'tree' => $treeDom,
                 'formCreateTask' => $formCreateTask->createView(),
                 'formUpdateTask' => $formUpdateTask->createView(),
-                )
+            )
         );
     }
 

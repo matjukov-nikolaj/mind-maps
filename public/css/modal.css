@@ -108,3 +108,23 @@
     border: 1px solid #cecece;
     background: #f5f7fa;
 }
+
+.select_parent_block {
+    width: 100%;
+    margin: 20px auto;
+}
+
+.select_parent_block select:last-child {
+    width: 100%;
+}
+
+input {
+    width: 95%;
+    height: 30px;
+    font-size: 18px;
+    border: 1px solid #cecece;
+    background: #f5f7fa;
+    border-radius: 3px;
+    padding: 1%;
+    margin: 5px;
+}

@@ -86,7 +86,7 @@ class TaskModal {
         updateButton.onclick = () => {
             const currentFormFields = thisPtr._getFormFields();
             const currentFormFieldsValues = thisPtr._getFormFieldsValues(currentFormFields);
-            if (!thisPtr._isValidParent(currentFormFieldsValues, formFieldsValues)) {
+            if (thisPtr._isInvalidParent(currentFormFieldsValues, formFieldsValues)) {
                 alert("The root of the task cannot have a parent.");
 
             } else if (!thisPtr._isEqualsFields(currentFormFieldsValues, formFieldsValues)) {
@@ -95,7 +95,7 @@ class TaskModal {
         }
     }
 
-    _isValidParent(lhs, rhs) {
+    _isInvalidParent(lhs, rhs) {
         return rhs.parent === "" && lhs.parent !== "";
     }
 

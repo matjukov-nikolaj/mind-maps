@@ -1,5 +1,6 @@
 {% extends "base.html.twig" %}
 {% form_theme formCreateTask 'fields.html.twig' %}
+{% form_theme userInfo 'fields.html.twig' %}
 {#{% block title %}Mind-maps profile{% endblock %}#}
 {% block title %}Mind-maps profile{% endblock %}
 {% block head %}
@@ -13,7 +14,7 @@
     <div class="personal_account_field">
         <div class="user_information">
             <div class="username_block">
-                <h1 class="username">{{ username }}</h1>
+                <button id="openProfile" class="style_button" title="load">{{ username }}</button>
             </div>
             <div class="header_title">
                 <h1 class="title_name">mind-maps</h1>
@@ -22,6 +23,7 @@
                 <a class="style_button right" href="{{ logout_path('main') }}">Logout</a>
             </div>
         </div>
+        <div class="clear"></div>
         <div class="mind_maps_info">
             <div class="create_new_mind_map">
                 <div class="create_button">
@@ -92,27 +94,9 @@
             </div>
         </div>
     </div>
-    <div id="modalLoad" class="modal">
-        <div class="modal_dialog">
-            <div id="modalLoadFile" class="modal_content">
-                <button id="closeLoad" class="modal_close"></button>
-                <h1 class="modal_title">Load the file</h1>
-                <div class="choose_file">
-                    <input type="file" id="files" name="files[]" accept=".json"/>
-                    <output id="list"></output>
-                </div>
-                <p id="nameExist" class="error_name_block">Name has already existed.</p>
-                <p id="emptyInput" class="error_name_block">Please, enter a name.</p>
-                <div class="input_save_block">
-                    <input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">
-                </div>
-                <div class="button_modal_load">
-                    <button id="loadButton" class="style_button" title="download">load</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ include('modal/load_mind_map_modal.html.twig') }}
     {{ include('modal/create_task_modal.html.twig') }}
+    {{ include('modal/user_info_modal.html.twig') }}
 
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
@@ -123,6 +107,7 @@
     <script src="/js/mind-map-creator/utilites/tree-loader.js"></script>
     <script src="/js/modal/modal.js"></script>
     <script src="/js/modal/load-modal.js"></script>
+    <script src="/js/modal/personal-info-modal.js"></script>
     <script src="/js/modal/create-task-modal.js"></script>
     <script src="/js/modal/update-task-modal.js"></script>
     <script src="/js/api/controllers/download-controller.js"></script>

@@ -68,6 +68,35 @@
     margin: 11px;
 }
 
+.base_photo
+{
+    display: block;
+    width: 200px;
+    float: left;
+    height: 200px;
+    margin: auto 0;
+    background: #ffffff;
+    -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+}
+
+.userInfoHide {
+    display: none;
+}
+
+.left {
+    float: left;
+}
+
+.profile_container {
+    margin: 10px auto;
+    width: 70%;
+}
+
+.right {
+    float: right;
+}
+
 .mind_map_file_container {
     width: 10%;
     padding: -10px;

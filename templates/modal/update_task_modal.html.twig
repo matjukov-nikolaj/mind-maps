@@ -4,7 +4,7 @@
             <button id="closeUpdateTask" class="modal_close"></button>
             <h1 class="modal_title">Update task</h1>
             <div class="create_task_container">
-                {{ form_start(formUpdateTask) }}
+                {{ form_start(formUpdateTask, {'attr': {'role': 'formUpdateTask', 'onsubmit':'return validate();'}}) }}
                 <div class="input_form">
                     <h3 class="create_task_title">Task name</h3>
                     {{ form_row(formUpdateTask.name) }}
@@ -17,7 +17,7 @@
                     <h3 class="create_task_title">Set the task completion time</h3>
                     {{ form_row(formUpdateTask.end_time) }}
                 </div>
-                <div class="input_form">
+                <div class="select_parent_block">
                     <h3 class="create_task_title">Set parent</h3>
                     {{ form_row(formUpdateTask.parent) }}
                 </div>
