@@ -68,6 +68,14 @@
     margin: 11px;
 }
 
+.message_small {
+    color: #00a085;
+    font-size: 14px;
+    margin: 0 auto;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+}
+
 .base_photo
 {
     display: block;
@@ -91,6 +99,7 @@
 .profile_container {
     margin: 10px auto;
     width: 70%;
+    min-height: 240px;
 }
 
 .right {

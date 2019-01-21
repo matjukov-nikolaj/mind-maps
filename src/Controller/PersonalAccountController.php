@@ -54,7 +54,7 @@ class PersonalAccountController extends Controller
                 array('id_user' => $userId), array('date' => 'ASC')
             );
         if (COUNT($allUserInfo) != 0) {
-            return $allUserInfo[0];
+            return $allUserInfo[COUNT($allUserInfo) - 1];
         }
         return null;
     }
@@ -140,7 +140,7 @@ class PersonalAccountController extends Controller
 
         try {
             $file->move(
-                $this->getParameter("photos_directory"),
+                $this->getParameter('photos_directory'),
                 $fileName
             );
         } catch (FileException $e) {
@@ -200,7 +200,6 @@ class PersonalAccountController extends Controller
         $formTask->handleRequest($request);
         $formInfo->handleRequest($request);
         if ($request->isMethod('POST')) {
-
             if ($formTask->isSubmitted() && $formTask->isValid()) {
                 /** @var Task $taskEntity */
                 $taskEntity = $formTask['parent']->getData();
@@ -213,9 +212,7 @@ class PersonalAccountController extends Controller
                 $task = new Task();
                 $formTask = $this->createForm(CreateTaskType::class, $task);
                 return $this->redirect($request->getUri());
-            } else
-                if ($formInfo->isSubmitted() && $formInfo->isValid()) {
-                var_dump($userInfo);
+            } else if ($formInfo->isSubmitted() && $formInfo->isValid()) {
                 $this->processSavingUserInfo($userInfo);
                 unset($entity);
                 unset($formInfo);
