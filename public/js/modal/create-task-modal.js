@@ -12,15 +12,19 @@ class CreateTaskModal {
     _addCreateTaskButtonClickHandler() {
         const crateTaskButton = document.getElementById('createTaskButton');
         crateTaskButton.onclick = () => {
-            const taskNameInput = document.getElementById("task_name");
-            const taskName = this._getValueOfElement("task_name").replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), "");
-            const descriptionValue = this._getValueOfElement("task_description");
+            const taskNameInput = document.getElementById("create_task_name");
+            const taskName = this._getValueOfElement("create_task_name").replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), "");
+            taskNameInput.value = taskName;
+            const descriptionValue = this._getValueOfElement("create_task_description");
             const taskEndTime = this._getObjectOfEndTime();
             const currentTime = this._getCurrentDate();
+            console.log(taskEndTime);
+            console.log(currentTime);
             if (!this._isValidDate(taskEndTime, currentTime)) {
                 alert("The end date of the task should be greater than the current date.");
-                event.preventDefault();
                 return;
+            } else {
+                document.getElementById("createTaskButtonSubmit").click();
             }
         }
     }
@@ -60,11 +64,11 @@ class CreateTaskModal {
 
     _getObjectOfEndTime() {
         return {
-            year: this._getValueOfElement("task_end_time_date_year"),
-            month:  this._getValueOfElement("task_end_time_date_month"),
-            day: this._getValueOfElement("task_end_time_date_day"),
-            hour: this._getValueOfElement("task_end_time_time_hour"),
-            minutes: this._getValueOfElement("task_end_time_time_minute"),
+            year: this._getValueOfElement("create_task_end_time_date_year"),
+            month:  this._getValueOfElement("create_task_end_time_date_month"),
+            day: this._getValueOfElement("create_task_end_time_date_day"),
+            hour: this._getValueOfElement("create_task_end_time_time_hour"),
+            minutes: this._getValueOfElement("create_task_end_time_time_minute"),
         };
     }
 

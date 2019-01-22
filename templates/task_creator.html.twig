@@ -20,7 +20,7 @@
                 <h1 class="title_name">Tasks creator</h1>
             </div>
             {#<div class="button_block">#}
-                {#<button id="openDownload" class="style_button" title="download">save as</button>#}
+            {#<button id="openDownload" class="style_button" title="download">save as</button>#}
             {#</div>#}
             <div class="button_block">
                 <a class="style_button profile_button_block" href="/personal">profile</a>
@@ -32,7 +32,7 @@
                 <button id="convertTask" class="style_button" title="convertTask">convert task</button>
             </div>
             {#<div class="option_button">#}
-                {#<button id="openInformation" class="style_button" title="select theme">help</button>#}
+            {#<button id="openInformation" class="style_button" title="select theme">help</button>#}
             {#</div>#}
         </div>
     </header>
@@ -42,7 +42,16 @@
                 {% import _self as macros %}
                 {% macro printTree(node) %}
                     <li>
-                        <h4 data-id="{{ node.id }}">{{ node.title }}</h4>
+                        <div class="task_block">
+                            <h4 data-id="{{ node.id }}">{{ node.title }}</h4>
+                            {% if node.complete == 1 %}
+                                <img class="task_complete" src={{ asset('/images/green_circle.png') }}>
+                            {% elseif node.complete == -1 %}
+                                <img class="task_complete" src={{ asset('/images/red_circle.png') }}>
+                            {% elseif node.complete == 0 %}
+                                <img class="task_complete" src={{ asset('/images/yellow_circle.png') }}>
+                            {% endif %}
+                        </div>
                         {% if node.children|length %}
                             <ul>
                                 {% import _self as macros %}
@@ -56,7 +65,16 @@
                 {% if tree %}
                     <div id="tree">
                         <ul class="ul-treefree">
-                            <p id="rootName" data-id="{{ tree.root.id }}">{{ tree.root.title }}</p>
+                            <div class="task_block">
+                                <p id="rootName" data-id="{{ tree.root.id }}">{{ tree.root.title }}</p>
+                                {% if tree.root.complete == 0 %}
+                                    <img class="task_root_complete" src={{ asset('/images/yellow_circle.png') }}>
+                                {% elseif tree.root.complete == 1 %}
+                                    <img class="task_root_complete" src={{ asset('/images/green_circle.png') }}>
+                                {% elseif tree.root.complete == -1 %}
+                                    <img class="task_root_complete" src={{ asset('/images/red_circle.png') }}>
+                                {% endif %}
+                            </div>
                             {% for node in tree.root.children %}
                                 {{ macros.printTree(node) }}
                             {% endfor %}
@@ -65,62 +83,12 @@
                 {% endif %}
             </div>
         </div>
-        <div class="task_visualizer">
+        <div class=" task_visualizer">
             <div id="canvasDiv">
                 <canvas id='canvas'></canvas>
             </div>
         </div>
-
     </div>
-    {#<div id="modalHelp" class="modal">#}
-        {#<div class="modal_dialog">#}
-            {#<div id="modalContents" class="modal_content">#}
-                {#<button id="closeInformation" class="modal_close"></button>#}
-                {#<h1 class="modal_title">Help</h1>#}
-                {#<div class="information_box">#}
-                    {#<ul>#}
-                        {#<li>A new element creation - the key TAB</li>#}
-                        {#<li>Element switching - arrow keys</li>#}
-                        {#<li>Element deletion - the key DEL</li>#}
-                        {#<li>Element selection occurs by hovering mouse cursor over the element and left click</li>#}
-                        {#<li>Text editing - the key F2 or double-click on the element</li>#}
-                        {#<li>Drag and drop of an element- press the left mouse button on the element and drag it to a new position.</li>#}
-                    {#</ul>#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
-    {#<div id="modalSave" class="modal">#}
-        {#<div class="modal_dialog">#}
-            {#<div id="modalInput" class="modal_content">#}
-                {#<button id="closeSave" class="modal_close"></button>#}
-                {#<h1 class="modal_title">Save your mind-map</h1>#}
-                {#<p id="nameExist" class="error_name_block">Name has already existed.</p>#}
-                {#<p id="emptyInput" class="error_name_block">Please, enter a name.</p>#}
-                {#<div class="input_save_block">#}
-                    {#<input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">#}
-                {#</div>#}
-                {#<div class="button_modal_save">#}
-                    {#<button id="saveButton" class="style_button" title="download">save</button>#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
-    {#<div id="modalLoad" class="modal">#}
-        {#<div class="modal_dialog">#}
-            {#<div id="modalLoadFile" class="modal_content">#}
-                {#<button id="closeLoad" class="modal_close"></button>#}
-                {#<h1 class="modal_title">Load the file</h1>#}
-                {#<div class="choose_file">#}
-                    {#<input type="file" id="files" name="files[]" accept=".json"/>#}
-                    {#<output id="list"></output>#}
-                {#</div>#}
-                {#<div class="button_modal_load">#}
-                    {#<button id="loadButton" class="style_button" title="download">load</button>#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
     {{ include('modal/create_task_modal.html.twig') }}
     {{ include('modal/update_task_modal.html.twig') }}
     <input type="hidden" id="responseResult">

@@ -124,6 +124,7 @@ class TaskController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $userId = $this->getUser()->getId();
         $task->setUserId($userId);
+        $task->setComplete(0);
         $entityManager->persist($task);
         $entityManager->flush();
     }
@@ -132,16 +133,20 @@ class TaskController extends Controller
     {
         $userId = $this->getUser()->getId();
         /** @var Task $taskEntity */
-//        $taskEntity = $this->getTaskEntityByIdAndUserId()
+        $taskEntity = $this->getTaskEntityByIdAndUserId($task->getId(), $userId);
         $currentTime = new \DateTime();
-        $task->setStartTime($currentTime->getTimestamp());
+        $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
+        var_dump($task);
+        var_dump($taskEntity);
+        $taskEntity->setName($task->getName());
+        $taskEntity->setDescription($task->getDescription());
+        $taskEntity->setEndTime($task->getEndTime());
+        $taskEntity->setStartTime($currentTime->getTimestamp());
+        $taskEntity->setComplete(0);
         $entityManager = $this->getDoctrine()->getManager();
-        $userId = $this->getUser()->getId();
-        $task->setUserId($userId);
-        $entityManager->persist($task);
+        $entityManager->persist($taskEntity);
         $entityManager->flush();
     }
-
 
     /**
      * @Route("/get_task_mind_map_value")
@@ -180,6 +185,68 @@ class TaskController extends Controller
     }
 
     /**
+     * @Route("/close_task")
+     */
+    public function closeTask(Request $request)
+    {
+        $id = $request->request->get('id');
+        $userId = $this->getUser()->getId();
+        /** @var Task $task */
+        $task = $this->getTaskEntityByIdAndUserId($id, $userId);
+        $currentTime = new DateTime();
+        $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
+        $task->setCompletionTime($currentTime);
+        if ($task->getEndTime()->getTimestamp() <= $currentTime->getTimestamp()) {
+            $task->setComplete(-1);
+        } else {
+            $task->setComplete(1);
+        }
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($task);
+        $entityManager->flush();
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($task, "json");
+        return new Response($jsonContent);
+    }
+
+    private function deleteChildren(NodeForDom $node) {
+        if (!empty($node->children)) {
+            $entityManager = $this->getDoctrine()->getManager();
+            var_dump($node->id);
+            $task = $entityManager->getRepository(Task::class)->find($node->id);
+            $entityManager->remove($task);
+            $entityManager->flush();
+            foreach ($node->children as $child) {
+                $this->deleteChildren($child);
+            }
+        }
+    }
+
+    /**
+     * @Route("/delete_task")
+     */
+    public function deleteTask(Request $request) {
+        $id = $request->request->get('id');
+        $userId = $this->getUser()->getId();
+        /** @var Task $task */
+        $task = $this->getTaskEntityByIdAndUserId($id, $userId);
+        $treeDom = new TreeForDom($task);
+        $treeDom->root = $this->loadNode($task, false);
+        var_dump($treeDom);
+        $entityManager = $this->getDoctrine()->getManager();
+        $mindMap = $entityManager->getRepository(Task::class)->find($task->getId());
+        $entityManager->remove($mindMap);
+        $entityManager->flush();
+        foreach ($treeDom->root->children as $child) {
+            $this->deleteChildren($child);
+        }
+        return new Response();
+    }
+
+    /**
      * @Route("/task/{timestamp}")
      */
 
@@ -192,9 +259,13 @@ class TaskController extends Controller
 
         $task = new Task();
         $formCreateTask = $this->createForm(CreateTaskType::class, $task);
+        $taskUpdate = new Task();
+        $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
 
-        if ($request->request->has('formCreateTask')) {
-            $formCreateTask->handleRequest($request);
+        $formCreateTask->handleRequest($request);
+        $formUpdateTask->handleRequest($request);
+
+        if ($request->isMethod('POST')) {
             if ($formCreateTask->isSubmitted() && $formCreateTask->isValid()) {
                 /** @var Task $taskEntity */
                 $taskEntity = $formCreateTask['parent']->getData();
@@ -207,27 +278,20 @@ class TaskController extends Controller
                 $task = new Task();
                 $formCreateTask = $this->createForm(CreateTaskType::class, $task);
                 return $this->redirect($request->getUri());
-            }
-        }
-
-        $taskUpdate = new Task();
-        $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
-
-        if ($request->request->has('formUpdateTask')) {
-            $formUpdateTask->handleRequest($request);
-            if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
-                /** @var Task $taskUpdateEntity */
-                $taskUpdateEntity = $formUpdateTask['parent']->getData();
-                if ($taskUpdateEntity != null) {
-                    $taskUpdate->setParent($taskUpdateEntity->getId());
+            } else {
+                if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
+                    /** @var Task $taskUpdateEntity */
+                    $taskUpdateEntity = $formUpdateTask['parent']->getData();
+                    if ($taskUpdateEntity != null) {
+                        $taskUpdate->setParent($taskUpdateEntity->getId());
+                    }
+                    $this->processUpdatingTaskEntity($taskUpdate);
+                    unset($taskUpdate);
+                    unset($formUpdateTask);
+                    $taskUpdate = new Task();
+                    $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
+                    return $this->redirect($request->getUri());
                 }
-
-                $this->processUpdatingTaskEntity($taskUpdate);
-                unset($taskUpdate);
-                unset($formUpdateTask);
-                $taskUpdate = new Task();
-                $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
-                return $this->redirect($request->getUri());
             }
         }
 

@@ -223,7 +223,6 @@ class PersonalAccountController extends Controller
 
         }
 
-
         return $this->render(
             'personal_account.html.twig',
             array(

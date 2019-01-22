@@ -61,6 +61,12 @@
     padding: -11px;
 }
 
+.profile_button {
+    float: left;
+    width: 33.3%;
+    margin-top: 18px;
+}
+
 .username
 {
     font: 700 38px "Lato", sans-serif;

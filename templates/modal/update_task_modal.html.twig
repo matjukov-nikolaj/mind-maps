@@ -21,10 +21,15 @@
                     <h3 class="create_task_title">Set parent</h3>
                     {{ form_row(formUpdateTask.parent) }}
                 </div>
+                {{ form_row(formUpdateTask.id) }}
+                {{ form_row(formUpdateTask.complete) }}
+                <button id="submitTaskButton" class="userInfoHide" type="submit"></button>
+                {{ form_end(formUpdateTask) }}
                 <div class="sign_button button_sign_up">
                     <button id="updateTaskButton" class="style_button">Update task</button>
                 </div>
-                {{ form_end(formUpdateTask) }}
+                <button id="closeTaskButton" class="style_button">Close task</button>
+                <button id="deleteTaskButton" class="style_button right">Delete task</button>
             </div>
         </div>
     </div>

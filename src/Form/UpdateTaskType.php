@@ -20,6 +20,8 @@ class UpdateTaskType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', TextType::class, array('label' => false))
+            ->add('complete', TextType::class, array('label' => false))
             ->add('name', TextType::class, array('label' => false))
             ->add('description', TextareaType::class, array('label' => false))
             ->add('end_time', DateTimeType::class, array('label' => false))

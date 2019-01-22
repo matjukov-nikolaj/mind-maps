@@ -5,7 +5,7 @@ class TaskModal {
 
     _addMouseClickListener() {
         let thisPtr = this;
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             e = e || window.event;
             thisPtr.target = e.target || e.srcElement;
             const attribute = thisPtr.target.getAttribute("data-id");
@@ -14,7 +14,6 @@ class TaskModal {
                 const data = {
                     id: attribute,
                 };
-                // document.getElementById("update_task_id").value = attribute;
                 api.loadData(data, url.UPDATE_TASK, thisPtr._formFieldsController, thisPtr);
             }
         }, false);
@@ -27,7 +26,7 @@ class TaskModal {
             const formFields = thisPtr._getFormFields();
             thisPtr._setFormFields(json, formFields);
             const formFieldsValues = thisPtr._getFormFieldsValues(formFields);
-            thisPtr._submitFormClickHandler(thisPtr, formFieldsValues);
+            thisPtr._buttonsClickHandler(thisPtr, formFieldsValues);
         } catch (e) {
             console.log(e.message);
         }
@@ -43,16 +42,19 @@ class TaskModal {
 
     _setFormFields(json, formFields) {
         const timestamp = parseInt(json.endTime.timestamp) * 1000;
-        let date = new Date();
-        date.setTime(timestamp);
+        let date = new Date(timestamp);
+        formFields.id.style.display = 'none';
+        formFields.complete.style.display = 'none';
+        formFields.id.value = json.id;
+        formFields.complete.value = json.complete;
         formFields.name.value = json.name;
         formFields.description.value = json.description;
         formFields.parent.value = json.parent;
-        formFields.endTimeYear.value = date.getFullYear();
-        formFields.endTimeMonth.value = date.getMonth() + 1;
-        formFields.endTimeDay.value = date.getDay();
-        formFields.endTimeHour.value = date.getHours();
-        formFields.endTimeMinutes.value = date.getMinutes();
+        formFields.endTimeYear.value = date.getUTCFullYear();
+        formFields.endTimeMonth.value = date.getUTCMonth() + 1;
+        formFields.endTimeDay.value = date.getUTCDate();
+        formFields.endTimeHour.value = date.getUTCHours();
+        formFields.endTimeMinutes.value = date.getUTCMinutes();
     }
 
     _getFormFieldsValues(formFields) {
@@ -65,6 +67,8 @@ class TaskModal {
             endTimeHour: formFields.endTimeHour.value,
             endTimeMinutes: formFields.endTimeMinutes.value,
             parent: formFields.parent.value,
+            id: formFields.id.value,
+            complete: formFields.complete.value,
         }
     }
 
@@ -78,25 +82,117 @@ class TaskModal {
             endTimeHour: document.getElementById("update_task_end_time_time_hour"),
             endTimeMinutes: document.getElementById("update_task_end_time_time_minute"),
             parent: document.getElementById("update_task_parent"),
+            id: document.getElementById("update_task_id"),
+            complete: document.getElementById("update_task_complete"),
         }
     }
 
-    _submitFormClickHandler(thisPtr, formFieldsValues) {
+    _buttonsClickHandler(thisPtr, formFieldsValues) {
         const updateButton = document.getElementById("updateTaskButton");
         updateButton.onclick = () => {
             const currentFormFields = thisPtr._getFormFields();
             const currentFormFieldsValues = thisPtr._getFormFieldsValues(currentFormFields);
             if (thisPtr._isInvalidParent(currentFormFieldsValues, formFieldsValues)) {
                 alert("The root of the task cannot have a parent.");
-
-            } else if (!thisPtr._isEqualsFields(currentFormFieldsValues, formFieldsValues)) {
-                document.getElementsByName("update_task")[0].submit();
+                return;
             }
+            if (!thisPtr._isEqualsFields(currentFormFieldsValues, formFieldsValues)) {
+                const taskEndTime = this._getObjectOfEndTime();
+                const currentTime = this._getCurrentDate();
+                if (!this._isValidDate(taskEndTime, currentTime)) {
+                    alert("The end date of the task should be greater than the current date.");
+                    return;
+                }
+                document.getElementById("submitTaskButton").click();
+            }
+        };
+        const closeTaskButton = document.getElementById("closeTaskButton");
+        closeTaskButton.onclick = () => {
+            console.log(formFieldsValues.complete);
+            if (formFieldsValues.complete !== 0) {
+                alert("This task already completed.");
+                return;
+            }
+            const data = {
+                id: formFieldsValues.id,
+            };
+            api.loadData(data, url.CLOSE_TASK, thisPtr._closeTaskMessage, thisPtr);
+        };
+        const deleteTaskButton = document.getElementById("deleteTaskButton");
+        deleteTaskButton.onclick = () => {
+            const data = {
+                id: formFieldsValues.id,
+            };
+            console.log(url.DELETE_TASK);
+            api.saveChanges(data, url.DELETE_TASK, () => {}, this)
         }
+    }
+
+    _closeTaskMessage(data, thisPtr) {
+        alert("Task closed.");
+        window.location.reload();
     }
 
     _isInvalidParent(lhs, rhs) {
         return rhs.parent === "" && lhs.parent !== "";
+    }
+
+    _isValidDate(lhs, rhs) {
+        if (lhs.year > rhs.year) {
+            return true;
+        }
+        if (lhs.year < rhs.year) {
+            return false;
+        }
+        if (lhs.month > rhs.month) {
+            return true;
+        }
+        if (lhs.month < rhs.month) {
+            return false;
+        }
+        if (lhs.day > rhs.day) {
+            return true;
+        }
+        if (lhs.day < rhs.day) {
+            return false;
+        }
+        if (lhs.hour > rhs.hour) {
+            return true;
+        }
+        if (lhs.hour < rhs.hour) {
+            return false;
+        }
+        if (lhs.minutes > rhs.minutes) {
+            return true;
+        }
+        if (lhs.minutes < rhs.minutes) {
+            return false;
+        }
+    }
+
+    _getObjectOfEndTime() {
+        return {
+            year: this._getValueOfElement("update_task_end_time_date_year"),
+            month: this._getValueOfElement("update_task_end_time_date_month"),
+            day: this._getValueOfElement("update_task_end_time_date_day"),
+            hour: this._getValueOfElement("update_task_end_time_time_hour"),
+            minutes: this._getValueOfElement("update_task_end_time_time_minute"),
+        };
+    }
+
+    _getCurrentDate() {
+        const currentDate = new Date();
+        return {
+            year: currentDate.getFullYear().toString(),
+            month: (currentDate.getMonth() + 1).toString(),
+            day: currentDate.getDate().toString(),
+            hour: currentDate.getHours().toString(),
+            minutes: currentDate.getMinutes().toString(),
+        }
+    }
+
+    _getValueOfElement(element) {
+        return document.getElementById(element).value;
     }
 
     _isEqualsFields(lhs, rhs) {
@@ -111,20 +207,5 @@ class TaskModal {
             rhs.endTimeMinutes === lhs.endTimeMinutes
         );
     }
-
-    // addTaskModalHandler(targetElement, attribute) {
-    //     this.modalUpdateTask = document.getElementById("modalUpdateTask");
-    //     this.modalUpdateTaskForm = document.getElementById("modalUpdateTaskForm");
-    //     this.openButton = targetElement;
-    //     this.closeButton = document.getElementById("closeUpdateTask");
-    //     this.modal = new Modal(this.modalUpdateTask, this.modalUpdateTaskForm, this.openButton, this.closeButton);
-    //     targetElement.click();
-    //     const data = {
-    //         id: attribute,
-    //     };
-    //     api.sendRequest(data, url.UPDATE_TASK);
-    // }
-
-
 
 }

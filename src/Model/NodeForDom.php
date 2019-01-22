@@ -21,6 +21,7 @@ class NodeForDom
     public $parent;
     public $completionTime;
     public $children;
+    public $complete;
 
     public function __construct($taskEntity)
     {
@@ -32,6 +33,7 @@ class NodeForDom
         $this->endTime = $taskEntity->getEndTime();
         $this->completionTime = $taskEntity->getCompletionTime();
         $this->parent = $taskEntity->getParent();
+        $this->complete = $taskEntity->getComplete();
         $this->children = [];
     }
 

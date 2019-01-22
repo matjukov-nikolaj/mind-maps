@@ -13,8 +13,8 @@
 {% block content %}
     <div class="personal_account_field">
         <div class="user_information">
-            <div class="username_block">
-                <button id="openProfile" class="style_button" title="load">{{ username }}</button>
+            <div class="profile_button">
+                <button id="openProfile" class="style_button left" title="load">{{ username }}</button>
             </div>
             <div class="header_title">
                 <h1 class="title_name">mind-maps</h1>
@@ -76,10 +76,6 @@
                                 <div class="root_name_block">
                                     <p class="root_name">{{ taskDescriptions[loop.index0] }}</p>
                                 </div>
-                                <div class="mind_map_download_icon">
-                                    <img class="mind_map_icon" src="images/download_arrow.png">
-                                </div>
-                                <button class="delete_file modal_close"></button>
                             </div>
                             <div class="mind_map_info">
                                 <div class="mind_map_name_block">

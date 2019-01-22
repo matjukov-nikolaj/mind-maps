@@ -6,5 +6,7 @@ const url = {
     DEFAULT: 'http://localhost:80',
     TASK_MIND_MAP: '/get_task_mind_map_value',
     UPDATE_TASK: '/update_task',
+    CLOSE_TASK: '/close_task',
+    DELETE_TASK: '/delete_task',
     USER_INFO: '/get_personal_information',
 };

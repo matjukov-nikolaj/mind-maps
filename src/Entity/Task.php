@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -52,9 +53,21 @@ class Task
      */
     private $parent;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $complete;
+
     public function getId()
     {
         return $this->id;
+    }
+
+    public function setId($id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getDescription(): ?string
@@ -92,7 +105,7 @@ class Task
         return $this;
     }
 
-    public function getEndTime()
+    public function getEndTime(): ?\DateTime
     {
         return $this->end_time;
     }
@@ -136,6 +149,18 @@ class Task
     public function setUserId(int $user_id): self
     {
         $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    public function getComplete(): ?int
+    {
+        return $this->complete;
+    }
+
+    public function setComplete($complete): self
+    {
+        $this->complete = $complete;
 
         return $this;
     }
