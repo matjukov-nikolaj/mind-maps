@@ -9,8 +9,9 @@ class TaskModal {
             e = e || window.event;
             thisPtr.target = e.target || e.srcElement;
             const attribute = thisPtr.target.getAttribute("data-id");
-            if (attribute !== null) {
-                thisPtr._createModal(thisPtr);
+            if (attribute === null) {
+                return;
+            } else {
                 const data = {
                     id: attribute,
                 };
@@ -21,7 +22,7 @@ class TaskModal {
 
     _formFieldsController(data, thisPtr) {
         try {
-            thisPtr.target.click();
+            thisPtr._createModal(thisPtr);
             const json = JSON.parse(data);
             const formFields = thisPtr._getFormFields();
             thisPtr._setFormFields(json, formFields);
@@ -37,7 +38,7 @@ class TaskModal {
         thisPtr.modalUpdateTaskForm = document.getElementById("modalUpdateTaskForm");
         thisPtr.openButton = thisPtr.target;
         thisPtr.closeButton = document.getElementById("closeUpdateTask");
-        thisPtr.modal = new Modal(thisPtr.modalUpdateTask, thisPtr.modalUpdateTaskForm, thisPtr.openButton, thisPtr.closeButton);
+        thisPtr.modal = new AutoModal(thisPtr.modalUpdateTask, thisPtr.modalUpdateTaskForm, thisPtr.openButton, thisPtr.closeButton);
     }
 
     _setFormFields(json, formFields) {
@@ -108,22 +109,20 @@ class TaskModal {
         };
         const closeTaskButton = document.getElementById("closeTaskButton");
         closeTaskButton.onclick = () => {
-            console.log(formFieldsValues.complete);
-            if (formFieldsValues.complete !== 0) {
+            if (formFieldsValues.complete === "0") {
+                const data = {
+                    id: formFieldsValues.id,
+                };
+                api.loadData(data, url.CLOSE_TASK, thisPtr._closeTaskMessage, thisPtr);
+            } else {
                 alert("This task already completed.");
-                return;
             }
-            const data = {
-                id: formFieldsValues.id,
-            };
-            api.loadData(data, url.CLOSE_TASK, thisPtr._closeTaskMessage, thisPtr);
         };
         const deleteTaskButton = document.getElementById("deleteTaskButton");
         deleteTaskButton.onclick = () => {
             const data = {
                 id: formFieldsValues.id,
             };
-            console.log(url.DELETE_TASK);
             api.saveChanges(data, url.DELETE_TASK, () => {}, this)
         }
     }

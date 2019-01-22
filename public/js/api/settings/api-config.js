@@ -8,5 +8,6 @@ const url = {
     UPDATE_TASK: '/update_task',
     CLOSE_TASK: '/close_task',
     DELETE_TASK: '/delete_task',
+    DELETE_ACCESS: '/delete_access',
     USER_INFO: '/get_personal_information',
 };

@@ -24,19 +24,7 @@ class UpdateTaskType extends AbstractType
             ->add('complete', TextType::class, array('label' => false))
             ->add('name', TextType::class, array('label' => false))
             ->add('description', TextareaType::class, array('label' => false))
-            ->add('end_time', DateTimeType::class, array('label' => false))
-            ->add('parent', EntityType::class, array(
-                'class' => Task::class,
-                'required' => false,
-                'label' => false,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('task')
-                        ->orderBy('task.name', 'ASC');
-                },
-                'choice_label' => function (Task $task) {
-                    return $task->getName() . " End Time: " . $task->getEndTime()->format('Y:m:d H:i:s');
-                },
-            ));
+            ->add('end_time', DateTimeType::class, array('label' => false));
     }
 
     public function configureOptions(OptionsResolver $resolver)

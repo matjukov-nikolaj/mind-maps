@@ -43,7 +43,6 @@ class PersonalInfo {
     }
 
     _loadedUserInfo(value, thisPtr) {
-        console.log(value);
         if (value === "") {
             document.getElementById("personalForm").style.display = "block";
         } else {

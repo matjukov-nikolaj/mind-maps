@@ -14,7 +14,7 @@
 
 .header_title {
     width: 33.3%;
-    float:left;
+    float: left;
 
 }
 
@@ -26,7 +26,7 @@
 }
 
 .right {
-    float:right;
+    float: right;
     margin: 19px 0px;
 }
 
@@ -67,8 +67,7 @@
     margin-top: 18px;
 }
 
-.username
-{
+.username {
     font: 700 38px "Lato", sans-serif;
     color: #00bc9c;
     margin: 11px;
@@ -82,8 +81,7 @@
     font-weight: bold;
 }
 
-.base_photo
-{
+.base_photo {
     display: block;
     width: 200px;
     float: left;
@@ -118,16 +116,14 @@
     float: left;
 }
 
-.mind_map_file
-{
+.mind_map_file {
     border: 1px solid #d8dee2;
     border-radius: 5px;
     margin: 10px;
     min-height: 200px;
 }
 
-.mind_map_icon_block
-{
+.mind_map_icon_block {
     position: relative;
     width: 100%;
 }
@@ -152,8 +148,7 @@
     color: #00bc9c;
 }
 
-.mind_map_icon
-{
+.mind_map_icon {
     width: 100%;
 }
 
@@ -171,6 +166,7 @@
 .mind_map_info {
     width: 100%;
 }
+
 .mind_map_name_block {
     text-align: center;
     width: 90%;
@@ -191,7 +187,6 @@
 .download_icon {
     width: 100%;
 }
-
 
 @media screen and (max-width: 1300px) {
 
@@ -259,4 +254,30 @@
     font-family: "Lato", sans-serif;
     font-weight: bold;
     margin: 20px auto;
+}
+
+.existingAccessBlock {
+    overflow-y: scroll;
+    overflow-x: scroll;
+    max-height: 300px;
+    max-width: 800px;
+    margin: 10px auto;
+}
+
+.existingAccessElement {
+    width: 85%;
+    margin: 0 auto;
+}
+
+.existing_cross_red {
+    background-image: url(../images/cross_red.png);
+    margin-top: 8px;
+    width: 15px;
+    height: 16px;
+    float: right;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    border: 0;
+    cursor: pointer;
 }

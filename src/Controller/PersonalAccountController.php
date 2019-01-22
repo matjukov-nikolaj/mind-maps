@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\MindMap;
+use App\Entity\TaskAccess;
+use App\Entity\User;
 use App\Entity\UserInfo;
+use App\Form\OpenAccessType;
 use DateTime;
 use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\ORM\Query\ResultSetMapping;
 use function MongoDB\BSON\toJSON;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,6 +61,14 @@ class PersonalAccountController extends Controller
             return $allUserInfo[COUNT($allUserInfo) - 1];
         }
         return null;
+    }
+
+    private function getExistingTasksAccess($user_id)
+    {
+        $userTask = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TaskAccess::class)
+            ->findByUserId($user_id);
+        return $userTask;
     }
 
     private function getNameOfRoot($value)
@@ -127,6 +139,13 @@ class PersonalAccountController extends Controller
         return $userId . "_" . $time->format('U');
     }
 
+    private function processSavingOpenAccessEntity(TaskAccess $taskAccess)
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($taskAccess);
+        $entityManager->flush();
+    }
+
     private function processSavingUserInfo(UserInfo $userInfo)
     {
         /** @var UploadedFile $file */
@@ -154,6 +173,19 @@ class PersonalAccountController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($userInfo);
         $entityManager->flush();
+    }
+
+    /**
+     * @Route("/delete_access")
+     */
+    public function deleteAccessUserInTask(Request $request)
+    {
+        $id = (int) $request->request->get('id');
+        $entityManager = $this->getDoctrine()->getManager();
+        $taskAccess = $entityManager->getRepository(TaskAccess::class)->find($id);
+        $entityManager->remove($taskAccess);
+        $entityManager->flush();
+        return new Response();
     }
 
     /**
@@ -191,14 +223,21 @@ class PersonalAccountController extends Controller
         $taskDescriptions = $taskInfo['descriptions'];
         $timestamps = $taskInfo['timestamps'];
 
+        $existingTaskAccess = $this->getExistingTasksAccess($this->getUser()->getId());
+
         $task = new Task();
         $formTask = $this->createForm(CreateTaskType::class, $task);
         $existingUserInfo = $this->getUserInfoEntity($this->getUser()->getId());
 
         $userInfo = new UserInfo();
         $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+
+        $taskAccess = new TaskAccess();
+        $formAccess = $this->createForm(OpenAccessType::class, $taskAccess);
+
         $formTask->handleRequest($request);
         $formInfo->handleRequest($request);
+        $formAccess->handleRequest($request);
         if ($request->isMethod('POST')) {
             if ($formTask->isSubmitted() && $formTask->isValid()) {
                 /** @var Task $taskEntity */
@@ -212,15 +251,25 @@ class PersonalAccountController extends Controller
                 $task = new Task();
                 $formTask = $this->createForm(CreateTaskType::class, $task);
                 return $this->redirect($request->getUri());
-            } else if ($formInfo->isSubmitted() && $formInfo->isValid()) {
-                $this->processSavingUserInfo($userInfo);
-                unset($entity);
-                unset($formInfo);
-                $userInfo = new UserInfo();
-                $formInfo = $this->createForm(UserInfoType::class, $userInfo);
-                return $this->redirect($request->getUri());
+            } else {
+                if ($formInfo->isSubmitted() && $formInfo->isValid()) {
+                    $this->processSavingUserInfo($userInfo);
+                    unset($entity);
+                    unset($formInfo);
+                    $userInfo = new UserInfo();
+                    $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+                    return $this->redirect($request->getUri());
+                } else {
+                    if ($formAccess->isSubmitted() && $formAccess->isValid()) {
+                        $this->processSavingOpenAccessEntity($taskAccess);
+                        unset($entity);
+                        unset($formAccess);
+                        $taskAccess = new TaskAccess();
+                        $formAccess = $this->createForm(OpenAccessType::class, $taskAccess);
+                        return $this->redirect($request->getUri());
+                    }
+                }
             }
-
         }
 
         return $this->render(
@@ -235,6 +284,8 @@ class PersonalAccountController extends Controller
                 'formCreateTask' => $formTask->createView(),
                 'userInfo' => $formInfo->createView(),
                 'existingUserInfo' => $existingUserInfo,
+                'formAccess' => $formAccess->createView(),
+                'existingTasks' => $existingTaskAccess,
             )
         );
     }

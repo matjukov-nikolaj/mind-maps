@@ -64,6 +64,9 @@
             <div class="create_task_button">
                 <button id="openCreateTask" class="style_button" title="createTask">create task</button>
             </div>
+            <div class="create_task_button">
+                <button id="openAccess" class="style_button" title="createTask">open access</button>
+            </div>
             <div class="existing_tasks">
                 {% if taskNames|length == 0 %}
                     <p class="message">You don't have tasks, create it now.</p>
@@ -93,6 +96,7 @@
     {{ include('modal/load_mind_map_modal.html.twig') }}
     {{ include('modal/create_task_modal.html.twig') }}
     {{ include('modal/user_info_modal.html.twig') }}
+    {{ include('modal/open_access_modal.html.twig') }}
 
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
@@ -104,6 +108,7 @@
     <script src="/js/modal/modal.js"></script>
     <script src="/js/modal/load-modal.js"></script>
     <script src="/js/modal/personal-info-modal.js"></script>
+    <script src="/js/modal/open-access-modal.js"></script>
     <script src="/js/modal/create-task-modal.js"></script>
     <script src="/js/modal/update-task-modal.js"></script>
     <script src="/js/api/controllers/download-controller.js"></script>

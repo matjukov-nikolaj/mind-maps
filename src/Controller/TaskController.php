@@ -10,6 +10,7 @@ use App\Model\TreeForDom;
 use App\Model\TreeForJson;
 use App\Model\NodeForJson;
 use DateTime;
+use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -120,11 +121,12 @@ class TaskController extends Controller
     private function processSavingTaskEntity(Task $task)
     {
         $currentTime = new \DateTime();
+        $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
         $task->setStartTime($currentTime->getTimestamp());
-        $entityManager = $this->getDoctrine()->getManager();
         $userId = $this->getUser()->getId();
         $task->setUserId($userId);
         $task->setComplete(0);
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
     }
@@ -136,8 +138,6 @@ class TaskController extends Controller
         $taskEntity = $this->getTaskEntityByIdAndUserId($task->getId(), $userId);
         $currentTime = new \DateTime();
         $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
-        var_dump($task);
-        var_dump($taskEntity);
         $taskEntity->setName($task->getName());
         $taskEntity->setDescription($task->getDescription());
         $taskEntity->setEndTime($task->getEndTime());
@@ -213,12 +213,11 @@ class TaskController extends Controller
     }
 
     private function deleteChildren(NodeForDom $node) {
-        if (!empty($node->children)) {
-            $entityManager = $this->getDoctrine()->getManager();
-            var_dump($node->id);
-            $task = $entityManager->getRepository(Task::class)->find($node->id);
-            $entityManager->remove($task);
-            $entityManager->flush();
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Task::class)->find($node->id);
+        $entityManager->remove($task);
+        $entityManager->flush();
+        if (COUNT($node->children) != 0) {
             foreach ($node->children as $child) {
                 $this->deleteChildren($child);
             }
@@ -233,15 +232,21 @@ class TaskController extends Controller
         $userId = $this->getUser()->getId();
         /** @var Task $task */
         $task = $this->getTaskEntityByIdAndUserId($id, $userId);
+        if ($task == null) {
+            return new Response();
+        }
         $treeDom = new TreeForDom($task);
         $treeDom->root = $this->loadNode($task, false);
         var_dump($treeDom);
         $entityManager = $this->getDoctrine()->getManager();
-        $mindMap = $entityManager->getRepository(Task::class)->find($task->getId());
-        $entityManager->remove($mindMap);
+        $taskEntity = $entityManager->getRepository(Task::class)->find($task->getId());
+        $entityManager->remove($taskEntity);
         $entityManager->flush();
         foreach ($treeDom->root->children as $child) {
             $this->deleteChildren($child);
+        }
+        if ($task->getParent() == null) {
+            return $this->redirectToRoute("/personal");
         }
         return new Response();
     }
