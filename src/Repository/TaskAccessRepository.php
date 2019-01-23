@@ -80,17 +80,16 @@ class TaskAccessRepository extends ServiceEntityRepository
                   c.value AS comment_value,
                   c.date AS comment_date 
                 FROM 
-                  user u 
-                INNER JOIN task_access ta ON ta.user_id = u.id 
-                INNER JOIN task t ON t.id = ta.task_id
-                INNER JOIN comment c ON c.user_id = u.id AND t.id = c.task_id
+                  task t
+                  INNER JOIN comment c ON c.task_id = t.id
+                  INNER JOIN user u ON u.id = c.user_id
                 WHERE 
                   t.id IN (
                             SELECT t2.id
                             FROM 
                               user u2
-                            INNER JOIN task_access ta2 ON ta2.user_id = u2.id
-                            INNER JOIN task t2 ON t2.id = ta2.task_id
+                              INNER JOIN task_access ta2 ON ta2.user_id = u2.id
+                              INNER JOIN task t2 ON t2.id = ta2.task_id
                             WHERE
                               u2.id = :user_id
                           )
@@ -99,6 +98,30 @@ class TaskAccessRepository extends ServiceEntityRepository
         $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function deleteTaskFromTaskAccess($task_id): void {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'DELETE
+                FROM
+                  task_access
+                WHERE
+                  task_id = :task_id';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':task_id', $task_id);
+        $stmt->execute();
+    }
+
+    public function deleteTaskFromComment($task_id): void {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'DELETE
+                FROM
+                  comment
+                WHERE
+                  task_id = :task_id';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':task_id', $task_id);
+        $stmt->execute();
     }
 
 //    /**

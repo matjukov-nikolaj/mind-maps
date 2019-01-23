@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Task;
+use App\Entity\TaskAccess;
 use App\Form\CreateTaskType;
 use App\Form\UpdateTaskType;
 use App\Model\NodeForDom;
@@ -12,9 +14,11 @@ use App\Model\NodeForJson;
 use DateTime;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\RouteCollectionBuilder;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -201,6 +205,7 @@ class TaskController extends Controller
         } else {
             $task->setComplete(1);
         }
+        var_dump($task->getComplete());
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
@@ -217,6 +222,9 @@ class TaskController extends Controller
         $task = $entityManager->getRepository(Task::class)->find($node->id);
         $entityManager->remove($task);
         $entityManager->flush();
+        var_dump($node->id);
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromTaskAccess($node->id);
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromComment($node->id);
         if (COUNT($node->children) != 0) {
             foreach ($node->children as $child) {
                 $this->deleteChildren($child);
@@ -237,16 +245,20 @@ class TaskController extends Controller
         }
         $treeDom = new TreeForDom($task);
         $treeDom->root = $this->loadNode($task, false);
-        var_dump($treeDom);
         $entityManager = $this->getDoctrine()->getManager();
+        $taskId = (int) $task->getId();
+        $taskParent = (int) $task->getParent();
         $taskEntity = $entityManager->getRepository(Task::class)->find($task->getId());
         $entityManager->remove($taskEntity);
         $entityManager->flush();
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromTaskAccess($taskId);
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromComment($taskId);
         foreach ($treeDom->root->children as $child) {
             $this->deleteChildren($child);
         }
-        if ($task->getParent() == null) {
-            return $this->redirectToRoute("/personal");
+        if ($taskParent == null) {
+            $url = $this->generateUrl("personal");
+            return new RedirectResponse($url, 302, []);
         }
         return new Response();
     }
@@ -254,7 +266,6 @@ class TaskController extends Controller
     /**
      * @Route("/task/{timestamp}")
      */
-
     public function mindMapsAction($timestamp, Request $request)
     {
         $userId = $this->getUser()->getId();
@@ -263,6 +274,7 @@ class TaskController extends Controller
         $treeDom->root = $this->loadNode($taskEntity, false);
 
         $task = new Task();
+        $GLOBALS['currentUserId'] = $this->getUser()->getId();
         $formCreateTask = $this->createForm(CreateTaskType::class, $task);
         $taskUpdate = new Task();
         $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
@@ -285,11 +297,6 @@ class TaskController extends Controller
                 return $this->redirect($request->getUri());
             } else {
                 if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
-                    /** @var Task $taskUpdateEntity */
-                    $taskUpdateEntity = $formUpdateTask['parent']->getData();
-                    if ($taskUpdateEntity != null) {
-                        $taskUpdate->setParent($taskUpdateEntity->getId());
-                    }
                     $this->processUpdatingTaskEntity($taskUpdate);
                     unset($taskUpdate);
                     unset($formUpdateTask);

@@ -35,18 +35,17 @@ class OpenAccess {
                 return;
             } else {
                 const nameAttribute = thisPtr.target.getAttribute("name");
-                if (nameAttribute !== 'access') {
-                    return;
-                }
-                const data = {
-                    id: attribute,
-                };
-                api.saveChanges(data, url.DELETE_ACCESS, () => {}, thisPtr);
-                const mainParent = thisPtr.target.parentNode.parentNode;
-                thisPtr.target.parentNode.parentNode.removeChild(thisPtr.target.parentNode);
-                if (mainParent.children.length === 0) {
-                    mainParent.parentNode.parentNode.removeChild(mainParent.parentNode);
-                    window.location.reload();
+                if (nameAttribute === 'access') {
+                    const data = {
+                        id: attribute,
+                    };
+                    api.saveChanges(data, url.DELETE_ACCESS, () => {}, thisPtr);
+                    const mainParent = thisPtr.target.parentNode.parentNode;
+                    thisPtr.target.parentNode.parentNode.removeChild(thisPtr.target.parentNode);
+                    if (mainParent.children.length === 0) {
+                        mainParent.parentNode.parentNode.removeChild(mainParent.parentNode);
+                        window.location.reload();
+                    }
                 }
             }
         }, false);

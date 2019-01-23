@@ -50,7 +50,6 @@ class TaskModal {
         formFields.complete.value = json.complete;
         formFields.name.value = json.name;
         formFields.description.value = json.description;
-        formFields.parent.value = json.parent;
         formFields.endTimeYear.value = date.getUTCFullYear();
         formFields.endTimeMonth.value = date.getUTCMonth() + 1;
         formFields.endTimeDay.value = date.getUTCDate();
@@ -67,7 +66,6 @@ class TaskModal {
             endTimeDay: formFields.endTimeDay.value,
             endTimeHour: formFields.endTimeHour.value,
             endTimeMinutes: formFields.endTimeMinutes.value,
-            parent: formFields.parent.value,
             id: formFields.id.value,
             complete: formFields.complete.value,
         }
@@ -82,7 +80,6 @@ class TaskModal {
             endTimeDay: document.getElementById("update_task_end_time_date_day"),
             endTimeHour: document.getElementById("update_task_end_time_time_hour"),
             endTimeMinutes: document.getElementById("update_task_end_time_time_minute"),
-            parent: document.getElementById("update_task_parent"),
             id: document.getElementById("update_task_id"),
             complete: document.getElementById("update_task_complete"),
         }
@@ -114,6 +111,7 @@ class TaskModal {
                     id: formFieldsValues.id,
                 };
                 api.loadData(data, url.CLOSE_TASK, thisPtr._closeTaskMessage, thisPtr);
+                window.location.reload();
             } else {
                 alert("This task already completed.");
             }
@@ -123,7 +121,10 @@ class TaskModal {
             const data = {
                 id: formFieldsValues.id,
             };
-            api.saveChanges(data, url.DELETE_TASK, () => {}, this)
+            api.saveChanges(data, url.DELETE_TASK, () => {
+                window.location = "/personal";
+            }, thisPtr);
+
         }
     }
 

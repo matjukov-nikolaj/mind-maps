@@ -288,9 +288,10 @@
 
 .task_forum_container {
     width: 100%;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     border: 1px solid #d8dee2;
     border-radius: 5px;
+    display: inline-block;
 }
 
 .username_task_forum {
@@ -317,7 +318,6 @@
 
 .comment_container {
     width: 100%;
-    margin-bottom: 50px;
 }
 
 .forum_container {
@@ -336,4 +336,59 @@
     background-color: #ffffff;
     border: 0;
     cursor: pointer;
+}
+
+.comments_container {
+    margin: 10px;
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+    background: #f5f7fa;
+}
+
+.comment_username {
+    text-align: left;
+    color: #00a085;
+    font-size: 24px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: auto 10px;
+}
+
+.comment_message {
+    color: #506a85;
+    font-size: 20px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+.task_block_container {
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+    padding: 10px;
+    width: 90%;
+    margin-bottom: 20px;
+}
+
+.comment_delete_cross_red
+{
+    background-image: url(../images/cross_red.png);
+    width: 15px;
+    height: 16px;
+    float: right;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #f5f7fa;
+    border: 0;
+    cursor: pointer;
+}
+
+.grid {
+    display: grid;
+}
+
+.comment_button {
+    display: inline-block;
+    float: right;
+    margin: 10px;
 }

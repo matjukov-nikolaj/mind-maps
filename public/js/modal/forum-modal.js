@@ -20,26 +20,27 @@ class ForumModal {
                 return;
             } else {
                 const nameAttribute = thisPtr.target.getAttribute("name");
-                if (nameAttribute !== 'forum') {
-                    return;
+                if (nameAttribute === 'forum') {
+                    const data = {
+                        id: attribute,
+                    };
+                    thisPtr._openCommentField(attribute, thisPtr);
                 }
-                const data = {
-                    id: attribute,
-                };
-                thisPtr._openCommentField(attribute, thisPtr);
+                if (nameAttribute === 'comment') {
+                    thisPtr._deleteComment(attribute, thisPtr);
+                }
             }
         }, false);
     }
 
     _openCommentField(attribute, thisPtr) {
-        console.log(attribute);
         const commentButton = document.getElementById("commentButton_" + attribute);
         const commentBlock = document.getElementById("commentContainer_" + attribute);
         commentButton.style.display = "none";
         commentBlock.style.display = "block";
         const closeComment = document.getElementById("closeComment_" + attribute);
         closeComment.onclick = () => {
-            commentButton.style.display = "block";
+            commentButton.style.display = "inline-block";
             commentBlock.style.display = "none";
         };
         const saveButton = document.getElementById("saveCommentButton_" + attribute);
@@ -54,9 +55,17 @@ class ForumModal {
                 value: commitText.value
             };
             this.api.saveChanges(data, '/create_comment', () => {}, thisPtr);
-            commitText.value = "";
             window.location.reload();
         }
+    }
+
+    _deleteComment(attribute, thisPtr) {
+        const data = {
+            id: attribute,
+        };
+        api.saveChanges(data, "/delete_comment", () => {}, thisPtr);
+        const mainParent = thisPtr.target.parentNode.parentNode;
+        thisPtr.target.parentNode.parentNode.removeChild(thisPtr.target.parentNode);
     }
 
 

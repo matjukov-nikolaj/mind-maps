@@ -129,6 +129,7 @@ class PersonalAccountController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $userId = $this->getUser()->getId();
         $task->setUserId($userId);
+        $task->setComplete(0);
         $entityManager->persist($task);
         $entityManager->flush();
     }
@@ -227,6 +228,19 @@ class PersonalAccountController extends Controller
     }
 
     /**
+     * @Route("/delete_comment")
+     */
+    public function deleteComment(Request $request)
+    {
+        $id = (int) $request->request->get('id');
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = $entityManager->getRepository(Comment::class)->find($id);
+        $entityManager->remove($comment);
+        $entityManager->flush();
+        return new Response();
+    }
+
+    /**
      * @Route("/delete_access")
      */
     public function deleteAccessUserInTask(Request $request)
@@ -280,6 +294,7 @@ class PersonalAccountController extends Controller
         $taskCommentsMap = $this->getTaskCommentsMap($comments, $taskForForum);
 
         $task = new Task();
+        $GLOBALS['currentUserId'] = $this->getUser()->getId();
         $formTask = $this->createForm(CreateTaskType::class, $task);
         $existingUserInfo = $this->getUserInfoEntity($this->getUser()->getId());
 
@@ -342,6 +357,7 @@ class PersonalAccountController extends Controller
                 'existingTasks' => $existingTaskAccess,
                 'forumTasks' => $taskForForum,
                 'taskCommentsMap' => $taskCommentsMap,
+                'userId' => $this->getUser()->getId(),
             )
         );
     }
