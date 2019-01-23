@@ -31,6 +31,9 @@
             <div class="create_task">
                 <button id="convertTask" class="style_button" title="convertTask">convert task</button>
             </div>
+            <div class="create_task">
+                <button id="statisticOpen" class="style_button" title="convertTask">show statistic</button>
+            </div>
             {#<div class="option_button">#}
             {#<button id="openInformation" class="style_button" title="select theme">help</button>#}
             {#</div>#}
@@ -91,6 +94,7 @@
     </div>
     {{ include('modal/create_task_modal.html.twig') }}
     {{ include('modal/update_task_modal.html.twig') }}
+    {{ include('modal/statistic_modal.html.twig') }}
     <input type="hidden" id="responseResult">
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
@@ -100,6 +104,7 @@
     <script src="/js/mind-map-creator/utilites/tree-saver.js"></script>
     <script src="/js/mind-map-creator/settings/global-config.js"></script>
     <script src="/js/modal/modal.js"></script>
+    <script src="/js/modal/statistic-modal.js"></script>
     <script src="/js/modal/auto-modal-window.js"></script>
     <script src="/js/api/controllers/save-changes-controller.js"></script>
     <script src="/js/modal/create-task-modal.js"></script>

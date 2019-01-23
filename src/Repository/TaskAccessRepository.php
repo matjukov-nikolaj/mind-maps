@@ -55,11 +55,23 @@ class TaskAccessRepository extends ServiceEntityRepository
                   t.end_time AS task_end, 
                   t.complete AS task_complete,
                   u2.id AS autor_id, 
-                  u2.username AS autor_username
+                  u2.username AS autor_username,
+                  e.tag_names AS tag_names,
+                  DATEDIFF(t.end_time, NOW()) AS rest_days
                 FROM
                   user u
                 INNER JOIN task_access ta ON ta.user_id = u.id
                 INNER JOIN task t ON t.id = ta.task_id
+                LEFT JOIN (
+                    SELECT
+	                  t2.id AS task_id,
+	                  GROUP_CONCAT(DISTINCT tg.name) AS tag_names
+	                FROM
+	                  tag tg
+	                  INNER JOIN tag_task ttg ON ttg.tag_id = tg.id
+	                  INNER JOIN task t2 ON  t2.id = ttg.task_id
+	                GROUP BY t2.id 
+                  ) e ON e.task_id = t.id 
                 INNER JOIN user u2 ON u2.id = t.user_id
                 WHERE
                   u.id = :user_id';
@@ -78,7 +90,7 @@ class TaskAccessRepository extends ServiceEntityRepository
                   t.id AS task_id, 
                   c.id AS comment_id, 
                   c.value AS comment_value,
-                  c.date AS comment_date 
+                  c.date AS comment_date
                 FROM 
                   task t
                   INNER JOIN comment c ON c.task_id = t.id

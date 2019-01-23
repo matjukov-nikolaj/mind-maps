@@ -2,37 +2,41 @@
 
 namespace App\Repository;
 
-use App\Entity\Task;
+use App\Entity\Tag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Task|null find($id, $lockMode = null, $lockVersion = null)
- * @method Task|null findOneBy(array $criteria, array $orderBy = null)
- * @method Task[]    findAll()
- * @method Task[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Tag|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Tag|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Tag[]    findAll()
+ * @method Tag[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TaskRepository extends ServiceEntityRepository
+class TagRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Task::class);
+        parent::__construct($registry, Tag::class);
     }
 
-    public function deleteTaskFromComment($task_id): void {
+    public function findByUserId($user_id): array {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'DELETE
+
+        $sql = 'SELECT
+                  t.id as tag_id,
+                  t.name as tag_name
                 FROM
-                  comment
+                  tag t
                 WHERE
-                  task_id = :task_id';
+                  t.user_id = :user_id';
         $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':task_id', $task_id);
+        $stmt->bindValue(':user_id', $user_id);
         $stmt->execute();
+        return $stmt->fetchAll();
     }
 
 //    /**
-//     * @return Task[] Returns an array of Task objects
+//     * @return Tag[] Returns an array of Tag objects
 //     */
     /*
     public function findByExampleField($value)
@@ -49,7 +53,7 @@ class TaskRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Task
+    public function findOneBySomeField($value): ?Tag
     {
         return $this->createQueryBuilder('t')
             ->andWhere('t.exampleField = :val')

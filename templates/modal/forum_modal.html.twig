@@ -15,12 +15,16 @@
                                         <p class="task_info_forum">Description: {{ elements["task_description"] }}</p>
                                         <p class="task_info_forum">Supposed completion
                                             time: {{ elements["task_end"] }}</p>
+                                        <p class="task_info_forum">Rest of days: {{ elements["rest_days"] }}</p>
                                         {% if elements["task_complete"] == 0 %}
                                             <p class="task_info_forum">State: IN PROGRESS</p>
                                         {% elseif  elements["task_complete"] == 1 %}
                                             <p class="task_info_forum">State: COMPLETED ON TIME</p>
                                         {% elseif  elements["task_complete"] == -1 %}
                                             <p class="task_info_forum">State: COMPLETED OFF TIME</p>
+                                        {% endif %}
+                                        {% if elements["tag_names"] != null %}
+                                            <p class="task_info_forum">Tags: {{ elements["tag_names"] }}</p>
                                         {% endif %}
                                     </div>
                                     <div id="commentButton_{{ elements["task_id"] }}"

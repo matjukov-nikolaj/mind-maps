@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Entity\Tag;
+use App\Entity\TagTask;
 use App\Entity\Task;
 use App\Entity\TaskAccess;
 use App\Form\CreateTaskType;
+use App\Form\StatisticForm;
 use App\Form\UpdateTaskType;
+use App\Model\DateInterval;
 use App\Model\NodeForDom;
 use App\Model\TreeForDom;
 use App\Model\TreeForJson;
@@ -45,13 +49,13 @@ class TaskController extends Controller
     private function getTaskEntityByIdAndUserId($id, $userId)
     {
         $task = $this->getDoctrine()
-            ->getRepository(Task::class)
-            ->findOneBy(
-                array(
-                    'id' => $id,
-                    'user_id' => $userId
-                )
-            );
+        ->getRepository(Task::class)
+        ->findOneBy(
+            array(
+                'id' => $id,
+                'user_id' => $userId
+            )
+        );
 
         return $task;
     }
@@ -172,6 +176,39 @@ class TaskController extends Controller
     }
 
     /**
+     * @Route("/add_tag")
+     */
+    public function addTag(Request $request)
+    {
+        $taskId = (int) $request->request->get('task_id');
+        $tagId = (int) $request->request->get('tag_id');
+        if (!$this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TagTask::class)->isExistsByTagIdAndTaskId($tagId, $taskId)) {
+            $tagTask = new TagTask();
+            $tagTask->setTaskId($taskId);
+            $tagTask->setTagId($tagId);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($tagTask);
+            $entityManager->flush();
+        }
+        return new Response();
+    }
+
+    /**
+     * @Route("/remove_tag")
+     */
+    public function removeTag(Request $request)
+    {
+        $taskId = (int) $request->request->get('task_id');
+        $tagId = (int) $request->request->get('tag_id');
+        var_dump(1);
+        $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TagTask::class)
+            ->removeTagTask($taskId, $tagId);
+        return new Response();
+    }
+
+    /**
      * @Route("/update_task")
      */
     public function updateCurrentClickedTask(Request $request)
@@ -180,11 +217,16 @@ class TaskController extends Controller
         $userId = $this->getUser()->getId();
         /** @var Task $task */
         $task = $this->getTaskEntityByIdAndUserId($id, $userId);
+        $result = array();
+        $result["entity"] = $task;
+        $result["tags"] = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TagTask::class)
+            ->findTagTask($id);
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
 
         $serializer = new Serializer($normalizers, $encoders);
-        $jsonContent = $serializer->serialize($task, "json");
+        $jsonContent = $serializer->serialize($result, "json");
         return new Response($jsonContent);
     }
 
@@ -215,6 +257,15 @@ class TaskController extends Controller
         $serializer = new Serializer($normalizers, $encoders);
         $jsonContent = $serializer->serialize($task, "json");
         return new Response($jsonContent);
+    }
+
+    private function getExistingTags($user_id)
+    {
+        $tag = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Tag::class)
+            ->findByUserId($user_id);
+
+        return $tag;
     }
 
     private function deleteChildren(NodeForDom $node) {
@@ -272,12 +323,17 @@ class TaskController extends Controller
         $taskEntity = $this->getTaskEntityByTimeStampAndUserId($timestamp, $userId);
         $treeDom = new TreeForDom($taskEntity);
         $treeDom->root = $this->loadNode($taskEntity, false);
+        $tags = $this->getExistingTags($this->getUser()->getId());
 
         $task = new Task();
         $GLOBALS['currentUserId'] = $this->getUser()->getId();
         $formCreateTask = $this->createForm(CreateTaskType::class, $task);
+
         $taskUpdate = new Task();
         $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
+
+        $dateInterval = new DateInterval();
+        $formInterval = $this->createForm(StatisticForm::class, $dateInterval);
 
         $formCreateTask->handleRequest($request);
         $formUpdateTask->handleRequest($request);
@@ -295,15 +351,13 @@ class TaskController extends Controller
                 $task = new Task();
                 $formCreateTask = $this->createForm(CreateTaskType::class, $task);
                 return $this->redirect($request->getUri());
-            } else {
-                if ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
+            } elseif ($formUpdateTask->isSubmitted() && $formUpdateTask->isValid()) {
                     $this->processUpdatingTaskEntity($taskUpdate);
                     unset($taskUpdate);
                     unset($formUpdateTask);
                     $taskUpdate = new Task();
                     $formUpdateTask = $this->createForm(UpdateTaskType::class, $taskUpdate);
                     return $this->redirect($request->getUri());
-                }
             }
         }
 
@@ -312,6 +366,8 @@ class TaskController extends Controller
                 'tree' => $treeDom,
                 'formCreateTask' => $formCreateTask->createView(),
                 'formUpdateTask' => $formUpdateTask->createView(),
+                'tags' => $tags,
+                'formStatistic' => $formInterval->createView()
             )
         );
     }

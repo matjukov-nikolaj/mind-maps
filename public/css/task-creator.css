@@ -184,9 +184,25 @@ p {
     padding: 10px;
 }
 
+.comment_cross_red {
+    background-image: url(../images/cross_red.png);
+    width: 15px;
+    height: 16px;
+    float: right;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    border: 0;
+    cursor: pointer;
+}
+
 
 input:focus {
     outline: none;
+}
+
+.hide {
+    display: none;
 }
 
 a {
@@ -195,4 +211,34 @@ a {
 
 .profile_button_block {
     display: inline-block;
+}
+
+.add_tags_button {
+    width: 130px;
+    margin: 0 auto;
+}
+
+.checkBoxStyle
+{
+    float: left;
+    width: 15px;
+    height: 15px;
+}
+
+.labelCheckBox
+{
+    font: 700 16px "Lato", sans-serif;
+    color: #506a85;
+}
+
+.checkbox_container {
+    overflow-y: scroll;
+    width: 50%;
+    margin: 0 auto;
+    max-height: 100px;
+}
+
+.clear
+{
+    clear: both;
 }

@@ -12,12 +12,33 @@ class TaskModal {
             if (attribute === null) {
                 return;
             } else {
-                const data = {
-                    id: attribute,
-                };
-                api.loadData(data, url.UPDATE_TASK, thisPtr._formFieldsController, thisPtr);
+                const name = thisPtr.target.getAttribute("name");
+                if (name === "tagCheckBox") {
+                    thisPtr._checkBoxHandler(attribute, thisPtr);
+                } else {
+                    const data = {
+                        id: attribute,
+                    };
+                    api.loadData(data, url.UPDATE_TASK, thisPtr._formFieldsController, thisPtr);
+                }
             }
         }, false);
+    }
+
+    _checkBoxHandler(attribute, thisPtr) {
+        const taskId = document.getElementById("update_task_id").value;
+        const tagId = attribute;
+        const add = document.getElementById("tag_" + tagId).checked;
+        const data = {
+            task_id: taskId,
+            tag_id: tagId
+        };
+        if (add) {
+            api.saveChanges(data, "/add_tag", () => {}, thisPtr);
+        } else {
+            api.saveChanges(data, "/remove_tag", () => {}, thisPtr);
+        }
+
     }
 
     _formFieldsController(data, thisPtr) {
@@ -25,11 +46,23 @@ class TaskModal {
             thisPtr._createModal(thisPtr);
             const json = JSON.parse(data);
             const formFields = thisPtr._getFormFields();
-            thisPtr._setFormFields(json, formFields);
+            thisPtr._setFormFields(json.entity, formFields);
             const formFieldsValues = thisPtr._getFormFieldsValues(formFields);
+            thisPtr._setCheckBox(json.tags);
             thisPtr._buttonsClickHandler(thisPtr, formFieldsValues);
         } catch (e) {
             console.log(e.message);
+        }
+    }
+
+    _setCheckBox(tags) {
+        if (tags.length === 0 || tags === null || tags === undefined) {
+            return;
+        }
+        for (let i = 0; i < tags.length; ++i) {
+            const tag = tags[i];
+            const checkBox = document.getElementById("tag_" + tag.tag_id);
+            checkBox.checked = true;
         }
     }
 
@@ -50,11 +83,11 @@ class TaskModal {
         formFields.complete.value = json.complete;
         formFields.name.value = json.name;
         formFields.description.value = json.description;
-        formFields.endTimeYear.value = date.getUTCFullYear();
-        formFields.endTimeMonth.value = date.getUTCMonth() + 1;
-        formFields.endTimeDay.value = date.getUTCDate();
-        formFields.endTimeHour.value = date.getUTCHours();
-        formFields.endTimeMinutes.value = date.getUTCMinutes();
+        formFields.endTimeYear.value = date.getFullYear();
+        formFields.endTimeMonth.value = date.getMonth() + 1;
+        formFields.endTimeDay.value = date.getDate();
+        formFields.endTimeHour.value = date.getHours();
+        formFields.endTimeMinutes.value = date.getMinutes();
     }
 
     _getFormFieldsValues(formFields) {
@@ -125,6 +158,17 @@ class TaskModal {
                 window.location = "/personal";
             }, thisPtr);
 
+        };
+        const addTagButton = document.getElementById("addTagsButton");
+        const tagContainer = document.getElementById("checkBoxContainer");
+        const closeTagContainer = document.getElementById("closeCheckBoxContainer");
+        addTagButton.onclick = () => {
+            tagContainer.style.display = 'block';
+            addTagButton.style.display = 'none';
+        };
+        closeTagContainer.onclick = () => {
+            tagContainer.style.display = 'none';
+            addTagButton.style.display = 'block';
         }
     }
 
@@ -197,11 +241,10 @@ class TaskModal {
 
     _isEqualsFields(lhs, rhs) {
         return (
-            rhs.parent === lhs.parent &&
             rhs.name === lhs.name &&
             rhs.description === lhs.description &&
             rhs.endTimeYear === lhs.endTimeYear &&
-            rhs.endTimeMonth.value === lhs.endTimeMonth &&
+            rhs.endTimeMonth === lhs.endTimeMonth &&
             rhs.endTimeDay === lhs.endTimeDay &&
             rhs.endTimeHour === lhs.endTimeHour &&
             rhs.endTimeMinutes === lhs.endTimeMinutes

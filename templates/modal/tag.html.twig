@@ -1,0 +1,37 @@
+<div id="modalTag" class="modal">
+    <div class="modal_dialog">
+        <div id="modalTagContainer" class="modal_content">
+            <button id="closeTag" class="modal_close"></button>
+            <h1 class="modal_title">Create tag</h1>
+            <div class="create_task_container">
+                {{ form_start(tag) }}
+                <div class="input_form">
+                    <h3 class="create_task_title">Tag name</h3>
+                    {{ form_row(tag.name) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Description</h3>
+                    {{ form_row(tag.description) }}
+                </div>
+                <button id="saveTagButtonSubmit" class="userInfoHide" type="submit"></button>
+                {{ form_end(tag) }}
+                <div class="sign_button button_sign_up">
+                    <button id="saveTagButton" class="style_button">create tag</button>
+                </div>
+            </div>
+            {% if tags|length %}
+                <div class="existingAccessBlock">
+                    <h1 class="modal_title">Existing tags</h1>
+                    <div id="existingAccessBlock">
+                        {% for tag in tags %}
+                            <div class="existingAccessElement">
+                                <button name="tag" data-id="{{ tag["tag_id"] }}" class="existing_cross_red"></button>
+                                <h3 id="tag_{{ tag["tag_id"] }}" class="message">Tag name: {{ tag["tag_name"] }}</h3>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

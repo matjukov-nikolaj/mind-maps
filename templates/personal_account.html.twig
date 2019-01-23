@@ -67,6 +67,9 @@
             <div class="create_task_button">
                 <button id="openAccess" class="style_button" title="createTask">open access</button>
             </div>
+            <div class="create_task_button">
+                <button id="openTag" class="style_button" title="createTask">create tag</button>
+            </div>
             <div class="right">
                 <button id="openForum" class="style_button" title="createTask">Forum</button>
             </div>
@@ -101,6 +104,7 @@
     {{ include('modal/user_info_modal.html.twig') }}
     {{ include('modal/open_access_modal.html.twig') }}
     {{ include('modal/forum_modal.html.twig') }}
+    {{ include('modal/tag.html.twig') }}
 
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
@@ -116,6 +120,7 @@
     <script src="/js/modal/create-task-modal.js"></script>
     <script src="/js/modal/update-task-modal.js"></script>
     <script src="/js/modal/forum-modal.js"></script>
+    <script src="/js/modal/tag-modal.js"></script>
     <script src="/js/api/controllers/download-controller.js"></script>
     <script src="/js/api/settings/api-config.js"></script>
     <script src="/js/api/mind-map-api.js"></script>

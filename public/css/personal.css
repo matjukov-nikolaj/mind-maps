@@ -40,7 +40,7 @@
 .existing_mind_maps {
     overflow-y: scroll;
     width: 100%;
-    max-height: 400px;
+    max-height: 444px;
     background: #ffffff;
     border-radius: 5px;
     border: 1px solid #d8dee2;
@@ -49,7 +49,7 @@
 .existing_tasks {
     overflow-y: scroll;
     width: 100%;
-    max-height: 400px;
+    max-height: 222px;
     background: #ffffff;
     border-radius: 5px;
     border: 1px solid #d8dee2;
