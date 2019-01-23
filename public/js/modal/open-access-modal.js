@@ -1,6 +1,6 @@
 class OpenAccess {
 
-    constructor(api) {
+    constructor() {
         this.modalLoad = document.getElementById("modalOpenAccess");
         this.modalLoadFile = document.getElementById("modalOpenAccessContainer");
         this.openButton = document.getElementById("openAccess");
@@ -34,6 +34,10 @@ class OpenAccess {
             if (attribute === null) {
                 return;
             } else {
+                const nameAttribute = thisPtr.target.getAttribute("name");
+                if (nameAttribute !== 'access') {
+                    return;
+                }
                 const data = {
                     id: attribute,
                 };
@@ -42,6 +46,7 @@ class OpenAccess {
                 thisPtr.target.parentNode.parentNode.removeChild(thisPtr.target.parentNode);
                 if (mainParent.children.length === 0) {
                     mainParent.parentNode.parentNode.removeChild(mainParent.parentNode);
+                    window.location.reload();
                 }
             }
         }, false);

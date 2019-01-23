@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\MindMap;
 use App\Entity\TaskAccess;
 use App\Entity\User;
@@ -146,6 +147,36 @@ class PersonalAccountController extends Controller
         $entityManager->flush();
     }
 
+    private function getTasksForForum()
+    {
+        $forumTasks = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TaskAccess::class)
+            ->findTaskAccessByUserId($this->getUser()->getId());
+        return $forumTasks;
+    }
+
+    private function getCommentsForTask() {
+        $comments = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TaskAccess::class)
+            ->findComments($this->getUser()->getId());
+        return $comments;
+    }
+
+    private function getTaskCommentsMap($comments, $taskForForum) {
+        $emptyArray = array();
+        $result = array();
+        foreach ($taskForForum as $task) {
+            $result[$task["task_id"]] = $emptyArray;
+        }
+
+        foreach ($comments as $comment) {
+            if (array_key_exists($comment["task_id"], $result)) {
+                array_push($result[$comment["task_id"]], $comment);
+            }
+        }
+        return $result;
+    }
+
     private function processSavingUserInfo(UserInfo $userInfo)
     {
         /** @var UploadedFile $file */
@@ -173,6 +204,26 @@ class PersonalAccountController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($userInfo);
         $entityManager->flush();
+    }
+
+    /**
+     * @Route("/create_comment")
+     */
+    public function createCommentForTask(Request $request)
+    {
+        $id = (int) $request->request->get('id');
+        $value = (string) $request->request->get('value');
+        $comment = new Comment();
+        $comment->setUserId($this->getUser()->getId());
+        $comment->setTaskId($id);
+        $comment->setValue($value);
+        $currentTime = new \DateTime();
+        $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
+        $comment->setDate($currentTime);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($comment);
+        $entityManager->flush();
+        return new Response();
     }
 
     /**
@@ -224,6 +275,9 @@ class PersonalAccountController extends Controller
         $timestamps = $taskInfo['timestamps'];
 
         $existingTaskAccess = $this->getExistingTasksAccess($this->getUser()->getId());
+        $taskForForum = $this->getTasksForForum();
+        $comments = $this->getCommentsForTask();
+        $taskCommentsMap = $this->getTaskCommentsMap($comments, $taskForForum);
 
         $task = new Task();
         $formTask = $this->createForm(CreateTaskType::class, $task);
@@ -286,6 +340,8 @@ class PersonalAccountController extends Controller
                 'existingUserInfo' => $existingUserInfo,
                 'formAccess' => $formAccess->createView(),
                 'existingTasks' => $existingTaskAccess,
+                'forumTasks' => $taskForForum,
+                'taskCommentsMap' => $taskCommentsMap,
             )
         );
     }

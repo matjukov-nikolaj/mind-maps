@@ -106,7 +106,7 @@
     min-height: 240px;
 }
 
-.right {
+.right_right {
     float: right;
 }
 
@@ -258,7 +258,6 @@
 
 .existingAccessBlock {
     overflow-y: scroll;
-    overflow-x: scroll;
     max-height: 300px;
     max-width: 800px;
     margin: 10px auto;
@@ -272,6 +271,63 @@
 .existing_cross_red {
     background-image: url(../images/cross_red.png);
     margin-top: 8px;
+    width: 15px;
+    height: 16px;
+    float: right;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
+    border: 0;
+    cursor: pointer;
+}
+
+.forum_task_block {
+    width: 80%;
+    margin: 10px auto;
+}
+
+.task_forum_container {
+    width: 100%;
+    margin-bottom: 50px;
+    border: 1px solid #d8dee2;
+    border-radius: 5px;
+}
+
+.username_task_forum {
+    text-align: left;
+    color: #00a085;
+    font-size: 32px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin: auto 10px;
+}
+
+.task_info_forum {
+    color: #506a85;
+    font-size: 26px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+    margin-left: 30px;
+}
+
+.comment_button_block {
+    display: inline-block;
+    float: right;
+}
+
+.comment_container {
+    width: 100%;
+    margin-bottom: 50px;
+}
+
+.forum_container {
+    max-height: 750px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.comment_cross_red {
+    background-image: url(../images/cross_red.png);
     width: 15px;
     height: 16px;
     float: right;

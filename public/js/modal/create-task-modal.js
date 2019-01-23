@@ -13,8 +13,6 @@ class CreateTaskModal {
         const crateTaskButton = document.getElementById('createTaskButton');
         crateTaskButton.onclick = () => {
             const taskNameInput = document.getElementById("create_task_name");
-            const taskName = this._getValueOfElement("create_task_name").replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), "");
-            taskNameInput.value = taskName;
             const descriptionValue = this._getValueOfElement("create_task_description");
             const taskEndTime = this._getObjectOfEndTime();
             const currentTime = this._getCurrentDate();

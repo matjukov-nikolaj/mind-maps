@@ -9,5 +9,6 @@ const url = {
     CLOSE_TASK: '/close_task',
     DELETE_TASK: '/delete_task',
     DELETE_ACCESS: '/delete_access',
+    CREATE_COMMENT: '/create_comment',
     USER_INFO: '/get_personal_information',
 };

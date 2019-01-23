@@ -29,7 +29,7 @@
                     <div id="existingAccessBlock">
                         {% for elements in existingTasks %}
                             <div class="existingAccessElement">
-                                <button data-id="{{ elements["task_access_id"] }}" class="existing_cross_red"></button>
+                                <button name="access" data-id="{{ elements["task_access_id"] }}" class="existing_cross_red"></button>
                                 <h3 class="message" id="{{ elements["task_access_id"] }}">
                                     Username: {{ elements["username"] }} ---> Task
                                     name: {{ elements["task_name"] }}</h3>
