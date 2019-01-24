@@ -56,6 +56,11 @@ class StatisticModal {
             from = from.getTime() / 1000;
             to = to.getTime() / 1000;
 
+            if (to < from) {
+                alert("To not can be greater that from.")
+                return;
+            }
+
             const data = {
                 from: from,
                 to: to,
@@ -86,9 +91,13 @@ class StatisticModal {
     }
 
     _handleStatisticResponse(data, thisPtr) {
+        const json = JSON.parse(data);
+        if (json.length === 0) {
+            alert('Tasks not found.');
+            return;
+        }
         const formStat = document.getElementById("formStat");
         formStat.style.display = 'none';
-        const json = JSON.parse(data);
         const parentSuccess = document.getElementById("success");
         const headerSuccess = document.getElementById("successHeader");
         const parentFailed = document.getElementById("failed");
