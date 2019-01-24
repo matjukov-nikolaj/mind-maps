@@ -22,6 +22,26 @@ class TaskAccessRepository extends ServiceEntityRepository
         parent::__construct($registry, TaskAccess::class);
     }
 
+    public function isExists($taskId, $userId)
+    {
+        $query = '
+            SELECT
+               id
+            FROM
+               task_access
+            WHERE
+              task_id = :task_id
+              AND user_id = :user_id
+        ';
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':task_id', $taskId);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function findByUserId($user_id): array {
         $conn = $this->getEntityManager()->getConnection();
 

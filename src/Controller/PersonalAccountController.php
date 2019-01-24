@@ -11,6 +11,7 @@ use App\Entity\User;
 use App\Entity\UserInfo;
 use App\Form\OpenAccessType;
 use App\Form\TagType;
+use App\Model\UserModel;
 use DateTime;
 use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -18,7 +19,7 @@ use function MongoDB\BSON\toJSON;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Form\UserInfoType;
+use App\Form\UserModelType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,15 +57,9 @@ class PersonalAccountController extends Controller
 
     private function getUserInfoEntity($userId)
     {
-        $allUserInfo = $this->getDoctrine()
-            ->getRepository(UserInfo::class)
-            ->findBy(
-                array('id_user' => $userId), array('date' => 'ASC')
-            );
-        if (COUNT($allUserInfo) != 0) {
-            return $allUserInfo[COUNT($allUserInfo) - 1];
-        }
-        return null;
+        return $this->getDoctrine()
+            ->getRepository(User::class)
+            ->find($userId);
     }
 
     private function getExistingTasksAccess($user_id)
@@ -72,7 +67,14 @@ class PersonalAccountController extends Controller
         $userTask = $this->get('doctrine.orm.default_entity_manager')
         ->getRepository(TaskAccess::class)
         ->findByUserId($user_id);
-        return $userTask;
+        $result = array();
+        foreach ($userTask as $task) {
+            $current = $task["user_id"];
+            if ($current != $this->getUser()->getId()) {
+                array_push($result, $task);
+            }
+        }
+        return $result;
     }
 
     private function getExistingTags($user_id)
@@ -137,12 +139,20 @@ class PersonalAccountController extends Controller
     private function processSavingTaskEntity(Task $task)
     {
         $currentTime = new \DateTime();
+        $currentTime->setTimezone(new \DateTimeZone('Europe/Moscow'));
         $task->setStartTime($currentTime->getTimestamp());
-        $entityManager = $this->getDoctrine()->getManager();
         $userId = $this->getUser()->getId();
         $task->setUserId($userId);
         $task->setComplete(0);
+        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($task);
+        $entityManager->flush();
+        $insertedTask = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Task::class)->getTaskIdByUserIdAndStartTime($userId, $task->getStartTime());
+        $taskAccess = new TaskAccess();
+        $taskAccess->setUserId($userId);
+        $taskAccess->setTaskId($insertedTask[0]["id"]);
+        $entityManager->persist($taskAccess);
         $entityManager->flush();
     }
 
@@ -155,9 +165,15 @@ class PersonalAccountController extends Controller
 
     private function processSavingOpenAccessEntity(TaskAccess $taskAccess)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($taskAccess);
-        $entityManager->flush();
+        $taskId = $taskAccess->getTaskId();
+        $userId = $taskAccess->getUserId();
+        if (!$forumTasks = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(TaskAccess::class)->isExists($taskId, $userId))
+        {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($taskAccess);
+            $entityManager->flush();
+        }
     }
 
     private function getTasksForForum()
@@ -192,7 +208,7 @@ class PersonalAccountController extends Controller
         return $result;
     }
 
-    private function processSavingUserInfo(UserInfo $userInfo)
+    private function processSavingUserInfo(UserModel $userInfo)
     {
         /** @var UploadedFile $file */
         $file = $userInfo->getPhoto();
@@ -213,11 +229,16 @@ class PersonalAccountController extends Controller
         }
 
         $userInfo->setPhoto($fileName);
-        $userInfo->setDate(new DateTime());
         $userId = $this->getUser()->getId();
-        $userInfo->setIdUser($userId);
+        /** @var User $userEntity */
+        $userEntity = $this->getUserInfoEntity($userId);
+        $userEntity->setPhoto($fileName);
+        $userEntity->setFirstName($userInfo->getFirstName());
+        $userEntity->setLastName($userInfo->getLastName());
+        $userEntity->setMiddleName($userInfo->getMiddleName());
+
         $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($userInfo);
+        $entityManager->persist($userEntity);
         $entityManager->flush();
     }
 
@@ -346,10 +367,11 @@ class PersonalAccountController extends Controller
         $task = new Task();
         $GLOBALS['currentUserId'] = $this->getUser()->getId();
         $formTask = $this->createForm(CreateTaskType::class, $task);
+        /** @var User $existingUserInfo */
         $existingUserInfo = $this->getUserInfoEntity($this->getUser()->getId());
 
-        $userInfo = new UserInfo();
-        $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+        $user = new UserModel();
+        $formInfo = $this->createForm(UserModelType::class, $user);
 
         $taskAccess = new TaskAccess();
         $formAccess = $this->createForm(OpenAccessType::class, $taskAccess);
@@ -375,11 +397,11 @@ class PersonalAccountController extends Controller
                 $formTask = $this->createForm(CreateTaskType::class, $task);
                 return $this->redirect($request->getUri());
             } elseif ($formInfo->isSubmitted() && $formInfo->isValid()) {
-                $this->processSavingUserInfo($userInfo);
+                $this->processSavingUserInfo($user);
                 unset($entity);
                 unset($formInfo);
-                $userInfo = new UserInfo();
-                $formInfo = $this->createForm(UserInfoType::class, $userInfo);
+                $userInfo = new UserModel();
+                $formInfo = $this->createForm(UserModelType::class, $userInfo);
                 return $this->redirect($request->getUri());
             } elseif ($formAccess->isSubmitted() && $formAccess->isValid()) {
                 $this->processSavingOpenAccessEntity($taskAccess);

@@ -138,6 +138,13 @@ class TaskController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($task);
         $entityManager->flush();
+        $insertedTask = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Task::class)->getTaskIdByUserIdAndStartTime($userId, $task->getStartTime());
+        $taskAccess = new TaskAccess();
+        $taskAccess->setUserId($userId);
+        $taskAccess->setTaskId($insertedTask[0]["id"]);
+        $entityManager->persist($taskAccess);
+        $entityManager->flush();
     }
 
     private function processUpdatingTaskEntity(Task $task)

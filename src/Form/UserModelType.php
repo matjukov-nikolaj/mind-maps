@@ -1,14 +1,15 @@
 <?php
 namespace App\Form;
 
-use App\Entity\UserInfo;
+use App\Entity\User;
+use App\Model\UserModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class UserInfoType extends AbstractType
+class UserModelType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -23,7 +24,7 @@ class UserInfoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => UserInfo::class,
+            'data_class' => UserModel::class,
         ));
     }
 }

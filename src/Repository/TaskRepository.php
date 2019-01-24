@@ -19,6 +19,26 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function getTaskIdByUserIdAndStartTime($userId, $startTime): array
+    {
+        $query = '
+            SELECT
+              *
+             FROM
+               task
+            WHERE
+               user_id = :user_id
+               AND start_time = :start_time
+        ';
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':user_id', $userId);
+        $stmt->bindValue(':start_time', $startTime);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getStatistics($startDate, $endDate)
     {
         $query = "
