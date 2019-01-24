@@ -124,6 +124,24 @@ li {
     margin: 10px;
 }
 
+.green {
+    color: #00a085;
+}
+
+.yellow {
+    color: #FFD800;
+}
+
+.red {
+    color: #FF0004;
+}
+
+.font_success {
+    font-size: 28px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
+}
+
 p {
     /*text-align: center;*/
     color: #00a085;
@@ -242,3 +260,12 @@ a {
 {
     clear: both;
 }
+
+.stats_container {
+    overflow-y: scroll;
+    max-height: 500px;
+    margin: 0 auto;
+    width: 80%;
+}
+
+

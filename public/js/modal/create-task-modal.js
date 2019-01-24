@@ -12,7 +12,7 @@ class CreateTaskModal {
     _addCreateTaskButtonClickHandler() {
         const crateTaskButton = document.getElementById('createTaskButton');
         crateTaskButton.onclick = () => {
-            const taskNameInput = document.getElementById("create_task_name");
+            const taskNameInput = document.getElementById("create_task_name").value.replaceAll(",", "");
             const descriptionValue = this._getValueOfElement("create_task_description");
             const taskEndTime = this._getObjectOfEndTime();
             const currentTime = this._getCurrentDate();

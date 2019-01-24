@@ -18,6 +18,7 @@ use App\Model\NodeForJson;
 use DateTime;
 use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -206,6 +207,40 @@ class TaskController extends Controller
             ->getRepository(TagTask::class)
             ->removeTagTask($taskId, $tagId);
         return new Response();
+    }
+
+    /**
+     * @Route("/get_statistic")
+     */
+    public function getStatistic(Request $request)
+    {
+        $from = (string) $request->request->get('from');
+        $to = (string) $request->request->get('to');
+        $success = (string) $request->request->get('success');
+        $failed = (string) $request->request->get('failed');
+        $progress = (string) $request->request->get('progress');
+
+        $tempResult = $this->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Task::class)
+            ->getStatistics($from, $to);
+
+        $result = array();
+        foreach ($tempResult as $item) {
+            if ($item["complete_name"] == "Failed" && $failed == "true") {
+                array_push($result, $item);
+            } elseif ($item["complete_name"] == "In progress" && $progress == "true") {
+                array_push($result, $item);
+            } elseif ($item["complete_name"] == "Success" && $success == "true") {
+                array_push($result, $item);
+            }
+        }
+
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+
+        $serializer = new Serializer($normalizers, $encoders);
+        $jsonContent = $serializer->serialize($result, "json");
+        return new Response($jsonContent);
     }
 
     /**

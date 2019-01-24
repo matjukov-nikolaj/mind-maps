@@ -92,7 +92,7 @@ class TaskModal {
 
     _getFormFieldsValues(formFields) {
         return {
-            name: formFields.name.value,
+            name: formFields.name.value.replaceAll(",", ""),
             description: formFields.description.value,
             endTimeYear: formFields.endTimeYear.value,
             endTimeMonth: formFields.endTimeMonth.value,
