@@ -227,9 +227,10 @@ class TaskController extends Controller
         $failed = (string) $request->request->get('failed');
         $progress = (string) $request->request->get('progress');
 
+        $userId = $this->getUser()->getId();
         $tempResult = $this->get('doctrine.orm.default_entity_manager')
             ->getRepository(Task::class)
-            ->getStatistics($from, $to);
+            ->getStatistics($userId, $from, $to);
 
         $result = array();
         foreach ($tempResult as $item) {
@@ -318,6 +319,7 @@ class TaskController extends Controller
         var_dump($node->id);
         $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromTaskAccess($node->id);
         $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromComment($node->id);
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TagTask::class)->deleteTaskFromTagTask($node->id);
         if (COUNT($node->children) != 0) {
             foreach ($node->children as $child) {
                 $this->deleteChildren($child);
@@ -346,6 +348,7 @@ class TaskController extends Controller
         $entityManager->flush();
         $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromTaskAccess($taskId);
         $this->get('doctrine.orm.default_entity_manager')->getRepository(TaskAccess::class)->deleteTaskFromComment($taskId);
+        $this->get('doctrine.orm.default_entity_manager')->getRepository(TagTask::class)->deleteTaskFromTagTask($taskId);
         foreach ($treeDom->root->children as $child) {
             $this->deleteChildren($child);
         }

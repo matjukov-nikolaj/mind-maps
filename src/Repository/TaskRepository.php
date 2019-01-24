@@ -39,7 +39,7 @@ class TaskRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function getStatistics($startDate, $endDate)
+    public function getStatistics($userId, $startDate, $endDate)
     {
         $query = "
           SELECT
@@ -55,12 +55,14 @@ class TaskRepository extends ServiceEntityRepository
             task 
           WHERE
             start_time BETWEEN :start_date AND :end_date
+            AND user_id = :user_id
           GROUP BY complete
         ";
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($query);
         $stmt->bindValue(':start_date', $startDate);
         $stmt->bindValue(':end_date', $endDate);
+        $stmt->bindValue(':user_id', $userId);
         $stmt->execute();
 
         return $stmt->fetchAll();

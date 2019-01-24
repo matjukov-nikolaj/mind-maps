@@ -79,6 +79,22 @@ class TagTaskRepository extends ServiceEntityRepository
         return (COUNT($stmt->fetchAll()) != 0);
     }
 
+    public function deleteTaskFromTagTask($taskId)
+    {
+        $query = '
+          DELETE
+          FROM
+            tag_task
+          WHERE
+            task_id = :task_id
+        ';
+        ;
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($query);
+        $stmt->bindValue(':task_id', $taskId);
+        $stmt->execute();
+    }
+
 //    /**
 //     * @return TagTask[] Returns an array of TagTask objects
 //     */

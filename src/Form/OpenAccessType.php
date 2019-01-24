@@ -31,6 +31,7 @@ class OpenAccessType extends AbstractType
                 'label' => false,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('task')
+                        ->where("task.user_id = {$GLOBALS['currentUserId']}")
                         ->orderBy('task.name', 'ASC');
                 },
                 'choice_label' => function (Task $task) {
