@@ -10,11 +10,20 @@ class MindMapLoaderController {
         if (path.length === 2) {
             return;
         }
-        const mindMapName = decodeURIComponent(path[path.length - 1]);
+        const lastPathComponent = path[path.length - 1];
+        if (path[path.length - 2] === "mind_map") {
+            const mindMapName = decodeURIComponent(lastPathComponent);
+            const data = {
+                name: mindMapName
+            };
+            api.loadData(data, url.VALUE, this._loadMindMapTree, this);
+            return;
+        }
+        const timestamp = decodeURIComponent(lastPathComponent);
         const data = {
-            name: mindMapName
+            timestamp: timestamp
         };
-        api.loadData(data, url.VALUE, this._loadMindMapTree, this);
+        api.loadData(data, url.TASK_MIND_MAP, this._loadMindMapTree, this);
     }
 
     _getMindMapPath() {

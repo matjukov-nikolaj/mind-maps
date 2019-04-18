@@ -13,6 +13,11 @@
     padding: -19px;
 }
 
+.input_form {
+    width: 100%;
+    margin: 20px auto;
+}
+
 .style_button {
     padding: 5px 16px;
     letter-spacing: 2px;
@@ -33,6 +38,16 @@
 .create_button {
     float: left;
     margin: 25px;
+}
+
+.create_task_button {
+    float: left;
+    margin: 19px;
+}
+
+.create_task {
+    float: left;
+    margin: 10px;
 }
 
 .load_button {

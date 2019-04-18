@@ -1,0 +1,73 @@
+<div id="modalForum" class="modal">
+    <div class="modal_dialog">
+        <div id="modalForumContainer" class="modal_content">
+            <button id="closeForum" class="modal_close"></button>
+            <h1 class="modal_title">Discussion of tasks</h1>
+            {% if forumTasks|length %}
+                <div class="forum_container">
+                    <div class="forum_task_block">
+                        {% for elements in forumTasks %}
+                            <div class="task_block_container">
+                                <div class="task_forum_container">
+                                    <div>
+                                        <p class="username_task_forum">{{ elements["autor_username"] }}</p>
+                                        <p class="task_info_forum">Task name: {{ elements["task_name"] }}</p>
+                                        <p class="task_info_forum">Description: {{ elements["task_description"] }}</p>
+                                        <p class="task_info_forum">Supposed completion
+                                            time: {{ elements["task_end"] }}</p>
+                                        <p class="task_info_forum">Rest of days: {{ elements["rest_days"] }}</p>
+                                        {% if elements["task_complete"] == 0 %}
+                                            <p class="task_info_forum">State: IN PROGRESS</p>
+                                        {% elseif  elements["task_complete"] == 1 %}
+                                            <p class="task_info_forum">State: COMPLETED ON TIME</p>
+                                        {% elseif  elements["task_complete"] == -1 %}
+                                            <p class="task_info_forum">State: COMPLETED OFF TIME</p>
+                                        {% endif %}
+                                        {% if elements["tag_names"] != null %}
+                                            <p class="task_info_forum">Tags: {{ elements["tag_names"] }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div id="commentButton_{{ elements["task_id"] }}"
+                                         class="comment_button button_sign_up">
+                                        <button name="forum" data-id="{{ elements["task_id"] }}"
+                                                class="style_button right"
+                                                title="createTask">Comment
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="commentContainer_{{ elements["task_id"] }}"
+                                     class="comment_container userInfoHide">
+                                    <button id="closeComment_{{ elements["task_id"] }}"
+                                            class="comment_cross_red"></button>
+                                    <textarea id="comment_{{ elements["task_id"] }}" name="comment_task"
+                                              required="required"></textarea>
+                                    <div class="sign_button button_sign_up">
+                                        <button id="saveCommentButton_{{ elements["task_id"] }}" class="style_button">
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                                {% if elements["task_id"] in taskCommentsMap|keys %}
+                                    {% set comments = taskCommentsMap[elements["task_id"]] %}
+                                    {% for comment in comments %}
+                                        <div class="comments_container">
+                                            {% if userId == comment["user_id"] %}
+                                                <button name="comment" data-id="{{ comment["comment_id"] }}"
+                                                        class="comment_delete_cross_red"></button>
+                                            {% endif %}
+                                            <p class="comment_username">{{ comment["username"] }}
+                                                Date: {{ comment["comment_date"] }}</p>
+                                            <p class="comment_message"> {{ comment["comment_value"] }}</p>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p class="message">You do not have access to the discussion of tasks.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

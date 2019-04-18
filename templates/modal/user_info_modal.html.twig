@@ -1,0 +1,58 @@
+<div id="modalPersonal" class="modal">
+    <div class="modal_dialog">
+        <div id="modalPersonalInfo" class="modal_content">
+            <button id="closePersonal" class="modal_close"></button>
+            <h1 class="modal_title">{{ username }}</h1>
+            <h1 class="modal_title">User information</h1>
+            <div id="personalInfo" class="userInfoHide">
+                <div class="profile_container">
+                    <div class="left">
+                        <img id="userImage" src="" class="base_photo"/>
+                    </div>
+                    <div class="right">
+                        <div class="input_form">
+                            <h3 id="firstName" class="message"></h3>
+                        </div>
+                        <div class="input_form">
+                            <h3 id="secondName" class="message"></h3>
+                        </div>
+                        <div class="input_form">
+                            <h3 id="middleName" class="message"></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="sign_button button_sign_up">
+                    <button id="editPersonalInfoButton" class="style_button">Edit</button>
+                </div>
+            </div>
+            <div id="personalForm" class="userInfoHide">
+                <div class="create_task_container">
+                    <button id="closeUpdateUserInfo" class="modal_close cross_red"></button>
+                    {{ form_start(userInfo) }}
+                    <div class="input_form">
+                        <h3 class="create_task_title">First name</h3>
+                        {{ form_row(userInfo.firstName) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">Last name</h3>
+                        {{ form_row(userInfo.lastName) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">Middle name</h3>
+                        {{ form_row(userInfo.middleName) }}
+                    </div>
+                    <div class="select_parent_block">
+                        <h3 class="create_task_title">Photo (JPG, JPEG, PNG)</h3>
+                        <p class="message_small">Size should not exceed 5 MB</p>
+                        {{ form_row(userInfo.photo) }}
+                        <button id="submitUserInfoForm" class="userInfoHide" type="submit"></button>
+                    </div>
+                    {{ form_end(userInfo) }}
+                    <div class="sign_button button_sign_up">
+                        <a id="saveUserInfoButton" class="style_button">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

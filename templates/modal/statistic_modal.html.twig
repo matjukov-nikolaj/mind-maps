@@ -1,0 +1,58 @@
+<div id="modalStatistic" class="modal">
+    <div class="modal_dialog">
+        <div id="modalStatisticContainer" class="modal_content">
+            <button id="closeStatistic" class="modal_close"></button>
+            <h1 class="modal_title">Statistic</h1>
+            <div class="create_task_container">
+                <div id="formStat">
+                    {{ form_start(formStatistic) }}
+                    <div class="input_form">
+                        <h3 class="create_task_title">From: </h3>
+                        {{ form_row(formStatistic.from) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">To: </h3>
+                        {{ form_row(formStatistic.to) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">Completed on time</h3>
+                        {{ form_row(formStatistic.success) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">Completed off time</h3>
+                        {{ form_row(formStatistic.failed) }}
+                    </div>
+                    <div class="input_form">
+                        <h3 class="create_task_title">In progress</h3>
+                        {{ form_row(formStatistic.progress) }}
+                    </div>
+                    {{ form_end(formStatistic) }}
+                    <div class="sign_button button_sign_up">
+                        <button id="getStatisticButton" class="style_button">Get statistic</button>
+                    </div>
+                </div>
+                <div id="statsShower" class="hide stats_container">
+                    <button name="access" id="closeStatisticIcon" class="comment_cross_red"></button>
+                    <div id="successBlock" class="hide">
+                        <p id="successHeader" class="font_success green"></p>
+                        <div id="success" class="create_task_container">
+
+                        </div>
+                    </div>
+                    <div id="failedBlock" class="hide">
+                        <p id="failedHeader" class="font_success red"></p>
+                        <div id="failed" class="create_task_container">
+
+                        </div>
+                    </div>
+                    <div id="progressBlock" class="hide">
+                        <p id="progressHeader" class="font_success yellow"></p>
+                        <div id="progress" class="create_task_container">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -17,7 +17,6 @@ class MindMapDataController extends Controller
                     'user_id' => $userId
                 )
             );
-
         return $mindMap;
     }
 

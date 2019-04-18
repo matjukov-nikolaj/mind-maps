@@ -1,0 +1,48 @@
+<div id="modalUpdateTask" class="modal">
+    <div class="modal_dialog">
+        <div id="modalUpdateTaskForm" class="modal_content">
+            <button id="closeUpdateTask" class="modal_close"></button>
+            <h1 class="modal_title">Update task</h1>
+            <div class="create_task_container">
+                {{ form_start(formUpdateTask) }}
+                <div class="input_form">
+                    <h3 class="create_task_title">Task name</h3>
+                    {{ form_row(formUpdateTask.name) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Description</h3>
+                    {{ form_row(formUpdateTask.description) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Set the task completion time</h3>
+                    {{ form_row(formUpdateTask.end_time) }}
+                </div>
+                {{ form_row(formUpdateTask.id) }}
+                {{ form_row(formUpdateTask.complete) }}
+                <button id="submitTaskButton" class="hide" type="submit"></button>
+                {{ form_end(formUpdateTask) }}
+
+                {% if tags|length %}
+                    <div class="add_tags_button button_sign_up">
+                        <button id="addTagsButton" class="style_button">add tags</button>
+                    </div>
+                    <div id="checkBoxContainer" class="checkbox_container hide">
+                        <button id="closeCheckBoxContainer"
+                                class="comment_cross_red"></button>
+                        {% for tag in tags %}
+                            <div class="existingAccessBlock">
+                                <label class="labelCheckBox"><input class="checkBoxStyle" name="tagCheckBox" id="tag_{{ tag["tag_id"] }}" data-id="{{ tag["tag_id"] }}" type="checkbox">{{ tag["tag_name"] }}</label>
+                            </div>
+                            <div class="clear"></div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="sign_button button_sign_up">
+                    <button id="updateTaskButton" class="style_button">Update task</button>
+                </div>
+                <button id="closeTaskButton" class="style_button">Close task</button>
+                <button id="deleteTaskButton" class="style_button right">Delete task</button>
+            </div>
+        </div>
+    </div>
+</div>

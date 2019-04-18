@@ -1,0 +1,43 @@
+<div id="modalOpenAccess" class="modal">
+    <div class="modal_dialog">
+        <div id="modalOpenAccessContainer" class="modal_content">
+            <button id="closeOpenAccess" class="modal_close"></button>
+            <h1 class="modal_title">Open access to the task</h1>
+            <div class="create_task_container">
+                {{ form_start(formAccess) }}
+                <div class="input_form">
+                    <h3 class="create_task_title">Select task</h3>
+                    {{ form_row(formAccess.task_name) }}
+                </div>
+                <div class="input_form">
+                    <h3 class="create_task_title">Select user</h3>
+                    {{ form_row(formAccess.user_name) }}
+                </div>
+                <div class="userInfoHide">
+                    {{ form_row(formAccess.task_id) }}
+                    {{ form_row(formAccess.user_id) }}
+                </div>
+                <button id="submitOpenAccessButton" class="userInfoHide" type="submit"></button>
+                {{ form_end(formAccess) }}
+                <div class="sign_button button_sign_up">
+                    <button id="openAccessButton" class="style_button">OPEN ACCESS</button>
+                </div>
+            </div>
+            {% if existingTasks|length %}
+                <div class="existingAccessBlock">
+                    <h1 class="modal_title">Existing access</h1>
+                    <div id="existingAccessBlock">
+                        {% for elements in existingTasks %}
+                            <div class="existingAccessElement">
+                                <button name="access" data-id="{{ elements["task_access_id"] }}" class="existing_cross_red"></button>
+                                <h3 class="message" id="{{ elements["task_access_id"] }}">
+                                    Username: {{ elements["username"] }} ---> Task
+                                    name: {{ elements["task_name"] }}</h3>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

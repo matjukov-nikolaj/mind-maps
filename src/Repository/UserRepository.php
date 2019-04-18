@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Task;
+use App\Entity\TaskAccess;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -18,4 +20,7 @@ class UserRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, User::class);
     }
+
+
+
 }

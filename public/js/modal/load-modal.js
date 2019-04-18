@@ -1,7 +1,7 @@
 class LoadModal {
     constructor() {
         this.json = null;
-        this.name = name;
+        this.name = null;
         this.modalLoad = document.getElementById("modalLoad");
         this.modalLoadFile = document.getElementById("modalLoadFile");
         this.openButton = document.getElementById("openLoad");
@@ -36,7 +36,11 @@ class LoadModal {
         loadButton.onclick = () => {
             const input = document.getElementById("input_save");
             this.name = input.value.replace(new RegExp('[^а-яА-Яa-zA-Z0-9_-]', 'u'), '');
-            const loadFile = document.getElementById('files').files[0];
+            const loadFileBlock = document.getElementById('files');
+            if (loadFileBlock.files.length === 0) {
+                return;
+            }
+            const loadFile = loadFileBlock.files[0];
             const fileData = new FileReader(loadFile);
             const file = fileData.readAsText(loadFile);
             this._onLoadData(fileData, this._saveData);

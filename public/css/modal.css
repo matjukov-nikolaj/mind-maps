@@ -45,6 +45,16 @@
     cursor: pointer;
 }
 
+.cross_gray {
+    background-image: url(../images/button_close.png);
+}
+
+.cross_red {
+    background-image: url(../images/cross_red.png);
+    margin-top: -25px;
+    margin-right: -24px;
+}
+
 .modal_content {
     padding: 1rem;
     background-color: #ffffff;
@@ -107,4 +117,24 @@
     font: bold 18px "Source Sans Pro", sans-serif;
     border: 1px solid #cecece;
     background: #f5f7fa;
+}
+
+.select_parent_block {
+    width: 100%;
+    margin: 20px auto;
+}
+
+.select_parent_block select:last-child {
+    width: 98%;
+}
+
+input {
+    width: 95%;
+    height: 30px;
+    font-size: 18px;
+    border: 1px solid #cecece;
+    background: #f5f7fa;
+    border-radius: 3px;
+    padding: 1%;
+    margin: 5px;
 }

@@ -1,4 +1,6 @@
 {% extends "base.html.twig" %}
+{% form_theme formCreateTask 'fields.html.twig' %}
+{% form_theme userInfo 'fields.html.twig' %}
 {#{% block title %}Mind-maps profile{% endblock %}#}
 {% block title %}Mind-maps profile{% endblock %}
 {% block head %}
@@ -6,12 +8,13 @@
     <link rel="stylesheet" href="css/button.css">
     <link rel="stylesheet" href="css/personal.css">
     <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/create-task.css">
 {% endblock %}
 {% block content %}
     <div class="personal_account_field">
         <div class="user_information">
-            <div class="username_block">
-                <h1 class="username">{{ username }}</h1>
+            <div class="profile_button">
+                <button id="openProfile" class="style_button left" title="load">{{ username }}</button>
             </div>
             <div class="header_title">
                 <h1 class="title_name">mind-maps</h1>
@@ -20,6 +23,7 @@
                 <a class="style_button right" href="{{ logout_path('main') }}">Logout</a>
             </div>
         </div>
+        <div class="clear"></div>
         <div class="mind_maps_info">
             <div class="create_new_mind_map">
                 <div class="create_button">
@@ -57,28 +61,51 @@
                     </div>
                 {% endfor %}
             </div>
-        </div>
-    </div>
-    <div id="modalLoad" class="modal">
-        <div class="modal_dialog">
-            <div id="modalLoadFile" class="modal_content">
-                <button id="closeLoad" class="modal_close"></button>
-                <h1 class="modal_title">Load the file</h1>
-                <div class="choose_file">
-                    <input type="file" id="files" name="files[]" accept=".json"/>
-                    <output id="list"></output>
-                </div>
-                <p id="nameExist" class="error_name_block">Name has already existed.</p>
-                <p id="emptyInput" class="error_name_block">Please, enter a name.</p>
-                <div class="input_save_block">
-                    <input placeholder="Enter the name of the file" id="input_save" class="input_save" type="text">
-                </div>
-                <div class="button_modal_load">
-                    <button id="loadButton" class="style_button" title="download">load</button>
-                </div>
+            <div class="create_task_button">
+                <button id="openCreateTask" class="style_button" title="createTask">create task</button>
+            </div>
+            <div class="create_task_button">
+                <button id="openAccess" class="style_button" title="createTask">open access</button>
+            </div>
+            <div class="create_task_button">
+                <button id="openTag" class="style_button" title="createTask">create tag</button>
+            </div>
+            <div class="right">
+                <button id="openForum" class="style_button" title="createTask">Forum</button>
+            </div>
+            <div class="existing_tasks">
+                {% if taskNames|length == 0 %}
+                    <p class="message">You don't have tasks, create it now.</p>
+                {% endif %}
+                {% for name in taskNames %}
+                    <div class="mind_map_file_container">
+                        <div class="mind_map_file">
+                            <div class="mind_map_icon_block">
+                                <img class="mind_map_icon" src="images/mind_map_icon.png">
+                                <div class="root_name_block">
+                                    <p class="root_name">{{ taskDescriptions[loop.index0] }}</p>
+                                </div>
+                            </div>
+                            <div class="mind_map_info">
+                                <div class="mind_map_name_block">
+                                    <a class="mind_map_name"
+                                       title={{ name }} href={{ "/task/" ~ timestamps[loop.index0] }}>{{ name|e }}</a>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>
+    {{ include('modal/load_mind_map_modal.html.twig') }}
+    {{ include('modal/create_task_modal.html.twig') }}
+    {{ include('modal/user_info_modal.html.twig') }}
+    {{ include('modal/open_access_modal.html.twig') }}
+    {{ include('modal/forum_modal.html.twig') }}
+    {{ include('modal/tag.html.twig') }}
+
     <script src="/js/vendor/jQuery.js"></script>
     <script src="/js/vendor/file-saver.js"></script>
     <script src="/js/mind-map-creator/utilites/tree.js"></script>
@@ -88,6 +115,12 @@
     <script src="/js/mind-map-creator/utilites/tree-loader.js"></script>
     <script src="/js/modal/modal.js"></script>
     <script src="/js/modal/load-modal.js"></script>
+    <script src="/js/modal/personal-info-modal.js"></script>
+    <script src="/js/modal/open-access-modal.js"></script>
+    <script src="/js/modal/create-task-modal.js"></script>
+    <script src="/js/modal/update-task-modal.js"></script>
+    <script src="/js/modal/forum-modal.js"></script>
+    <script src="/js/modal/tag-modal.js"></script>
     <script src="/js/api/controllers/download-controller.js"></script>
     <script src="/js/api/settings/api-config.js"></script>
     <script src="/js/api/mind-map-api.js"></script>
