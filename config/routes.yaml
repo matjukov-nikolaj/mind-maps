@@ -1,5 +1,0 @@
-logout:
-    path: /logout
-
-personal:
-    path: /personal
